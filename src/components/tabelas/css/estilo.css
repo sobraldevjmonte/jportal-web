@@ -1,0 +1,7 @@
+.custom-header-style .ant-table-thead > tr {
+    background-color: #964b4b; /* Cor de fundo desejada */
+}
+
+.custom-header-row .ant-table-thead > tr {
+    background-color: #964b4b; /* Cor de fundo desejada */
+  }
