@@ -13,6 +13,8 @@ import TabelaPendeciasVendasAdministradorComponent from "../components/tabelaPen
 
 const service = new EtapasService()
 
+
+
 interface PendenciasVendasType {
     key: string;
     seq: string;
