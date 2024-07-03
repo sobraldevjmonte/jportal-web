@@ -75,12 +75,13 @@ export default function TablelaAnaliseNpAdminComponente() {
         { title: 'F10', dataIndex: 'f10', key: 'f10', width: '400px'},
         { title: 'VENDEDOR', dataIndex: 'vendedor', key: 'vendedor', 
             render: (text: string, record: any) => 
-                <span  style={{ fontSize: tamFonte}} >({record.codvendedor}){record.vendedor} </span> },
+                <span  style={{ fontSize: tamFonte}} >{record.vendedor} </span> },
+                // <span  style={{ fontSize: tamFonte}} >({record.codvendedor}){record.vendedor} </span> },
         { title: 'AUTORIZADO', dataIndex: 'autorizacao', key: 'autorizacao'},
         { title: 'ENTREGA', dataIndex: 'tipoentrega', key: 'tipoentrega'},
         { title: 'CLIENTE', dataIndex: 'cliente', key: 'cliente', 
             render: (text: string, record: any) => 
-                <span  style={{ fontSize: tamFonte}} >({record.codcliente}){record.cliente} </span> },
+                <span  style={{ fontSize: tamFonte}} >{record.cliente} </span> },
         { title: 'INDICADOR', dataIndex: 'indicador', key: 'indicador'},
         { title: 'PLANO', dataIndex: 'plano', key: 'plano'},
         { title: 'TAB', dataIndex: 'tabela', key: 'tabela'},
