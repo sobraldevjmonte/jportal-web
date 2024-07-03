@@ -44,3 +44,10 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+rodar servidor com PM2 - start com SO
+# npm install -g pm2
+# pm2 start npm --name "meu-projeto-react" -- start
+# pm2 status
+# pm2 stop 7

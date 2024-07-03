@@ -88,7 +88,7 @@ export default function HomePage() {
         <Menu theme="light" mode="inline" defaultSelectedKeys={["1"]}>
           <Menu.Item key="dashboard" icon={<BarChartOutlined />}>
             <Link to="/dashboard" className="nav-text" accessKey="c">
-              DashBoard
+              DashBoardxxx
             </Link>
           </Menu.Item>
           <SubMenu
