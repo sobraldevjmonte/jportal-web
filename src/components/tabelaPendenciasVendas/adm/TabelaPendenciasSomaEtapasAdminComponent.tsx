@@ -222,7 +222,7 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
                         <Row style={{ display: 'flex', flexDirection: 'column' }}>
                             <Col>
                                 <Typography style={{ fontSize: '24px', margin: '10px' }}>
-                                    Total Pend.: R$ {formatarMoedaComSimbolo(+totalg)} - <span style={{color: "blue"}}> Rosália.: R$ {formatarMoedaComSimbolo(+totalgFat)}</span>
+                                    Total Pend.: R$ {formatarMoedaComSimbolo(+totalg)} - <span style={{color: "blue"}}> Fat.: R$ {formatarMoedaComSimbolo(+totalgFat)}</span>
                                 </Typography>
                             </Col>
                         </Row>
