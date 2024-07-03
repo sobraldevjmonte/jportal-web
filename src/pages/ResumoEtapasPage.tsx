@@ -1,15 +1,12 @@
-import { FilterOutlined } from "@ant-design/icons";
-import { Spin, Row, Col, Typography, Table, Button, DatePicker, Select, Space, TableColumnsType, Pagination } from "antd";
-import Title from "antd/es/typography/Title";
-import { SetStateAction, useContext, useEffect, useState } from "react";
+import { Row } from "antd";
+import { useContext, useState } from "react";
 import ListaVendedoresComponent from "../components/ListaVendedoresComponent";
-import ListaLojasComponent from "../components/listaLojasComponent";
-import EtapasService from "../service/EtapasService";
-import TabelaPendeciasVendasVendedoresComponent from "../components/tabelaPendenciasVendas/vendedores/TabelaPendenciasVendasVendedoresComponent";
 import TabelaPendeciasVendasGerentesComponent from '../components/tabelaPendenciasVendas/gerentes/TabelaPendeciasVendasGerentesComponent';
+import TabelaPendeciasVendasVendedoresComponent from "../components/tabelaPendenciasVendas/vendedores/TabelaPendenciasVendasVendedoresComponent";
+import EtapasService from "../service/EtapasService";
 
-import { UsuarioContext } from "../context/useContext";
 import TabelaPendeciasVendasAdministradorComponent from "../components/tabelaPendenciasVendas/adm/TabelaPendeciasVendasAdministradorComponent";
+import { UsuarioContext } from "../context/useContext";
 
 const service = new EtapasService()
 
@@ -62,6 +59,8 @@ export default function ResumoEtapasPage() {
                 </Row>
 
                 {idNivelUsuario === 3 ? <TabelaPendeciasVendasVendedoresComponent/> : null}
+                {idNivelUsuario === 9 ? <TabelaPendeciasVendasGerentesComponent /> : null}
+                {idNivelUsuario === 12 ? <TabelaPendeciasVendasGerentesComponent /> : null}
                 {idNivelUsuario === 2 ? <TabelaPendeciasVendasGerentesComponent /> : null}
                 {idNivelUsuario === 1 ||  idNivelUsuario === 11 ? <TabelaPendeciasVendasAdministradorComponent /> : null}
             </div>
