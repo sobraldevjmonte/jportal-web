@@ -3,7 +3,8 @@ import EtapasService from "../../../service/EtapasService"
 import { Button, Col, Row, Spin, Table, TableColumnsType, Typography } from "antd";
 
 import { UsuarioContext } from "../../../context/useContext";
-import { formatarMoeda } from "../../../utils/formatarValores"
+
+import { formatarMoeda, formatarMoedaComSimbolo } from "../../../utils/formatarValores"
 
 // import './css/estilo.css';
 
@@ -119,7 +120,7 @@ export default function TabelaPendenciasSomaEtapasComponent(props: any) {
     };
     const columns1: TableColumnsType<PropsSomaPendencias> = [
         {
-            title: <Button size="small" type="text" onClick={() => filtrarDadosEtapa('BASICOS')}>Básicos</Button>,
+            title: <span style={{ fontSize: '14px' }}>BASICOS</span>,
             dataIndex: 'etapa1',
             key: 'etapa1',
             align: 'center',
@@ -225,7 +226,7 @@ export default function TabelaPendenciasSomaEtapasComponent(props: any) {
                         <Row style={{ display: 'flex', flexDirection: 'column' }}>
                             <Col>
                                 <Typography style={{ fontSize: '24px', margin: '10px' }}>
-                                    Total Pend.: R$ {totalg} - Fat.: R$ {totalgFat}
+                                    Total Pend.: R$ {formatarMoedaComSimbolo(+totalg)} - Fat.: R$ {formatarMoedaComSimbolo(+totalgFat)}
                                 </Typography>
                             </Col>
                         </Row>

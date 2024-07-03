@@ -55,7 +55,7 @@ export default function TabelaPendeciasVendasLojasAdminComponent(props: any) {
 
         setLoading(true);
         try {
-            let rs = await service.listaPendenciasVendasGerentes(idLoja, 'DESC');
+            let rs = await service.listaPendenciasVendasGerentes(props.idLoja, 'DESC');
             setDados(rs.data.vendedores)
             setQuantidade(rs.data.quantidade)
             console.log('****** etapas gerentes ******');
@@ -72,8 +72,8 @@ export default function TabelaPendeciasVendasLojasAdminComponent(props: any) {
     const columns: TableColumnsType<PendenciasVendasType> = [
         { title: 'Vendedor', dataIndex: 'nomevendedor', key: 'nomevendedor', 
             render: (text: string) => <span style={{ fontSize: tamFonte, }}>{text}</span> },
-        { title: 'TTL Vendas', dataIndex: 'totalvendas', key: 'totalvendas', width: '120px', align: 'right', 
-            render: (totalvendas, record) => <span style={{ fontSize: tamFonte, }}>{totalvendas !== null ? totalvendas : '0.00'}</span> },
+        { title: 'TTL Vendas', dataIndex: 'total_reais_pendencias', key: 'total_reais_pendencias', width: '120px', align: 'right', 
+            render: (total_reais_pendencias, record) => <span style={{ fontSize: tamFonte, }}>{total_reais_pendencias !== null ? total_reais_pendencias : '0.00'}</span> },
         { title: 'BASICOS', dataIndex: 'etapa1', key: 'nomeVendedor', align: 'right', 
             render: (etapa1, record) => <span style={{ fontSize: tamFonte, color: record.etapa1 > 1000 ? corDestaque : '#000' }}> {etapa1 !== null ? formatarMoeda(+etapa1) : '0.00'}</span> },
         { title: 'EPI/IMP/FERRAM', dataIndex: 'etapa2', key: 'nomeVendedor', align: 'right', 

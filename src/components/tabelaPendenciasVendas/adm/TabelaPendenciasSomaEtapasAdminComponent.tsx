@@ -3,7 +3,7 @@ import { UsuarioContext } from "../../../context/useContext";
 import EtapasService from "../../../service/EtapasService";
 import { TableColumnsType, Spin, Row, Col, Typography, Table, Button } from "antd";
 
-import { formatarMoeda } from "../../../utils/formatarValores"
+import { formatarMoeda, formatarMoedaComSimbolo } from "../../../utils/formatarValores"
 
 const service = new EtapasService()
 
@@ -218,11 +218,11 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
         <>
             <div>
                 <Spin spinning={loading} tip="Carregando..." style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
-                    <div style={{ backgroundColor: '#fff', maxWidth: '900px', margin: '0 auto' }}>
+                    <div style={{ backgroundColor: '#fff' }}>
                         <Row style={{ display: 'flex', flexDirection: 'column' }}>
                             <Col>
                                 <Typography style={{ fontSize: '24px', margin: '10px' }}>
-                                    Total Pend.: R$ {totalg} - Fat.: R$ {totalgFat}
+                                    Total Pend.: R$ {formatarMoedaComSimbolo(+totalg)} - Fat.: R$ {formatarMoedaComSimbolo(+totalgFat)}
                                 </Typography>
                             </Col>
                         </Row>
