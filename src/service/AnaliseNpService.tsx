@@ -27,11 +27,12 @@ class AnaliseNpService {
       }
       return rs;
     }
-    async listarNps() {
+    async listarNps(mes: number, ano: number, idLoja: number) {
         console.log("*********** listaPendenciasVendasAdmin(AnaliseNpService) *****************");
         let rs;
         try {
-          const response = await api.get(`/analisenp/listar-nps`);
+          const response = await api.get(`/analisenp/listar-nps/${mes}/${ano}/${idLoja}`);
+          // const response = await api.get(`/analisenp/listar-nps/${mes}/${ano}/${lojaSelecionada}`);
           //console.log(rs)
           rs = {
             statusCode: 200,
