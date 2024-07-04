@@ -78,6 +78,7 @@ export default function TabelaPendeciasVendasGerentesComponent() {
             key: 'nomevendedor',
             width: '200px',
             sorter: (a: any, b: any) => a.nomevendedor.localeCompare(b.nomevendedor),
+            // defaultSortOrder: 'ascend', // Ordem padrão descendente
             render: (text: string) => <span style={{ fontSize: tamFonte, }}>{text}</span>
         },
         {
@@ -87,6 +88,7 @@ export default function TabelaPendeciasVendasGerentesComponent() {
             width: '120px',
             align: 'right',
             sorter: (a: any, b: any) => a.total_reais_pendencias - b.total_reais_pendencias,
+            defaultSortOrder: 'descend', // Ordem padrão descendente
             render: (total_reais_pendencias, record) => <span style={{ fontSize: tamFonte, }}> {total_reais_pendencias !== null ? total_reais_pendencias : '0.00'}</span>
         },
         { title: 'BASICOS', dataIndex: 'etapa1', key: 'nomeVendedor', align: 'right', 

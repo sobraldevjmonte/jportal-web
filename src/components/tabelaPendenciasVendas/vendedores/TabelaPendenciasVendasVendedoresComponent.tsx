@@ -115,6 +115,7 @@ export default function TabelaPendeciasVendasVendedoresComponent() {
             width: '120px',
             align: 'right',
             sorter: (a: any, b: any) => a.totalcliente - b.totalcliente,
+            defaultSortOrder: 'descend', // Ordem padrão descendente
             render: (totalcliente) => (
                 <span title="Total em R$ das pendências do cliente." style={{ fontSize: tamFonte }}>
                     {formatarMoeda(+totalcliente)}

@@ -76,6 +76,7 @@ export default function TabelaPendeciasVendasVendedoresGerenciaComponent(props: 
             dataIndex: 'nomecliente',
             key: 'nomecliente',
             sorter: (a: any, b: any) => a.nomecliente.localeCompare(b.nomecliente),
+            // defaultSortOrder: 'ascend', // Ordem padrão ascendente
             render: (text, record) => {
                 const truncatedText = text.length > 30 ? `${text.substring(0, 30)}...` : text;
                 return (
@@ -96,6 +97,7 @@ export default function TabelaPendeciasVendasVendedoresGerenciaComponent(props: 
             width: '120px',
             align: 'right',
             sorter: (a: any, b: any) => a.totalcliente - b.totalcliente,
+            defaultSortOrder: 'descend', // Ordem padrão descendente
             render: (totalcliente) => (
                 <span title="Total em R$ das pendências do cliente" style={{ fontSize: tamFonte }}>
                      {Number(totalcliente).toFixed(2)}

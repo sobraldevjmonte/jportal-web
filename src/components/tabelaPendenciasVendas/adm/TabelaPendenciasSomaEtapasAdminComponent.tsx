@@ -84,6 +84,7 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
     const tamFonte = '0.9rem';
     const corDestaque = '#000'
     const corFundoColuna = '#F5F5F5'
+    const corFat = 'blue'
     const getColumnBackgroundColor = (index: number): string => {
         const colors = ['#f0f8ff', '#faebd7'];
         return colors[index % 2];
@@ -122,7 +123,7 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
             key: 'etapa1',
             align: 'center',
             width: '20%',
-            render: (etapa1, record) => renderCell(etapa1, record.etapafat1, record.count_etapa1, record.count_etapafinal1, totalg, totalgFat, corDestaque, tamFonte, 'blue'),
+            render: (etapa1, record) => renderCell(etapa1, record.etapafat1, record.count_etapa1, record.count_etapafinal1, totalg, totalgFat, corDestaque, tamFonte, corFat),
             onCell: () => ({ style: { backgroundColor: corFundoColuna } }),
             onHeaderCell: () => ({ style: { backgroundColor: corFundoColuna } }),
         },
@@ -132,7 +133,7 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
             key: 'etapa2',
             align: 'center',
             width: '20%',
-            render: (etapa2, record) => renderCell(etapa2, record.etapafat2, record.count_etapa2, record.count_etapafinal2, totalg, totalgFat, corDestaque, tamFonte, 'blue'),
+            render: (etapa2, record) => renderCell(etapa2, record.etapafat2, record.count_etapa2, record.count_etapafinal2, totalg, totalgFat, corDestaque, tamFonte, corFat),
         },
         {
             title: <span style={{ fontSize: '14px' }}>HIDRAULICOS</span>,
@@ -140,7 +141,7 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
             key: 'etapa3',
             align: 'center',
             width: '20%',
-            render: (etapa3, record) => renderCell(etapa3, record.etapafat3, record.count_etapa3, record.count_etapafinal3, totalg, totalgFat, corDestaque, tamFonte, 'blue'),
+            render: (etapa3, record) => renderCell(etapa3, record.etapafat3, record.count_etapa3, record.count_etapafinal3, totalg, totalgFat, corDestaque, tamFonte, corFat),
             onCell: () => ({ style: { backgroundColor: corFundoColuna } }),
             onHeaderCell: () => ({ style: { backgroundColor: corFundoColuna } }),
         },
@@ -150,7 +151,7 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
             key: 'etapa4',
             align: 'center',
             width: '20%',
-            render: (etapa4, record) => renderCell(etapa4, record.etapafat4, record.count_etapa4, record.count_etapafinal4, totalg, totalgFat, corDestaque, tamFonte, 'blue'),
+            render: (etapa4, record) => renderCell(etapa4, record.etapafat4, record.count_etapa4, record.count_etapafinal4, totalg, totalgFat, corDestaque, tamFonte, corFat),
         },
         {
             title: <span style={{ fontSize: '14px' }}>TOM/AC</span>,
@@ -158,7 +159,7 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
             key: 'etapa5',
             align: 'center',
             width: '20%',
-            render: (etapa5, record) => renderCell(etapa5, record.etapafat5, record.count_etapa5, record.count_etapafinal5, totalg, totalgFat, corDestaque, tamFonte, 'blue'),
+            render: (etapa5, record) => renderCell(etapa5, record.etapafat5, record.count_etapa5, record.count_etapafinal5, totalg, totalgFat, corDestaque, tamFonte, corFat),
             onCell: () => ({ style: { backgroundColor: corFundoColuna } }),
             onHeaderCell: () => ({ style: { backgroundColor: corFundoColuna } }),
         },
@@ -172,7 +173,7 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
             key: 'etapa6',
             align: 'center',
             width: '20%',
-            render: (etapa6, record) => renderCell(etapa6, record.etapafat6, record.count_etapa6, record.count_etapafinal6, totalg, totalgFat, corDestaque, tamFonte, 'blue'),
+            render: (etapa6, record) => renderCell(etapa6, record.etapafat6, record.count_etapa6, record.count_etapafinal6, totalg, totalgFat, corDestaque, tamFonte, corFat),
         },
         {
             title: <span style={{ fontSize: '14px' }}>LOUC/MET/PIAS/CB/GB/BAN</span>,
@@ -180,7 +181,7 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
             key: 'etapa7',
             align: 'center',
             width: '20%',
-            render: (etapa7, record) => renderCell(etapa7, record.etapafat7, record.count_etapa7, record.count_etapafinal7, totalg, totalgFat, corDestaque, tamFonte, 'blue'),
+            render: (etapa7, record) => renderCell(etapa7, record.etapafat7, record.count_etapa7, record.count_etapafinal7, totalg, totalgFat, corDestaque, tamFonte, corFat),
             onCell: () => ({ style: { backgroundColor: corFundoColuna } }),
             onHeaderCell: () => ({ style: { backgroundColor: corFundoColuna } }),
         },
@@ -190,7 +191,7 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
             key: 'etapa8',
             align: 'center',
             width: '20%',
-            render: (etapa8, record) => renderCell(etapa8, record.etapafat8, record.count_etapa8, record.count_etapafinal8, totalg, totalgFat, corDestaque, tamFonte, 'blue'),
+            render: (etapa8, record) => renderCell(etapa8, record.etapafat8, record.count_etapa8, record.count_etapafinal8, totalg, totalgFat, corDestaque, tamFonte, corFat),
         },
         {
             title: <span style={{ fontSize: '14px' }}>PINTURAS</span>,
@@ -198,7 +199,7 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
             key: 'etapa9',
             align: 'center',
             width: '20%',
-            render: (etapa9, record) => renderCell(etapa9, record.etapafat9, record.count_etapa9, record.count_etapafinal9, totalg, totalgFat, corDestaque, tamFonte, 'blue'),
+            render: (etapa9, record) => renderCell(etapa9, record.etapafat9, record.count_etapa9, record.count_etapafinal9, totalg, totalgFat, corDestaque, tamFonte, corFat),
             onCell: () => ({ style: { backgroundColor: corFundoColuna } }),
             onHeaderCell: () => ({ style: { backgroundColor: corFundoColuna } }),
         },
@@ -208,7 +209,7 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
             key: 'etapa10',
             align: 'center',
             width: '20%',
-            render: (etapa10, record) => renderCell(etapa10, record.etapafat10, record.count_etapa10, record.count_etapafinal10, totalg, totalgFat, corDestaque, tamFonte, 'blue'),
+            render: (etapa10, record) => renderCell(etapa10, record.etapafat10, record.count_etapa10, record.count_etapafinal10, totalg, totalgFat, corDestaque, tamFonte, corFat),
         },
 
     ];
@@ -222,7 +223,7 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
                         <Row style={{ display: 'flex', flexDirection: 'column' }}>
                             <Col>
                                 <Typography style={{ fontSize: '24px', margin: '10px' }}>
-                                    Total Pend.: R$ {formatarMoedaComSimbolo(+totalg)} - <span style={{color: "blue"}}> Fat.: R$ {formatarMoedaComSimbolo(+totalgFat)}</span>
+                                    Total Pend.: R$ {formatarMoedaComSimbolo(+totalg)} - <span style={{color: corFat}}> Fat.: {formatarMoedaComSimbolo(+totalgFat)}</span>
                                 </Typography>
                             </Col>
                         </Row>
