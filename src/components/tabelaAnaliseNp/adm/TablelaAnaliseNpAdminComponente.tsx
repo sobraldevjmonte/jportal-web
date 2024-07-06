@@ -5,7 +5,7 @@ import { formatarMoeda } from '../../../utils/formatarValores';
 import { UsuarioContext } from "../../../context/useContext";
 import AnaliseNpService from "../../../service/AnaliseNpService";
 import { FilterOutlined, SyncOutlined, TagOutlined } from "@ant-design/icons";
-import { TableColumnsType, Button, Col, Row, Spin, Table, DatePicker, Select, Space, DatePickerProps, TableProps } from "antd";
+import { TableColumnsType, Button, Col, Row, Spin, Table, DatePicker, Select, Space, DatePickerProps, TableProps, Input } from "antd";
 import TabelaAnaliseNpProdutosAdminComponent from "./TabelaAnaliseNpProdutosAdminComponent";
 import Title from 'antd/es/typography/Title';
 import RtService from "../../../service/RtService";
@@ -46,8 +46,12 @@ export default function TablelaAnaliseNpAdminComponente() {
 
     const [dados, setDados] = useState<AnaliseNpType[]>([])
     const [registros, setRegistros] = useState(0);
-    const [filters, setFilters] = useState<FilterType[]>([]);
+    
     const [loading, setLoading] = useState(false);
+
+    const [filters, setFilters] = useState<FilterType[]>([]);
+    const [filterLoading, setFilterLoading] = useState(false); // Estado para controlar o loading do filtro
+    
 
     const [mes, setMes] = useState(0)
     const [ano, setAno] = useState(0)
@@ -95,16 +99,16 @@ export default function TablelaAnaliseNpAdminComponente() {
 
     interface FilterType {
         text: string;
-        value: string;
+        value: string;      
     }
 
-    async function listaNps(mes: number, ano: number, loja: string) {
+    async function listaNpsOld(mes: number, ano: number, loja: string) {
 
         setLoading(true);
-        setLoading(true);
+        setFilterLoading(true);
         try {
             const rs = await service.listarNps(mes, ano, lojaSelecionada);
-            // console.log(rs.data.registros);
+            //  console.log(rs.data.registros);
             setRegistros(rs.data.registros)
             
             // Verifica se rs.data.lista_nps é um array e todos os itens possuem a propriedade 'np' do tipo string
@@ -125,23 +129,81 @@ export default function TablelaAnaliseNpAdminComponente() {
             console.error('Erro ao buscar dados:', error);
         } finally {
             setLoading(false);
+            setFilterLoading(false)
         }
     }
 
+    const listaNps = async (mes: number, ano: number, loja: string) => {
+        setLoading(true);
+        try {
+            const rs = await service.listarNps(mes, ano, lojaSelecionada);
+            setDados(rs.data.lista_nps);
+
+            // Gerar filtros únicos para 'np'
+            const uniqueNp: string[] = [...new Set((rs.data.lista_nps as AnaliseNpType[]).map(item => item.np))];
+            const generatedFilters = uniqueNp.map(np => ({
+                text: np,
+                value: np,
+            }));
+            setFilters(generatedFilters);
+        } catch (error) {
+            console.error('Erro ao buscar dados:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleFilter = async (value: string) => {
+        setFilterLoading(true); // Ativa o loading do filtro
+        try {
+            // Simulação de um filtro assíncrono (substitua com sua lógica real de filtro)
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Exemplo de espera de 1 segundo
+            // Aqui você aplicaria a lógica real de filtragem
+            const filteredData = dados.filter(item => item.np.startsWith(value));
+            setDados(filteredData); // Atualiza os dados com o resultado do filtro
+        } catch (error) {
+            console.error('Erro ao aplicar filtro:', error);
+        } finally {
+            setFilterLoading(false); // Desativa o loading do filtro
+        }
+    };
+    
     const tamFonte = '0.9rem';
     const colorContatou = 'blue'
     const corDestaque = '#000'
 
     const columns: TableColumnsType<AnaliseNpType> = [
+        // {
+        //     title: 'NP',
+        //     dataIndex: 'np',
+        //     key: 'np',
+        //     filterSearch: true,
+        //     filters: filters,
+        //     filterDropdown: () => (
+        //         <div style={{ padding: 8 }}>
+        //             <Input.Search
+        //                 placeholder="Buscar NP"
+        //                 onSearch={value => handleFilter(value)}
+        //                 enterButton
+        //             />
+        //         </div>
+        //     ),
+        //     filterIcon: <FilterOutlined style={{ color: filterLoading ? '#1890ff' : undefined }} spin={filterLoading} />,
+        //     onFilter: (value, record) => record.np.startsWith(value as string),
+        // },
         {
             title: 'Np', dataIndex: 'np', key: 'np',
             filterSearch: true,
             filters: filters,
+            filterIcon: <FilterOutlined style={{ color: filterLoading ? '#1890ff' : undefined }} spin={filterLoading} />,
             onFilter: (value, record) => record.np.startsWith(value as string),
+
+            
             // onFilter: (value: string, record: DataType) => record.np.startsWith(value),
       
 
         },
+      
         { title: 'DATA', dataIndex: 'data_formatada', key: 'data_formatada', },
         { title: 'F10', dataIndex: 'f10', key: 'f10', width: '400px' },
         {
@@ -242,8 +304,8 @@ export default function TablelaAnaliseNpAdminComponente() {
                             <Typography style={{ fontSize: '1.0rem', color: 'blue', paddingLeft: '8px' }}> {lojaSelecionadaDescricao}({lojaSelecionada}) </Typography>
                         </Row>
                     </Col>
-                    <Col style={{ paddingLeft: '30px', paddingTop: '60px' }}>
-                        <Button title='Filtrar' style={{ backgroundColor: 'blue', color: '#fff' }} icon={<FilterOutlined title='Filtrar' />} onClick={filtrar} />
+                    <Col style={{ paddingLeft: '30px', paddingTop: '58px'}}>
+                        <Button title='Filtrar' style={{ backgroundColor: '#1E90FF', borderColor: '#1E90FF', color: '#fff', width: '150px'  }} icon={<FilterOutlined title='Filtrar' />} onClick={filtrar} >Filtrar</Button>
                     </Col>
                 </Row>
             </>
