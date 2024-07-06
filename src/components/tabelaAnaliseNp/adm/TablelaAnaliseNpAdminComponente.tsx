@@ -104,6 +104,8 @@ export default function TablelaAnaliseNpAdminComponente() {
         setLoading(true);
         try {
             const rs = await service.listarNps(mes, ano, lojaSelecionada);
+            // console.log(rs.data.registros);
+            setRegistros(rs.data.registros)
             
             // Verifica se rs.data.lista_nps é um array e todos os itens possuem a propriedade 'np' do tipo string
             if (Array.isArray(rs.data.lista_nps) && rs.data.lista_nps.every((item: { np: any; }) => typeof item.np === 'string')) {
@@ -119,7 +121,7 @@ export default function TablelaAnaliseNpAdminComponente() {
             } else {
                 console.error('Dados inválidos recebidos:', rs.data.lista_nps);
             }
-        } catch (error) {
+        } catch (error) {   
             console.error('Erro ao buscar dados:', error);
         } finally {
             setLoading(false);
