@@ -5,7 +5,7 @@ import { formatarMoeda } from '../../../utils/formatarValores';
 import { UsuarioContext } from "../../../context/useContext";
 import AnaliseNpService from "../../../service/AnaliseNpService";
 import { FilterOutlined, SyncOutlined, TagOutlined } from "@ant-design/icons";
-import { TableColumnsType, Button, Col, Row, Spin, Table, DatePicker, Select, Space, DatePickerProps } from "antd";
+import { TableColumnsType, Button, Col, Row, Spin, Table, DatePicker, Select, Space, DatePickerProps, TableProps } from "antd";
 import TabelaAnaliseNpProdutosAdminComponent from "./TabelaAnaliseNpProdutosAdminComponent";
 import Title from 'antd/es/typography/Title';
 import RtService from "../../../service/RtService";
@@ -18,7 +18,7 @@ interface AnaliseNpType {
     seq: string;
     chave: string;
     data: string;
-    np: number;
+    np: string;
     codvendedor: string;
     vendedor: string;
     autorizacao: string;
@@ -44,8 +44,9 @@ export default function TablelaAnaliseNpAdminComponente() {
     const { loja, setLoja } = useContext(UsuarioContext);
     const { idLoja, setIdLoja } = useContext(UsuarioContext);
 
-    const [dados, setDados] = useState([]);
+    const [dados, setDados] = useState<AnaliseNpType[]>([])
     const [registros, setRegistros] = useState(0);
+    const [filters, setFilters] = useState<FilterType[]>([]);
     const [loading, setLoading] = useState(false);
 
     const [mes, setMes] = useState(0)
@@ -92,13 +93,32 @@ export default function TablelaAnaliseNpAdminComponente() {
         // listaNps()
     }, [])
 
+    interface FilterType {
+        text: string;
+        value: string;
+    }
+
     async function listaNps(mes: number, ano: number, loja: string) {
 
         setLoading(true);
+        setLoading(true);
         try {
-            let rs = await service.listarNps(mes, ano, lojaSelecionada);
-            setDados(rs.data.lista_nps)
-            setRegistros(rs.data.registros)
+            const rs = await service.listarNps(mes, ano, lojaSelecionada);
+            
+            // Verifica se rs.data.lista_nps é um array e todos os itens possuem a propriedade 'np' do tipo string
+            if (Array.isArray(rs.data.lista_nps) && rs.data.lista_nps.every((item: { np: any; }) => typeof item.np === 'string')) {
+                setDados(rs.data.lista_nps as AnaliseNpType[]);
+                
+                // Gerar filtros únicos para 'np'
+                const uniqueNp: string[] = [...new Set((rs.data.lista_nps as AnaliseNpType[]).map(item => item.np))];
+                const generatedFilters: FilterType[] = uniqueNp.map(np => ({
+                    text: np,
+                    value: np,
+                }));
+                setFilters(generatedFilters);
+            } else {
+                console.error('Dados inválidos recebidos:', rs.data.lista_nps);
+            }
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
         } finally {
@@ -111,7 +131,15 @@ export default function TablelaAnaliseNpAdminComponente() {
     const corDestaque = '#000'
 
     const columns: TableColumnsType<AnaliseNpType> = [
-        { title: 'Np', dataIndex: 'np', key: 'np', },
+        {
+            title: 'Np', dataIndex: 'np', key: 'np',
+            filterSearch: true,
+            filters: filters,
+            onFilter: (value, record) => record.np.startsWith(value as string),
+            // onFilter: (value: string, record: DataType) => record.np.startsWith(value),
+      
+
+        },
         { title: 'DATA', dataIndex: 'data_formatada', key: 'data_formatada', },
         { title: 'F10', dataIndex: 'f10', key: 'f10', width: '400px' },
         {
@@ -207,9 +235,9 @@ export default function TablelaAnaliseNpAdminComponente() {
                         <Row style={{}}>
                             <Typography style={{ fontSize: '1.0rem' }}>FILTROS:<span> </span> </Typography>
                             <Typography style={{ fontSize: '1.0rem', paddingLeft: '8px' }}> Mês/Ano: </Typography>
-                            <Typography style={{ fontSize: '1.0rem', paddingLeft: '8px' ,color: 'blue' }}> {mes}/{ano}</Typography>
-                            <Typography style={{ fontSize: '1.0rem', paddingLeft: '8px'  }}> Loja: </Typography>
-                            <Typography style={{ fontSize: '1.0rem', color: 'blue', paddingLeft: '8px'  }}> {lojaSelecionadaDescricao}({lojaSelecionada}) </Typography>
+                            <Typography style={{ fontSize: '1.0rem', paddingLeft: '8px', color: 'blue' }}> {mes}/{ano}</Typography>
+                            <Typography style={{ fontSize: '1.0rem', paddingLeft: '8px' }}> Loja: </Typography>
+                            <Typography style={{ fontSize: '1.0rem', color: 'blue', paddingLeft: '8px' }}> {lojaSelecionadaDescricao}({lojaSelecionada}) </Typography>
                         </Row>
                     </Col>
                     <Col style={{ paddingLeft: '30px', paddingTop: '60px' }}>
@@ -219,6 +247,10 @@ export default function TablelaAnaliseNpAdminComponente() {
             </>
         )
     }
+
+    const onChange: TableProps<AnaliseNpType>['onChange'] = (pagination, filters, sorter, extra) => {
+        console.log('params', pagination, filters, sorter, extra);
+      };
 
 
     return (
@@ -242,6 +274,7 @@ export default function TablelaAnaliseNpAdminComponente() {
                     </div>
                     <div style={{ padding: '10px', height: '800px', position: 'relative' }}>
                         <Table
+                            onChange={onChange}
                             columns={columns}
                             dataSource={dados}
                             size="small"
