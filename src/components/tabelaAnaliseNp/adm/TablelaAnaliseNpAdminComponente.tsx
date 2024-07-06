@@ -138,6 +138,7 @@ export default function TablelaAnaliseNpAdminComponente() {
         try {
             const rs = await service.listarNps(mes, ano, lojaSelecionada);
             setDados(rs.data.lista_nps);
+            setRegistros(rs.data.registros)
 
             // Gerar filtros únicos para 'np'
             const uniqueNp: string[] = [...new Set((rs.data.lista_nps as AnaliseNpType[]).map(item => item.np))];
