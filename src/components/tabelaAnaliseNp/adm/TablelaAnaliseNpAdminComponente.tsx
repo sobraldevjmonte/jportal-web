@@ -51,6 +51,7 @@ export default function TablelaAnaliseNpAdminComponente() {
 
     const [filters, setFilters] = useState<FilterType[]>([]);
     const [filterLoading, setFilterLoading] = useState(false); // Estado para controlar o loading do filtro
+    const [filterValue, setFilterValue] = useState<string>('');
     
 
     const [mes, setMes] = useState(0)
@@ -102,37 +103,6 @@ export default function TablelaAnaliseNpAdminComponente() {
         value: string;      
     }
 
-    async function listaNpsOld(mes: number, ano: number, loja: string) {
-
-        setLoading(true);
-        setFilterLoading(true);
-        try {
-            const rs = await service.listarNps(mes, ano, lojaSelecionada);
-            //  console.log(rs.data.registros);
-            setRegistros(rs.data.registros)
-            
-            // Verifica se rs.data.lista_nps é um array e todos os itens possuem a propriedade 'np' do tipo string
-            if (Array.isArray(rs.data.lista_nps) && rs.data.lista_nps.every((item: { np: any; }) => typeof item.np === 'string')) {
-                setDados(rs.data.lista_nps as AnaliseNpType[]);
-                
-                // Gerar filtros únicos para 'np'
-                const uniqueNp: string[] = [...new Set((rs.data.lista_nps as AnaliseNpType[]).map(item => item.np))];
-                const generatedFilters: FilterType[] = uniqueNp.map(np => ({
-                    text: np,
-                    value: np,
-                }));
-                setFilters(generatedFilters);
-            } else {
-                console.error('Dados inválidos recebidos:', rs.data.lista_nps);
-            }
-        } catch (error) {   
-            console.error('Erro ao buscar dados:', error);
-        } finally {
-            setLoading(false);
-            setFilterLoading(false)
-        }
-    }
-
     const listaNps = async (mes: number, ano: number, loja: string) => {
         setLoading(true);
         try {
@@ -154,16 +124,38 @@ export default function TablelaAnaliseNpAdminComponente() {
         }
     };
 
-    const handleFilter = async (value: string) => {
+    const generateFilters = (listaNps: AnaliseNpType[]) => {
+        const uniqueNp: string[] = [...new Set(listaNps.map(item => item.np))];
+        return uniqueNp.map(np => ({
+            text: np,
+            value: np,
+        }));
+    };
+
+    const handleFilter = () => {
         setFilterLoading(true); // Ativa o loading do filtro
         try {
-            // Simulação de um filtro assíncrono (substitua com sua lógica real de filtro)
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Exemplo de espera de 1 segundo
-            // Aqui você aplicaria a lógica real de filtragem
-            const filteredData = dados.filter(item => item.np.startsWith(value));
-            setDados(filteredData); // Atualiza os dados com o resultado do filtro
+            const filteredData = dados.filter(item => item.np.startsWith(filterValue));
+            setDados(filteredData); // Atualiza os dados com o filtro aplicado
+            setFilters(generateFilters(filteredData)); // Atualiza os filtros com base nos dados filtrados
+
         } catch (error) {
             console.error('Erro ao aplicar filtro:', error);
+        } finally {
+            setFilterLoading(false); // Desativa o loading do filtro
+        }
+    };
+
+
+    const clearFilter = () => {
+        setFilterLoading(true); // Ativa o loading do filtro
+        try {
+            setFilterValue(''); // Limpa o valor do filtro
+            setDados(dados); // Restaura os dados originais
+            setFilters(generateFilters(dados)); // Atualiza os filtros com base nos dados originais
+
+        } catch (error) {
+            console.error('Erro ao limpar filtro:', error);
         } finally {
             setFilterLoading(false); // Desativa o loading do filtro
         }
@@ -174,36 +166,46 @@ export default function TablelaAnaliseNpAdminComponente() {
     const corDestaque = '#000'
 
     const columns: TableColumnsType<AnaliseNpType> = [
-        // {
-        //     title: 'NP',
-        //     dataIndex: 'np',
-        //     key: 'np',
-        //     filterSearch: true,
-        //     filters: filters,
-        //     filterDropdown: () => (
-        //         <div style={{ padding: 8 }}>
-        //             <Input.Search
-        //                 placeholder="Buscar NP"
-        //                 onSearch={value => handleFilter(value)}
-        //                 enterButton
-        //             />
-        //         </div>
-        //     ),
-        //     filterIcon: <FilterOutlined style={{ color: filterLoading ? '#1890ff' : undefined }} spin={filterLoading} />,
-        //     onFilter: (value, record) => record.np.startsWith(value as string),
-        // },
         {
             title: 'Np', dataIndex: 'np', key: 'np',
             filterSearch: true,
             filters: filters,
             filterIcon: <FilterOutlined style={{ color: filterLoading ? '#1890ff' : undefined }} spin={filterLoading} />,
             onFilter: (value, record) => record.np.startsWith(value as string),
-
-            
-            // onFilter: (value: string, record: DataType) => record.np.startsWith(value),
-      
-
         },
+
+        // {
+        //     title: 'Np',
+        //     dataIndex: 'np',        
+        //     key: 'np',
+        //     filterSearch: true,
+        //     filters: filters,
+        //     filterIcon: <FilterOutlined style={{ color: filterLoading ? '#1890ff' : undefined }} spin={filterLoading} onClick={handleFilter} />,
+        //     onFilterDropdownVisibleChange: (visible: boolean) => {
+        //         // Limpar filtro quando o dropdown de filtro é fechado
+        //         if (!visible) {
+        //             clearFilter();
+        //         }
+        //     },
+        //     filterDropdown: () => (
+        //         <div style={{ padding: 8 }}>
+        //             <input
+        //                 type="text"
+        //                 value={filterValue}
+        //                 onChange={(e) => setFilterValue(e.target.value)}
+        //                 placeholder="Buscar NP"
+        //                 style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //             />
+        //             <button onClick={handleFilter} style={{ width: 90, marginRight: 8 }}>
+        //                 Filtrar
+        //             </button>
+        //             <button onClick={clearFilter} style={{ width: 90 }}>
+        //                 Limpar
+        //             </button>
+        //         </div>
+        //     ),
+        //     onFilter: (value, record) => record.np.startsWith(value as string),
+        // },
       
         { title: 'DATA', dataIndex: 'data_formatada', key: 'data_formatada', },
         { title: 'F10', dataIndex: 'f10', key: 'f10', width: '400px' },
@@ -249,12 +251,20 @@ export default function TablelaAnaliseNpAdminComponente() {
             console.error('Erro ao buscar lojas:', error);
         }
     }
-    function selecionarLoja(e: any, loja: any) {
-        //console.log(e);
-        //console.log(loja.data.descricao);
+    function selecionarLoja(e: any, lojax: any) {
+        console.log(e);
+        //console.log(loja);
         //const descricao = loja.data.descricao;
-        setLojaSelecionada(e)
-        setLojaSelecionadaDescricao(loja.data.descricao)
+
+        if(e == 'sem'){
+            console.log('------------- sem ----------------')
+            setLojaSelecionada(idLoja)
+            setLojaSelecionadaDescricao(loja)
+        }else{
+            setLojaSelecionada(e)
+            setLojaSelecionadaDescricao(lojax.data.descricao)
+        }
+        
     }
 
     function filtrar() {
