@@ -5,6 +5,8 @@ import HomePage from './pages/HomePage';
 import ResumoEtapasPage from './pages/ResumoEtapasPage';
 import LoginPage2 from './pages/LoginPage2';
 import AnaliseNpPage from './pages/AnaliseNpPage';
+import AdminProjJmonte from './pages/AdminProfJmonte';
+import AdminProfUsuarios from './pages/AdminProfUsuarios';
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
           <Route path="/rt-page" element={<Rtadmin2 />} />
           <Route path="/resumo-etapas" element={<ResumoEtapasPage />} />
           <Route path="/analise-np" element={<AnaliseNpPage />} />
+          <Route path="/adm-prof-jmonte" element={<AdminProjJmonte />} />
+          <Route path="/adm-prof-usuarios" element={<AdminProfUsuarios />} />
         </Route>
         <Route path="/login" element={<LoginPage2 />} />
         {/*<Route path="*" element={<ErrorPage />} />*/}

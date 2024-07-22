@@ -305,7 +305,7 @@ export default function TabelaIndicadoresComponent() {
                             </Col>
                         </Row>
                     </div>
-                    <div style={{ padding: '10px', height: '800px', position: 'relative' }}>
+                    <div style={{ padding: '10px', position: 'relative' }}>
                         <Table
                             columns={columns}
                             dataSource={dados}

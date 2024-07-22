@@ -9,8 +9,8 @@ import { TableColumnsType, Button, Col, Row, Spin, Table, DatePicker, Select, Sp
 import TabelaAnaliseNpProdutosAdminComponent from "./TabelaAnaliseNpProdutosAdminComponent";
 import Title from 'antd/es/typography/Title';
 import RtService from "../../../service/RtService";
-const service = new AnaliseNpService()
 
+const service = new AnaliseNpService()
 const serviceRt = new RtService()
 
 interface AnaliseNpType {
@@ -174,39 +174,7 @@ export default function TablelaAnaliseNpAdminComponente() {
             onFilter: (value, record) => record.np.startsWith(value as string),
         },
 
-        // {
-        //     title: 'Np',
-        //     dataIndex: 'np',        
-        //     key: 'np',
-        //     filterSearch: true,
-        //     filters: filters,
-        //     filterIcon: <FilterOutlined style={{ color: filterLoading ? '#1890ff' : undefined }} spin={filterLoading} onClick={handleFilter} />,
-        //     onFilterDropdownVisibleChange: (visible: boolean) => {
-        //         // Limpar filtro quando o dropdown de filtro é fechado
-        //         if (!visible) {
-        //             clearFilter();
-        //         }
-        //     },
-        //     filterDropdown: () => (
-        //         <div style={{ padding: 8 }}>
-        //             <input
-        //                 type="text"
-        //                 value={filterValue}
-        //                 onChange={(e) => setFilterValue(e.target.value)}
-        //                 placeholder="Buscar NP"
-        //                 style={{ width: 188, marginBottom: 8, display: 'block' }}
-        //             />
-        //             <button onClick={handleFilter} style={{ width: 90, marginRight: 8 }}>
-        //                 Filtrar
-        //             </button>
-        //             <button onClick={clearFilter} style={{ width: 90 }}>
-        //                 Limpar
-        //             </button>
-        //         </div>
-        //     ),
-        //     onFilter: (value, record) => record.np.startsWith(value as string),
-        // },
-      
+       
         { title: 'DATA', dataIndex: 'data_formatada', key: 'data_formatada', },
         { title: 'F10', dataIndex: 'f10', key: 'f10', width: '400px' },
         {

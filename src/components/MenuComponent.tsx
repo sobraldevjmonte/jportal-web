@@ -95,7 +95,34 @@ export default function HomePage() {
             key="sub-menu-vendas"
             icon={<FolderAddOutlined />}
             title="Vendas"
-          >
+          >{idNivelUsuario !== 3 ?
+            <SubMenu
+              key="sub-menu-prof"
+              icon={<FolderAddOutlined />}
+              title="Profissionais"
+            >
+
+
+              <Menu.Item key="adm-prof-jmonte">
+                <Link to="/adm-prof-jmonte" className="nav-text">
+                  Pedidos
+                </Link>
+              </Menu.Item>
+
+
+              <Menu.Item key="adm-prof-usuarios" title="Usuários Profissionais">
+                <Link
+                  to="/adm-prof-usuarios"
+                  className="nav-text"
+                  title="Usuários Profissionais"
+
+                >
+                  Usuários
+                </Link>
+              </Menu.Item>
+
+            </SubMenu>
+            : null}
 
             <Menu.Item key="rt-page">
               <Link
@@ -112,15 +139,18 @@ export default function HomePage() {
               </Link>
             </Menu.Item>
 
-            {idNivelUsuario !== 3 ? 
-            <Menu.Item key="analise-np-page">
-              <Link to="/analise-np" className="nav-text">
-                Análise NP
-              </Link>
-            </Menu.Item> 
-            : null}
+            {idNivelUsuario !== 3 ?
+              <Menu.Item key="analise-np-page">
+                <Link to="/analise-np" className="nav-text">
+                  Análise NP
+                </Link>
+              </Menu.Item>
+              : null}
+
+
 
           </SubMenu>
+
 
           <Menu.Item key="relatorios" icon={<FilePdfOutlined />}>
             <Link to="/relatorios" className="nav-text">
