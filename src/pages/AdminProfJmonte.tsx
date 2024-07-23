@@ -12,17 +12,21 @@ const serviceRt = new RtService()
 
 interface PropsProfJMonte {
     key: number;
+    id_vendas: number;
     idNp: number;
     numero_venda: number;
-    data_venda: string;
     numero_np: number;
-    loja: string;
-    nfe: string;
+    data_venda: string;
+    data_lancamento: string;
+    descricao_loja: string;
     data_np: string;
     valor_np: number;
     profissional: string;
-    statusAnalise: boolean;
+    status: boolean;
+    total_pontos: number;
     imagem: string;
+    premiado: boolean;
+    comissao: number;
 }
 
 interface LojasType {
@@ -53,6 +57,8 @@ export default function AdminProjJmonte(props: any) {
     const dataAtual = new Date();
     let mesAtual: number;
     let anoAtual: number;
+
+    const pathImagem = '/anexos';
     //****************************************************/
 
     useEffect(() => {
@@ -90,6 +96,7 @@ export default function AdminProjJmonte(props: any) {
             setLoading(true);
             let rs = await serviceProf.listarPedidos();
             console.log(rs)
+            
             setDados(rs.data.lista_pedidos);
             setQuantidade(rs.data.registros);
         } catch (error) {
@@ -114,7 +121,17 @@ export default function AdminProjJmonte(props: any) {
             },
         },
         {
-            title: 'Data', dataIndex: 'data_venda', key: 'data_venda',
+            title: 'Data', dataIndex: 'data_lancamento', key: 'data_lancamento',
+            onHeaderCell: () => {
+                return {
+                    style: {
+                        backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
+                    },
+                };
+            },
+        },
+        {
+            title: 'Loja', dataIndex: 'descricao_loja', key: 'descricao_loja',
             onHeaderCell: () => {
                 return {
                     style: {
@@ -175,7 +192,10 @@ export default function AdminProjJmonte(props: any) {
         },
         {
             title: 'Valor', dataIndex: 'valor_np', key: 'valor_np', align: 'right',
-            render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.quantidade)).toFixed(2)} </span>,
+            render: (text: string, record: any) => 
+                <span style={{ fontSize: tamFonte }} >
+                    {record.comissao > 0 ? parseFloat(record.valor_np).toFixed(2) : '0.00'}
+                </span>,
             onHeaderCell: () => {
                 return {
                     style: {
@@ -186,7 +206,10 @@ export default function AdminProjJmonte(props: any) {
         },
         {
             title: 'Pontos', dataIndex: 'total_pontos', key: 'total_pontos', align: 'right', width: '80px',
-            render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.valor_und)).toFixed(2)} </span>,
+            render: (text: string, record: any) => 
+                <span style={{ fontSize: tamFonte }} >
+                    {record.comissao > 0 ? parseFloat(record.total_pontos).toFixed(2) : '0.00'}
+                </span>,
             onHeaderCell: () => {
                 return {
                     style: {
@@ -197,7 +220,10 @@ export default function AdminProjJmonte(props: any) {
         },
         {
             title: 'Comissão', dataIndex: 'comissao', key: 'comissao', align: 'right',
-            render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.valor_und)).toFixed(2)} </span>,
+            render: (text: string, record: any) =>
+            <span style={{ fontSize: tamFonte }} >
+               {record.comissao > 0 ? parseFloat(record.comissao).toFixed(2) : '0.00'}
+            </span>,
             onHeaderCell: () => {
                 return {
                     style: {
@@ -207,8 +233,11 @@ export default function AdminProjJmonte(props: any) {
             },
         },
         {
-            title: 'Status', dataIndex: 'premiado', key: 'premiado', align: 'right',
-            render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.valor_und)).toFixed(2)} </span>,
+            title: 'Pago?', dataIndex: 'premiado', key: 'premiado', align: 'right',
+            render: (text: string, record: any) => 
+                <span style={{ fontSize: tamFonte }} >
+                    {record.premiado ? 'S':'N'}
+                </span>,
             onHeaderCell: () => {
                 return {
                     style: {
@@ -218,8 +247,11 @@ export default function AdminProjJmonte(props: any) {
             },
         },
         {
-            title: 'Pago?', dataIndex: 'status', key: 'status', align: 'right',
-            render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.valor_und)).toFixed(2)} </span>,
+            title: 'Status', dataIndex: 'status', key: 'status', align: 'right',
+            render: (text: string, record: any) => 
+                <span style={{ fontSize: tamFonte }} >
+                    {record.status === 'P' ? 'PENDENTE': record.status === 'R' ? 'REJEITADO' : 'APROVADO'}
+                </span>,
             onHeaderCell: () => {
                 return {
                     style: {
