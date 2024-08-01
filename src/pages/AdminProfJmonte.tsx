@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { UsuarioContext } from "../context/useContext";
-import { Button, Col, DatePicker, DatePickerProps, Row, Select, Space, Spin, Table, TableColumnsType, Typography } from "antd";
-import { DownloadOutlined, FilterOutlined, SyncOutlined } from "@ant-design/icons";
+import { Button, Col, DatePicker, DatePickerProps, Row, Select, Space, Spin, Table, TableColumnsType, Typography, Input, Tooltip } from "antd";
+import { CheckOutlined, CloseCircleOutlined, DollarCircleOutlined, DownloadOutlined, FilterOutlined, SaveOutlined, SyncOutlined, TrophyOutlined } from "@ant-design/icons";
 import Title from 'antd/es/typography/Title';
 import RtService from "../service/RtService";
 import ProfissionaisService from "../service/ProfissonaisService";
@@ -13,19 +13,22 @@ const serviceRt = new RtService()
 interface PropsProfJMonte {
     key: number;
     id_vendas: number;
+    id_usuario: number;
     idNp: number;
     numero_venda: number;
     numero_np: number;
     data_venda: string;
     data_lancamento: string;
     descricao_loja: string;
+    id_loja: number;
     data_np: string;
     valor_np: number;
     profissional: string;
-    status: boolean;
+    status: string;
     total_pontos: number;
     imagem: string;
     premiado: boolean;
+    aberto: string;
     comissao: number;
 }
 
@@ -43,7 +46,7 @@ export default function AdminProjJmonte(props: any) {
     const [mes, setMes] = useState(0)
     const [ano, setAno] = useState(0)
 
-    const [dados, setDados] = useState([]);
+    const [dados, setDados] = useState<PropsProfJMonte[]>([]);
     const [registros, setQuantidade] = useState(0);
     const [loading, setLoading] = useState(false);
 
@@ -57,8 +60,6 @@ export default function AdminProjJmonte(props: any) {
     const dataAtual = new Date();
     let mesAtual: number;
     let anoAtual: number;
-
-    const pathImagem = '/anexos';
     //****************************************************/
 
     useEffect(() => {
@@ -96,7 +97,7 @@ export default function AdminProjJmonte(props: any) {
             setLoading(true);
             let rs = await serviceProf.listarPedidos();
             console.log(rs)
-            
+
             setDados(rs.data.lista_pedidos);
             setQuantidade(rs.data.registros);
         } catch (error) {
@@ -106,12 +107,108 @@ export default function AdminProjJmonte(props: any) {
         }
     }
 
+    async function buscarNpx(numero_np: any, id_np: any, id_loja: number) {
+        console.log(numero_np, id_np, id_loja);
+
+        if (numero_np > 0) {
+            try {
+                setLoading(true);
+                let rs = await serviceProf.buscarNp(numero_np);
+                console.log(rs);
+
+                if (rs.statusCode == 200) {
+                    const dataEncontrada = rs.data.data_np || '';
+                    const valorEncontrado = rs.data.vlr_total || '';
+                    const vlr_pp = rs.data.vlr_pp || '';
+                    const idLoja = rs.data.id_loja || '';
+                    const descricaoLoja = rs.data.descricao_loja || '';
+
+                    setDados(prevDados =>
+                        prevDados.map(record =>
+                            record.id_vendas === id_np
+                                ? {
+                                    ...record,
+                                    numero_np: numero_np,
+                                    data_np: dataEncontrada,
+                                    valor_np: valorEncontrado,
+                                    total_pontos: vlr_pp,
+                                    id_loja: idLoja,
+                                    descricao_loja: descricaoLoja,
+                                }
+                                : record
+                        )
+                    );
+                    let rsx = await serviceProf.salvarNp(dataEncontrada, +valorEncontrado, +vlr_pp, id_np, numero_np, idLoja);
+                    console.log(rsx);
+                }
+            } catch (error) {
+                console.error('Erro ao buscar indicadores:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }
+
+    async function salvarRegistro(record: PropsProfJMonte) {
+        try {
+            setLoading(true);
+            // let rs = await serviceProf.salvarNp(record);
+
+        } catch (error) {
+            console.error('Erro ao buscar indicadores:', error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function aprovarPedidox(record: PropsProfJMonte){
+        try {
+            setLoading(true);
+            let rs = await serviceProf.aprovarPedido(record.id_vendas, record.id_usuario, record.total_pontos);
+
+            if (rs.statusCode === 200) {
+                setDados(prevDados =>
+                    prevDados.map(item =>
+                        item.id_vendas === record.id_vendas ? { ...item, status: 'A' } : item
+                    )
+                );
+            }
+
+        } catch (error) {
+            console.error('Erro ao buscar indicadores:', error);
+        } finally {
+            setLoading(false);
+            // listaPedidos()
+        }
+    }
+    async function rejeitarPedidox(record: PropsProfJMonte){
+        try {
+            setLoading(true);
+            let rs = await serviceProf.rejeitarPedido(record.id_vendas);
+
+            if (rs.statusCode === 200) {
+                setDados(prevDados =>
+                    prevDados.map(item =>
+                        item.id_vendas === record.id_vendas ? { ...item, status: 'R' } : item
+                    )
+                );
+            }
+
+        } catch (error) {
+            console.error('Erro ao buscar indicadores:', error);
+        } finally {
+            setLoading(false);
+            // listaPedidos()
+        }
+    }
+
+
     const tamFonte = '0.9rem';
     const colorContatou = 'blue'
     const corDestaque = '#000'
     const columns: TableColumnsType<PropsProfJMonte> = [
         {
-            title: 'Nº Passado', dataIndex: 'numero_venda', key: 'numero_venda', width: '90px', align: 'right',
+            title: 'Nº', dataIndex: 'numero_venda', key: 'numero_venda', width: '90px', align: 'right',
             onHeaderCell: () => {
                 return {
                     style: {
@@ -121,7 +218,7 @@ export default function AdminProjJmonte(props: any) {
             },
         },
         {
-            title: 'Data', dataIndex: 'data_lancamento', key: 'data_lancamento',
+            title: 'Data', dataIndex: 'data_lancamento', key: 'data_lancamento', width: '80px',
             onHeaderCell: () => {
                 return {
                     style: {
@@ -151,7 +248,7 @@ export default function AdminProjJmonte(props: any) {
             },
         },
         {
-            title: 'Imagem', dataIndex: 'imagem', key: 'imagem', align: 'center',
+            title: 'Imagem', dataIndex: 'imagem', key: 'imagem', align: 'center', width: '50px',
             render: (text, record) => (
                 <a href={record.imagem} download title="Imagem fornecida pelo profissional.">
                     <DownloadOutlined style={{ fontSize: '16px' }} />
@@ -166,16 +263,49 @@ export default function AdminProjJmonte(props: any) {
             },
         },
         {
-            title: 'Número NP', dataIndex: 'numero_np', key: 'numero_np', width: '120px',
-            render: (text) => (
+            title: 'Número NP',
+            dataIndex: 'numero_np',
+            key: 'numero_np',
+            width: '120px',
+            render: (text: number, record: PropsProfJMonte) => (
                 <div>
-                  {Number(text) > 0 ? text : null}
+                    <Input
+                        
+                        readOnly={record.status !='P'}
+                        value={record.numero_np}
+                        width="100%"
+                        tabIndex={1}
+                        type="number"
+                        style={{
+                            border: '0px none',
+                            outline: 'none',
+                            backgroundColor: 'transparent',
+                            textAlign: 'right',
+                            // Estilos para esconder as setas do número
+                            appearance: 'textfield',
+                            // Para Webkit (Chrome, Safari)
+                            WebkitAppearance: 'none',
+                            // Para Firefox
+                            MozAppearance: 'textfield',
+                        }}
+                        onChange={e => {
+                            const newNumeroNp = e.target.value;
+                            setDados(prevDados =>
+                                prevDados.map(rec =>
+                                    rec.id_vendas === record.id_vendas
+                                        ? { ...rec, numero_np: Number(newNumeroNp) }
+                                        : rec
+                                )
+                            );
+                            buscarNpx(Number(newNumeroNp), record.id_vendas, record.id_loja);
+                        }}
+                    />
                 </div>
-              ),
+            ),
             onHeaderCell: () => {
                 return {
                     style: {
-                        backgroundColor: 'yellow', // Cor de fundo do cabeçalho
+                        backgroundColor: 'yellow',
                     },
                 };
             },
@@ -192,9 +322,9 @@ export default function AdminProjJmonte(props: any) {
         },
         {
             title: 'Valor', dataIndex: 'valor_np', key: 'valor_np', align: 'right',
-            render: (text: string, record: any) => 
+            render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
-                    {record.comissao > 0 ? parseFloat(record.valor_np).toFixed(2) : '0.00'}
+                    {record.valor_np > 0 ? parseFloat(record.valor_np).toFixed(2) : '0.00'}
                 </span>,
             onHeaderCell: () => {
                 return {
@@ -206,37 +336,9 @@ export default function AdminProjJmonte(props: any) {
         },
         {
             title: 'Pontos', dataIndex: 'total_pontos', key: 'total_pontos', align: 'right', width: '80px',
-            render: (text: string, record: any) => 
-                <span style={{ fontSize: tamFonte }} >
-                    {record.comissao > 0 ? parseFloat(record.total_pontos).toFixed(2) : '0.00'}
-                </span>,
-            onHeaderCell: () => {
-                return {
-                    style: {
-                        backgroundColor: 'yellow', // Cor de fundo do cabeçalho
-                    },
-                };
-            },
-        },
-        {
-            title: 'Comissão', dataIndex: 'comissao', key: 'comissao', align: 'right',
             render: (text: string, record: any) =>
-            <span style={{ fontSize: tamFonte }} >
-               {record.comissao > 0 ? parseFloat(record.comissao).toFixed(2) : '0.00'}
-            </span>,
-            onHeaderCell: () => {
-                return {
-                    style: {
-                        backgroundColor: 'yellow', // Cor de fundo do cabeçalho
-                    },
-                };
-            },
-        },
-        {
-            title: 'Pago?', dataIndex: 'premiado', key: 'premiado', align: 'right',
-            render: (text: string, record: any) => 
                 <span style={{ fontSize: tamFonte }} >
-                    {record.premiado ? 'S':'N'}
+                    {record.total_pontos > 0 ? parseFloat(record.total_pontos).toFixed(2) : '0.00'}
                 </span>,
             onHeaderCell: () => {
                 return {
@@ -246,11 +348,25 @@ export default function AdminProjJmonte(props: any) {
                 };
             },
         },
+        // {
+        //     title: 'Troca?', dataIndex: 'aberto', key: 'aberto', 
+        //     render: (text: string, record: any) =>
+        //         <span style={{ fontSize: tamFonte }} >
+        //             {record.aberto === 'S' ? '' : record.aberto === 'X' ? 'SOLICITADO' : 'PREMIADO'}
+        //         </span>,
+        //     onHeaderCell: () => {
+        //         return {
+        //             style: {
+        //                 backgroundColor: 'yellow', // Cor de fundo do cabeçalho
+        //             },
+        //         };
+        //     },
+        // },
         {
-            title: 'Status', dataIndex: 'status', key: 'status', align: 'right',
-            render: (text: string, record: any) => 
+            title: 'Status', dataIndex: 'status', key: 'status', 
+            render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
-                    {record.status === 'P' ? 'PENDENTE': record.status === 'R' ? 'REJEITADO' : 'APROVADO'}
+                    {record.status === 'P' ? 'PENDENTE' : record.status === 'R' ? 'REJEITADO' : 'APROVADO'}
                 </span>,
             onHeaderCell: () => {
                 return {
@@ -264,11 +380,22 @@ export default function AdminProjJmonte(props: any) {
             title: 'Opções',
             key: 'opcoes',
             align: 'center',
-            width: '180px',
+            width: '120px',  
             render: (text, record) => (
-                <span>
-                    <Button type="primary" style={{ marginRight: 8 }}>Aprovar</Button>
-                    <Button >Pagar</Button>
+                <span> 
+                    {/* <Tooltip title="Salvar" color="#DAA520">
+                        <Button icon={<SaveOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '#DAA520' }} title="Salvar" onClick={() => salvarRegistro(record)} disabled />
+                    </Tooltip> */}
+
+                    <Tooltip title="Aprovar" color="#000">
+                        <Button icon={<CheckOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '' }} disabled={record.status == 'A' || record.status == 'R'}  onClick={() => aprovarPedidox(record)} />
+                    </Tooltip>
+                    <Tooltip title="Rejeitar" color="#000">
+                        <Button icon={<CloseCircleOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: 'red' }} disabled={record.status == 'A' || record.status == 'R'}  onClick={() => rejeitarPedidox(record)}/>
+                    </Tooltip>
+                    {/* <Tooltip title="Premiar" color="blue">
+                        <Button icon={<TrophyOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, }} title="Premiar" disabled={(record.aberto == 'S' || record.aberto === 'P') || (record.status == 'P' || record.status == 'R')}  />
+                    </Tooltip> */}
                 </span>
             ),
 
@@ -284,14 +411,10 @@ export default function AdminProjJmonte(props: any) {
     ];
 
     function selecionarLoja(e: any, loja: any) {
-        //console.log(e);
-        //console.log(loja.data.descricao);
-        //const descricao = loja.data.descricao;
         setLojaSelecionada(e)
         setLojaSelecionadaDescricao(loja.data.descricao)
     }
     const onChangeDatas: DatePickerProps['onChange'] = (date, dateString) => {
-
         let dataSplit = dateString.split('-');
         let mesF = dataSplit[1];
         let anoF = dataSplit[0];
@@ -377,7 +500,7 @@ export default function AdminProjJmonte(props: any) {
                     <Row style={{ display: 'flex', flexDirection: 'column' }}>
                         <Col>
                             <Typography style={{ fontSize: '24px' }}>
-                                Pedidos Profissionais
+                                Pedidos Profissionais(J Monte Center)
                             </Typography>
                         </Col>
                         <Col>

@@ -120,6 +120,26 @@ export default function HomePage() {
                   Usuários
                 </Link>
               </Menu.Item>
+              <Menu.Item key="adm-prof-premios" title="Premios Profissionais">
+                <Link
+                  to="/adm-prof-premios"
+                  className="nav-text"
+                  title="Premios Profissionais"
+
+                >
+                  Prêmios
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="adm-prof-premios-pedidos" title="Pedidos(Premios) Profissionais">
+                <Link
+                  to="/adm-prof-premios-pedidos"
+                  className="nav-text"
+                  title="Pedidos Premios Profissionais"
+
+                >
+                  Pedidos Prêmios
+                </Link>
+              </Menu.Item>
 
             </SubMenu>
             : null}

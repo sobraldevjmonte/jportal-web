@@ -7,6 +7,8 @@ import LoginPage2 from './pages/LoginPage2';
 import AnaliseNpPage from './pages/AnaliseNpPage';
 import AdminProjJmonte from './pages/AdminProfJmonte';
 import AdminProfUsuarios from './pages/AdminProfUsuarios';
+import AdminProfPremios from './pages/AdminProfPremios';
+import AdminProfPremiosPedidos from './pages/AdminProfPremiosPedidos';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/analise-np" element={<AnaliseNpPage />} />
           <Route path="/adm-prof-jmonte" element={<AdminProjJmonte />} />
           <Route path="/adm-prof-usuarios" element={<AdminProfUsuarios />} />
+          <Route path="/adm-prof-premios" element={<AdminProfPremios />} />
+          <Route path="/adm-prof-premios-pedidos" element={<AdminProfPremiosPedidos />} />
         </Route>
         <Route path="/login" element={<LoginPage2 />} />
         {/*<Route path="*" element={<ErrorPage />} />*/}

@@ -17,4 +17,10 @@ function formatarMoeda(numero) {
 }
 
 
-export { formatarMoeda, formatarMoedaComSimbolo }
+function retornarDouble(numero){
+  let valor = numero.replace(/[^0-9,]/g, '').replace(",", ".");
+  return parseFloat(valor);
+}
+
+
+export { formatarMoeda, formatarMoedaComSimbolo, retornarDouble };
