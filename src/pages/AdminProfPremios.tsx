@@ -47,7 +47,7 @@ export default function AdminProfPremios() {
 
     useEffect(() => {
         console.log('editando useEffect: ', editando);
-      }, [editando]);
+    }, [editando]);
 
 
     async function listaPremiosxx() {
@@ -68,7 +68,7 @@ export default function AdminProfPremios() {
 
     function novoBrinde() {
         setEditando(false)
-       
+
 
         setImagemNome('')
         setImagemSize(0);
@@ -94,10 +94,6 @@ export default function AdminProfPremios() {
             imagem: '',
             ativo: 'S'
         });
-
-        setImagemX(null);
-        setImagemSize(0);
-        setImagemNome('');
 
         showDrawer()
     }
@@ -256,8 +252,8 @@ export default function AdminProfPremios() {
     const [open, setOpen] = useState(false);
     const [placement, setPlacement] = useState<DrawerProps['placement']>('right');
 
-    
-    
+
+
 
     const showDrawer = () => {
         console.log('**** showDrawer ****')
@@ -377,13 +373,18 @@ export default function AdminProfPremios() {
             try {
                 const saveResponse = await serviceProf.upLoadImage(formDataA);
                 console.log(saveResponse);
-                if (editando) {
+                console.log('************* editando >> ' + editando)
+                if (!editando) {
                     const response = await serviceProf.salvarRegistro(updatedFormData);
                     console.log(response)
                 } else {
                     const response = await serviceProf.atualizarRegistro(updatedFormData);
                     console.log(response)
                 }
+
+                setImagemNome('')
+                setImagemSize(0);
+                setImagemX(null)
 
                 setOpen(false)
                 listaPremiosxx()
@@ -422,12 +423,12 @@ export default function AdminProfPremios() {
                         onFinishFailed={onFinishFailed}
                         autoComplete="off"
                         style={{ maxWidth: 1000 }}
-                        // validateMessages={validateMessages}
+                    // validateMessages={validateMessages}
 
                     >
 
                         <Space>
-                        <div>editando : {editando ? 'true': 'false'}</div>
+                            <div>editando : {editando ? 'true' : 'false'}</div>
                             <Button onClick={onClose}>Fechar</Button>
                             <Button type="primary" htmlType="submit" tabIndex={20} loading={loading}>
                                 {loading ? "Aguarde ..." : editando ? "Atualizar" : "Salvar"}
@@ -552,8 +553,8 @@ export default function AdminProfPremios() {
                             </Col>
 
                         </Row>
-                       
-                        
+
+
 
                         <Row gutter={gutterPadrao}>
                             <Col span={2}>
