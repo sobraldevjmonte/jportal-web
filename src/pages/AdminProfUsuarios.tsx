@@ -72,6 +72,13 @@ export default function AdminProfUsuarios() {
                     {text}
                 </span>
             ),
+            onHeaderCell: () => {
+                return {
+                    style: {
+                        backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
+                    },
+                };
+            },
             // onHeaderCell: () => {
             //     return {
             //         style: {
@@ -86,6 +93,13 @@ export default function AdminProfUsuarios() {
                     {text}
                 </span>
             ),
+            onHeaderCell: () => {
+                return {
+                    style: {
+                        backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
+                    },
+                };
+            },
         },
         {
             title: 'Usuário(cpf)', dataIndex: 'usuario', key: 'usuario', align: 'left',
@@ -94,6 +108,13 @@ export default function AdminProfUsuarios() {
                     {text}
                 </span>
             ),
+            onHeaderCell: () => {
+                return {
+                    style: {
+                        backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
+                    },
+                };
+            },
         },
         {
             title: 'Telefone(P)', dataIndex: 'telefone1', key: 'telefone1', align: 'left',
@@ -102,6 +123,13 @@ export default function AdminProfUsuarios() {
                     {text}
                 </span>
             ),
+            onHeaderCell: () => {
+                return {
+                    style: {
+                        backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
+                    },
+                };
+            },
         },
         {
             title: 'Telefone(S)', dataIndex: 'telefone2', key: 'telefone2', align: 'left',
@@ -110,6 +138,13 @@ export default function AdminProfUsuarios() {
                     {text}
                 </span>
             ),
+            onHeaderCell: () => {
+                return {
+                    style: {
+                        backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
+                    },
+                };
+            },
         },
         {
             title: 'Pontos', dataIndex: 'pontos_saldo', key: 'pontos_saldo', align: 'right',
@@ -118,6 +153,13 @@ export default function AdminProfUsuarios() {
                     {text}
                 </span>
             ),
+            onHeaderCell: () => {
+                return {
+                    style: {
+                        backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
+                    },
+                };
+            },
         },
         {
             title: 'Ativo', dataIndex: 'ativo', key: 'ativo', align: 'right',
@@ -126,6 +168,13 @@ export default function AdminProfUsuarios() {
                     {text}
                 </span>
             ),
+            onHeaderCell: () => {
+                return {
+                    style: {
+                        backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
+                    },
+                };
+            },
         },
         {
             title: 'Opções',

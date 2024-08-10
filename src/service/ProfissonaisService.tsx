@@ -27,7 +27,7 @@ class ProfissionaisService {
 
       console.log(response)
       rs = {
-        statusCode: response.status
+        statusCode: 200
       };
     } catch (error) {
       console.error("Error na requisição");
@@ -38,10 +38,22 @@ class ProfissionaisService {
     }
     return rs;
   }
+
+  // async cadastrarEmpresa(perfil: EmpresaModel) {
+  //   let rs;
+  //   try {
+  //     rs = await api.post(`${pre_url}/cadastrar`, perfil, {
+  //       headers: { "Content-Type": "application/json" },
+  //     });
+  //     console.log(rs.data);
+  //     return rs.data;
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }
   async salvarRegistro(objeto: any) {
     console.log("*********** upLoadImage(ProfissionaisService) *****************");
     let rs;
-    let response;
 
     const dados = {
       descricao: objeto.descricao,
@@ -51,19 +63,16 @@ class ProfissionaisService {
       imagem: objeto.imagem,
       ativo: 'S'
     }
+    console.log("********* xibiu 1 **************")
+    console.log(dados)
     try {
-      response = await api.post(`/profissionais/salvar-brinde`, dados, { headers: { 'Content-Type': 'application/json' } });
+      rs = await api.post(`/profissionais/salvar-brinde`, dados);
 
-      console.log(response)
-      rs = {
-        statusCode: response.status
-      };
+      console.log("********* xibiu 2 **************")
+      console.log(rs.data)
+      return rs.data;
     } catch (error) {
-      console.error("Error na requisição");
-      rs = {
-        status: 401,
-        msg: "Erro na requisição",
-      };
+      console.log(error);
     }
     return rs;
   }
@@ -71,6 +80,7 @@ class ProfissionaisService {
   async upLoadImage(image: any) {
     let rs;
     let response;
+    
     try {
       response = await api.post(`/profissionais/anexar-arquivo`,
         image,
@@ -82,8 +92,10 @@ class ProfissionaisService {
         statusCode: response.status,
         data: response.data,
       };
+      return rs;
     } catch (error) {
       console.error("Error na requisição");
+
       rs = {
         status: 401,
         msg: "Erro na requisição",

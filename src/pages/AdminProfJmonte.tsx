@@ -388,7 +388,7 @@ export default function AdminProjJmonte(props: any) {
                     </Tooltip> */}
 
                     <Tooltip title="Aprovar" color="#000">
-                        <Button icon={<CheckOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '' }} disabled={record.status == 'A' || record.status == 'R'}  onClick={() => aprovarPedidox(record)} />
+                        <Button icon={<CheckOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '' }} disabled={record.status == 'A' || record.status == 'R' || record.valor_np == null}  onClick={() => aprovarPedidox(record)} />
                     </Tooltip>
                     <Tooltip title="Rejeitar" color="#000">
                         <Button icon={<CloseCircleOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: 'red' }} disabled={record.status == 'A' || record.status == 'R'}  onClick={() => rejeitarPedidox(record)}/>

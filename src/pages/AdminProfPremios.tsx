@@ -184,7 +184,7 @@ export default function AdminProfPremios() {
             },
         },
         {
-            title: 'Quantidade',
+            title: 'Estoque',
             dataIndex: 'quantidade',
             key: 'quantidade',
             width: '120px',
@@ -192,7 +192,7 @@ export default function AdminProfPremios() {
             onHeaderCell: () => {
                 return {
                     style: {
-                        backgroundColor: 'yellow',
+                        backgroundColor: 'lightblue',
                     },
                 };
             },
@@ -202,7 +202,7 @@ export default function AdminProfPremios() {
             onHeaderCell: () => {
                 return {
                     style: {
-                        backgroundColor: 'yellow', // Cor de fundo do cabeçalho
+                        backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
                     },
                 };
             },
@@ -217,7 +217,7 @@ export default function AdminProfPremios() {
             render: (text, record) => (
                 <span>
                     <Tooltip title="Salvar" color="#DAA520">
-                        <Button icon={<SaveOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '#DAA520' }} title="Salvar" onClick={() => salvarRegistrox()} disabled />
+                        <Button icon={<SaveOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '#DAA520' }} title="Salvarxxx" />
                     </Tooltip>
                     <Tooltip title="Editar" color="#DAA520">
                         <Button icon={<EditOutlined />} onClick={() => editarPremio(record)} style={{ color: 'blue', marginRight: '5px', borderColor: 'blue' }} title="Editar Brinde" />
@@ -302,7 +302,7 @@ export default function AdminProfPremios() {
 
     // Função para manipular a alteração nos campos do formulário
     const handleInputChange = (fieldName: string, value: any) => {
-        console.log(retornarDouble(value))
+        console.log(value)
 
         if (fieldName === 'valor') {
             const formattedValue = retornarDouble(value);
@@ -356,7 +356,9 @@ export default function AdminProfPremios() {
         return Promise.resolve();
     };
 
-    async function salvarRegistrox() {
+    async function salvarRegistrox(values: any) {
+        setLoading(true)
+
         console.log('*************** Salvar registrox *********************');
 
         console.log('fsjdalkfsajlçkfjsdçlfjslkçajflkajflsajflsfjlskafjdsdddddddddddddddd')
@@ -365,41 +367,49 @@ export default function AdminProfPremios() {
             imagem: imagemNome // Atribua o nome da imagem ao campo imagem
         };
 
-        if (imagemX) {
+        try {
 
-            const formDataA = new FormData();
-            formDataA.append('imagembrinde', imagemX);
+            let res;
+            !editando ? res = await serviceProf.salvarRegistro(updatedFormData) : res = await serviceProf.atualizarRegistro(updatedFormData)
+            if (imagemX) {
+                if (imagemSize > 0) {
+                    const formDataA = new FormData();
+                    formDataA.append('imagembrinde', imagemX);
 
-            try {
-                const saveResponse = await serviceProf.upLoadImage(formDataA);
-                console.log(saveResponse);
-                console.log('************* editando >> ' + editando)
-                if (!editando) {
-                    const response = await serviceProf.salvarRegistro(updatedFormData);
-                    console.log(response)
-                } else {
-                    const response = await serviceProf.atualizarRegistro(updatedFormData);
-                    console.log(response)
+                    await serviceProf.upLoadImage(formDataA);
+                }else{
+                    console.log('************* imagem menor que zero ' + imagemSize)
                 }
 
-                setImagemNome('')
-                setImagemSize(0);
-                setImagemX(null)
+                // console.log(saveResponse);
+                console.log('************* editando >> ' + editando)
+
+                form.resetFields();
 
                 setOpen(false)
+                onReset()
                 listaPremiosxx()
                 // Salvar o registro com a URL do arquivo
-            } catch (error) {
-                console.error('Erro ao enviar dados para o servidor:', error);
+            } else {
+                setNotificacao({ message: 'Atenção!', description: 'Nenhum arquivo carregado' });
             }
-        } else {
-            setNotificacao({ message: 'Atenção!', description: 'Nenhum arquivo carregado' });
+        } catch (error) {
+            console.error('Erro ao enviar dados para o servidor:', error);
+        } finally {
+            setLoading(false)
         }
+
+        setLoading(false)
     }
 
     const onFinishFailed = (errorInfo: any) => {
         console.log("Failed:", errorInfo);
     };
+
+    // const handleFormSubmit =  (event: any) {
+    //     event.preventDefault();
+    //     await salvarRegistrox();
+    //   };
 
     const DrawerComponent = (
         <>
@@ -430,9 +440,12 @@ export default function AdminProfPremios() {
                         <Space>
                             <div>editando : {editando ? 'true' : 'false'}</div>
                             <Button onClick={onClose}>Fechar</Button>
+
                             <Button type="primary" htmlType="submit" tabIndex={20} loading={loading}>
                                 {loading ? "Aguarde ..." : editando ? "Atualizar" : "Salvar"}
                             </Button>
+
+
                             <Button /*onClick={resetCampos}*/ onClick={onReset} type="default" htmlType="button" tabIndex={21}>
                                 Limpar
                             </Button>
@@ -444,7 +457,7 @@ export default function AdminProfPremios() {
                                     label="ID"
                                     name='id_brinde'
                                 >
-                                    <Input placeholder="Id" readOnly value={editando ? formData.id_brinde : ''} />
+                                    <Input placeholder="Id" readOnly value={editando ? formData.id_brinde : ''} id="id" />
                                 </Form.Item>
                             </Col>
                             <Col span={24}>
@@ -481,6 +494,7 @@ export default function AdminProfPremios() {
                                         tabIndex={2}
                                         maxLength={10}
                                         showCount
+                                        id="valor"
                                         onChange={(e) => handleInputChange('valor', e.target.value)}
                                     />
                                 </Form.Item>
@@ -500,6 +514,7 @@ export default function AdminProfPremios() {
                                         tabIndex={3}
                                         maxLength={5}
                                         showCount
+                                        id="quantidade"
                                         onChange={(e) => handleInputChange('quantidade', e.target.value)}
                                     />
                                 </Form.Item>
@@ -518,6 +533,7 @@ export default function AdminProfPremios() {
                                         tabIndex={3}
                                         maxLength={5}
                                         showCount
+                                        id="pontos"
                                         onChange={(e) => handleInputChange('pontos', e.target.value)}
                                     />
                                 </Form.Item>
@@ -535,6 +551,7 @@ export default function AdminProfPremios() {
                                         beforeUpload={!editando ? beforeUpload : undefined}
                                         onChange={handleUploadChange}
                                         listType="picture-card"
+                                        id="imagem"
                                     >
                                         <Button icon={<UploadOutlined />}>Upload de Imagem</Button>
                                     </Upload>
@@ -561,6 +578,7 @@ export default function AdminProfPremios() {
                                 <Form.Item
                                     name="ativo"
                                     label="Ativo?"
+                                    id="ativo"
                                     rules={[{ required: false, message: '' }]}
                                 // validateFirst
                                 >

@@ -105,7 +105,7 @@ export default function HomePage() {
 
               <Menu.Item key="adm-prof-jmonte">
                 <Link to="/adm-prof-jmonte" className="nav-text">
-                  Pedidos
+                  Pedidos NP
                 </Link>
               </Menu.Item>
 

@@ -1,60 +1,61 @@
 import { useContext, useEffect, useState } from "react";
 import { UsuarioContext } from "../context/useContext";
 import { Button, Col, DatePicker, DatePickerProps, Row, Select, Space, Spin, Table, TableColumnsType, Typography, Input, Tooltip } from "antd";
-import { CheckOutlined, CloseCircleOutlined, DollarCircleOutlined, DownloadOutlined, FilterOutlined, SaveOutlined, SyncOutlined, TrophyOutlined } from "@ant-design/icons";
+import { CheckOutlined, CloseCircleOutlined, DeliveredProcedureOutlined, DollarCircleOutlined, DownloadOutlined, FilterOutlined, IssuesCloseOutlined, SaveOutlined, SyncOutlined, TrophyOutlined, UnlockOutlined } from "@ant-design/icons";
 import Title from 'antd/es/typography/Title';
 import RtService from "../service/RtService";
-import ProfissionaisService from "../service/ProfissonaisService";
+import ProfissionaisPremiosPedidosService from "../service/ProfissionaisPremiosPedidosService";
 
-const serviceProf = new ProfissionaisService()
+const serviceProf = new ProfissionaisPremiosPedidosService()
 
 interface PropsProfPremios {
     key: number;
-    id_vendas: number;
-    idNp: number;
-    numero_venda: number;
-    numero_np: number;
-    data_venda: string;
-    data_lancamento: string;
-    descricao_loja: string;
-    id_loja: number;
-    data_np: string;
-    valor_np: number;
-    profissional: string;
+    id_premio: number;
+    id_parceiro: number;
+    id_premiacao: number;
+    id_autorizador: number;
+    data_solicitacao: string;
+    data_autorizacao: string;
+    autorizado: boolean;
     status: string;
-    total_pontos: number;
-    imagem: string;
-    premiado: boolean;
-    aberto: string;
-    comissao: number;
+    entregue: boolean;
+    data_entrega: string;
+    descricao_brinde: string;
+    pontos_brinde: number;
+    estoque: number;
+    nome_parceiro: string;
+    nome_autorizador: boolean;
+    nome_entregador: string;
 }
 
 
-export default function AdminProfPremiosPedidos(){
+export default function AdminProfPremiosPedidos() {
 
     const { loja, setLoja } = useContext(UsuarioContext);
     const { idLoja, setIdLoja } = useContext(UsuarioContext);
     const { nivelUsuario, setNivelUsuario } = useContext(UsuarioContext);
+    const { idUsuario, setIdUsuario } = useContext(UsuarioContext);
+    const { nomeUsuario, setNomeUsuario } = useContext(UsuarioContext);
     const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
 
     const [dados, setDados] = useState<PropsProfPremios[]>([]);
     const [registros, setQuantidade] = useState(0);
     const [loading, setLoading] = useState(false);
 
-    
+
     useEffect(() => {
-        // listaPedidosPremios()
+        listaPedidosPremios()
     }, [])
 
 
     async function listaPedidosPremios() {
         try {
             setLoading(true);
-            let rs = await serviceProf.listarPedidos();
+            let rs = await serviceProf.listaPedidos();
             console.log(rs)
 
-            setDados(rs.data.lista_pedidos);
-            setQuantidade(rs.data.registros);
+            setDados(rs.data.pedidos);
+            setQuantidade(rs.data.quantidade);
         } catch (error) {
             console.error('Erro ao buscar indicadores:', error);
         } finally {
@@ -67,7 +68,7 @@ export default function AdminProfPremiosPedidos(){
     const corDestaque = '#000'
     const columns: TableColumnsType<PropsProfPremios> = [
         {
-            title: 'Nº', dataIndex: 'numero_venda', key: 'numero_venda', width: '90px', align: 'right',
+            title: 'Nº', dataIndex: 'id_premiacao', key: 'id_premiacao', width: '90px', align: 'right',
             onHeaderCell: () => {
                 return {
                     style: {
@@ -77,7 +78,7 @@ export default function AdminProfPremiosPedidos(){
             },
         },
         {
-            title: 'Data', dataIndex: 'data_lancamento', key: 'data_lancamento', width: '80px',
+            title: 'Data', dataIndex: 'data_solicitacao', key: 'data_solicitacao', width: '80px',
             onHeaderCell: () => {
                 return {
                     style: {
@@ -87,7 +88,7 @@ export default function AdminProfPremiosPedidos(){
             },
         },
         {
-            title: 'Loja', dataIndex: 'descricao_loja', key: 'descricao_loja',
+            title: 'Status', dataIndex: 'status', key: 'status', width: '100px',
             onHeaderCell: () => {
                 return {
                     style: {
@@ -97,7 +98,21 @@ export default function AdminProfPremiosPedidos(){
             },
         },
         {
-            title: 'Profissional', dataIndex: 'profissional', key: 'profissional', width: '300px',
+            title: 'Pontos',
+            dataIndex: 'pontos_brinde',
+            key: 'pontos_brinde',
+            width: '60px',
+
+            onHeaderCell: () => {
+                return {
+                    style: {
+                        backgroundColor: 'lightblue',
+                    },
+                };
+            },
+        },
+        {
+            title: 'Brinde', dataIndex: 'descricao_brinde', key: 'descricao_brinde',
             onHeaderCell: () => {
                 return {
                     style: {
@@ -107,12 +122,7 @@ export default function AdminProfPremiosPedidos(){
             },
         },
         {
-            title: 'Imagem', dataIndex: 'imagem', key: 'imagem', align: 'center', width: '50px',
-            render: (text, record) => (
-                <a href={record.imagem} download title="Imagem fornecida pelo profissional.">
-                    <DownloadOutlined style={{ fontSize: '16px' }} />
-                </a>
-            ),
+            title: 'Estoque', dataIndex: 'estoque', key: 'estoque', width: '80px', 
             onHeaderCell: () => {
                 return {
                     style: {
@@ -122,11 +132,45 @@ export default function AdminProfPremiosPedidos(){
             },
         },
         {
-            title: 'Número NP',
-            dataIndex: 'numero_np',
-            key: 'numero_np',
-            width: '120px',
-           
+            title: 'Parceiro', dataIndex: 'nome_parceiro', key: 'nome_parceiro',
+            onHeaderCell: () => {
+                return {
+                    style: {
+                        backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
+                    },
+                };
+            },
+        },
+
+
+        {
+            title: 'Autorizado', dataIndex: 'autorizado', key: 'autorizado', width: '50px', 
+            render: (text: string, record: any) =>
+                <span style={{ fontSize: tamFonte }} >
+                    {record.autorizado  ? 'S' : 'N'}
+                </span>,
+            onHeaderCell: () => {
+                return {
+                    style: {
+                        backgroundColor: 'yellow', // Cor de fundo do cabeçalho
+                    },
+                };
+            },
+        },
+        {
+            title: 'Dt. Autoriz.', dataIndex: 'data_autorizacao', key: 'data_autorizacao',width: '100px',
+            onHeaderCell: () => {
+                return {
+                    style: {
+                        backgroundColor: 'yellow', // Cor de fundo do cabeçalho
+                    },
+                };
+            },
+        },
+        {
+            title: 'Autorizador',
+            dataIndex: 'nome_autorizador',
+            key: 'nome_autorizador',
             onHeaderCell: () => {
                 return {
                     style: {
@@ -136,67 +180,36 @@ export default function AdminProfPremiosPedidos(){
             },
         },
         {
-            title: 'Data', dataIndex: 'data_np', key: 'data_np',
+            title: 'Entregue', dataIndex: 'entregue', key: 'entregue',width: '50px',
+            render: (text: string, record: any) =>
+                <span style={{ fontSize: tamFonte }} >
+                    {record.entregue  ? 'S' : 'N'}
+                </span>,
             onHeaderCell: () => {
                 return {
                     style: {
-                        backgroundColor: 'yellow', // Cor de fundo do cabeçalho
+                        backgroundColor: 'burlywood', // Cor de fundo do cabeçalho
                     },
                 };
             },
         },
         {
-            title: 'Valor', dataIndex: 'valor_np', key: 'valor_np', align: 'right',
-            render: (text: string, record: any) =>
-                <span style={{ fontSize: tamFonte }} >
-                    {record.valor_np > 0 ? parseFloat(record.valor_np).toFixed(2) : '0.00'}
-                </span>,
+            title: 'DT. Entrega', dataIndex: 'data_entrega', key: 'data_entrega', width: '100px',
             onHeaderCell: () => {
                 return {
                     style: {
-                        backgroundColor: 'yellow', // Cor de fundo do cabeçalho
+                        backgroundColor: 'burlywood', // Cor de fundo do cabeçalho
                     },
                 };
             },
         },
+       
         {
-            title: 'Pontos', dataIndex: 'total_pontos', key: 'total_pontos', align: 'right', width: '80px',
-            render: (text: string, record: any) =>
-                <span style={{ fontSize: tamFonte }} >
-                    {record.total_pontos > 0 ? parseFloat(record.total_pontos).toFixed(2) : '0.00'}
-                </span>,
+            title: 'Entregador', dataIndex: 'nome_entregador', key: 'nome_entregador',
             onHeaderCell: () => {
                 return {
                     style: {
-                        backgroundColor: 'yellow', // Cor de fundo do cabeçalho
-                    },
-                };
-            },
-        },
-        // {
-        //     title: 'Troca?', dataIndex: 'aberto', key: 'aberto', 
-        //     render: (text: string, record: any) =>
-        //         <span style={{ fontSize: tamFonte }} >
-        //             {record.aberto === 'S' ? '' : record.aberto === 'X' ? 'SOLICITADO' : 'PREMIADO'}
-        //         </span>,
-        //     onHeaderCell: () => {
-        //         return {
-        //             style: {
-        //                 backgroundColor: 'yellow', // Cor de fundo do cabeçalho
-        //             },
-        //         };
-        //     },
-        // },
-        {
-            title: 'Status', dataIndex: 'status', key: 'status', 
-            render: (text: string, record: any) =>
-                <span style={{ fontSize: tamFonte }} >
-                    {record.status === 'P' ? 'PENDENTE' : record.status === 'R' ? 'REJEITADO' : 'APROVADO'}
-                </span>,
-            onHeaderCell: () => {
-                return {
-                    style: {
-                        backgroundColor: 'yellow', // Cor de fundo do cabeçalho
+                        backgroundColor: 'burlywood', // Cor de fundo do cabeçalho
                     },
                 };
             },
@@ -205,18 +218,21 @@ export default function AdminProfPremiosPedidos(){
             title: 'Opções',
             key: 'opcoes',
             align: 'center',
-            width: '120px',  
+            width: '160px',
             render: (text, record) => (
-                <span> 
-                    {/* <Tooltip title="Salvar" color="#DAA520">
-                        <Button icon={<SaveOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '#DAA520' }} title="Salvar" onClick={() => salvarRegistro(record)} disabled />
-                    </Tooltip> */}
-
-                    <Tooltip title="Aprovar" color="#000">
-                        <Button icon={<CheckOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '#008000' }} disabled={record.status == 'A' || record.status == 'R'} />
+                <span>
+                    <Tooltip title="Liberar(Somente TI)" color="">
+                        <Button icon={<UnlockOutlined  />} type="default" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '' }}  title='Liberar Pedido(Somente administradores)' onClick={() => liberarPedidox(record)} disabled={record.status === 'PENDENTE' } />
                     </Tooltip>
-                    <Tooltip title="Rejeitar" color="#000">
-                        <Button icon={<CloseCircleOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: 'red' }} disabled={record.status == 'A' || record.status == 'R' || record.aberto == 'P' } />
+                    <Tooltip title="Aprovar" color="">
+                        <Button icon={<CheckOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '' }}  title='Aprovar Pedido' onClick={() => aprovarPedidox(record)} disabled={record.status === 'REJEITADO' || record.status === 'ENTREGUE' || record.status === 'APROVADO'}/>
+                    </Tooltip>
+
+                    <Tooltip title="Rejeitar" color="">
+                        <Button icon={<CloseCircleOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: 'red' }} title='Rejeitar Pedido' onClick={() =>  rejeitarPedidox(record)} disabled={record.status === 'ENTREGUE' || record.status === 'REJEITADO'}/>
+                    </Tooltip>
+                    <Tooltip title="Entregar" color="">
+                        <Button icon={<DeliveredProcedureOutlined  />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '#669966' }} title="Entregar Pedido" onClick={() => entregarPedidox(record)} disabled={record.status === 'PENDENTE' || record.status === 'ENTREGUE' || record.status === 'REJEITADO' }/>
                     </Tooltip>
                     {/* <Tooltip title="Premiar" color="blue">
                         <Button icon={<TrophyOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, }} title="Premiar" disabled={(record.aberto == 'S' || record.aberto === 'P') || (record.status == 'P' || record.status == 'R')}  />
@@ -235,6 +251,81 @@ export default function AdminProfPremiosPedidos(){
         },
     ];
 
+    async function liberarPedidox(record: any){
+        let idPedido = record.id_premiacao
+        let idPremio = record.id_premio
+        
+        try {
+            setLoading(true);
+            let rs = await serviceProf.liberarPedido(idPedido, idPremio);
+            console.log(rs)
+
+            setDados(rs.data.pedidos);
+            setQuantidade(rs.data.quantidade);
+        } catch (error) {
+            console.error('Erro ao buscar indicadores:', error);
+        } finally {
+            setLoading(false);
+            listaPedidosPremios()
+        }
+    }
+    async function aprovarPedidox(record: any){
+        let idPedido = record.id_premiacao
+        
+        try {
+            setLoading(true);
+            let rs = await serviceProf.aprovarPedido(idPedido, idUsuario);
+            console.log(rs)
+
+            setDados(rs.data.pedidos);
+            setQuantidade(rs.data.quantidade);
+        } catch (error) {
+            console.error('Erro ao buscar indicadores:', error);
+        } finally {
+            setLoading(false);
+            listaPedidosPremios()
+        }
+    }
+    async function rejeitarPedidox(record: any){
+        let idPedido = record.id_premiacao
+        let idParceiro = record.id_parceiro
+        
+        try {
+            setLoading(true);
+            let rs = await serviceProf.rejeitarPedido(idPedido, idParceiro);
+            console.log(rs)
+
+            setDados(rs.data.pedidos);
+            setQuantidade(rs.data.quantidade);
+        } catch (error) {
+            console.error('Erro ao buscar indicadores:', error);
+        } finally {
+            setLoading(false);
+            listaPedidosPremios()
+        }
+    }
+    async function entregarPedidox(record: any){
+        let idPedido = record.id_premiacao
+        let idPremio = record.id_premio
+        let idParceiro = record.id_parceiro
+        
+        try {
+            setLoading(true);
+            let rs = await serviceProf.entregarPedido(idPedido, idPremio, idParceiro);
+            console.log(rs)
+
+            setDados(rs.data.pedidos);
+            setQuantidade(rs.data.quantidade);
+        } catch (error) {
+            console.error('Erro ao buscar indicadores:', error);
+        } finally {
+            setLoading(false);
+            listaPedidosPremios()
+        }
+    }
+
+    
+
 
     return (
         <div style={{ backgroundColor: '#fff' }}>
@@ -246,10 +337,10 @@ export default function AdminProfPremiosPedidos(){
                     <Row style={{ display: 'flex', flexDirection: 'column' }}>
                         <Col>
                             <Typography style={{ fontSize: '24px' }}>
-                                Pedidos(Prêmios) Profissionais
+                                Pedidos(Prêmios) Profissionais (id usuario logado: {idUsuario})
                             </Typography>
                         </Col>
-                       
+
                     </Row>
                 </div>
                 <div style={{ padding: '', position: 'relative', paddingTop: '20px', paddingRight: '30px' }}>
