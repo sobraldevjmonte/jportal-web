@@ -337,7 +337,7 @@ export default function AdminProfPremiosPedidos() {
                     <Row style={{ display: 'flex', flexDirection: 'column' }}>
                         <Col>
                             <Typography style={{ fontSize: '24px' }}>
-                                Pedidos(Prêmios) Profissionais (id usuario logado: {idUsuario})
+                                Pedidos(Prêmios) Profissionais
                             </Typography>
                         </Col>
 

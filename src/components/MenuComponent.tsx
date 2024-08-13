@@ -159,7 +159,7 @@ export default function HomePage() {
               </Link>
             </Menu.Item>
 
-            {idNivelUsuario !== 3 ?
+            {idNivelUsuario !== 3 || idNivelUsuario !== 9 ?
               <Menu.Item key="analise-np-page">
                 <Link to="/analise-np" className="nav-text">
                   Análise NP
