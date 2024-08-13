@@ -1,4 +1,4 @@
-import { DownloadOutlined, EditOutlined, PlusOutlined, SaveOutlined, SyncOutlined, UploadOutlined } from "@ant-design/icons";
+import { DeleteOutlined, DownloadOutlined, EditOutlined, PlusOutlined, SaveOutlined, StopOutlined, SyncOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Col, Divider, Drawer, DrawerProps, Form, Input, RadioChangeEvent, Row, Space, Spin, Switch, Table, TableColumnsType, Tooltip, Typography, Upload } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { UsuarioContext } from "../context/useContext";
@@ -124,12 +124,56 @@ export default function AdminProfPremios() {
         console.log(dadosrecebidos)
         showDrawer()
     }
+
+    const [loadingInativarId, setLoadingInativarId] = useState<number | null>(null);
+    async function inativarPremioxx(objeto: PropsProfPremios) {
+        let id = objeto.id_brinde;
+
+        try {
+            setLoadingInativarId(id);
+            let rs = await serviceProf.inativarPremio(id);
+            if (rs.statusCode === 200) {
+                listaPremiosxx()
+            }
+        } catch (error) {
+            console.error('Erro ao buscar indicadores:', error);
+        } finally {
+            setLoadingInativarId(null);
+        }
+    }
+
+    const [loadingExcluirId, setLoadingExcluirId] = useState<number | null>(null);
+    async function excluirPremioxx(objeto: PropsProfPremios) {
+        let id = objeto.id_brinde;
+        let rs;
+
+        try {
+            setLoadingExcluirId(id);
+            rs = await serviceProf.excluirPremio(id);
+
+            if (rs.statusCode === 200) {
+                listaPremiosxx()
+            }
+            setNotificacao({ message: 'Atenção!', description: rs.msg });
+            
+            setTimeout(() => setNotificacao(null), 3000);
+        } catch (error) {
+            console.error('Erro ao buscar indicadores:', error);
+        } finally {
+            setLoadingExcluirId(null);
+        }
+    }
     const tamFonte = '0.9rem';
     const colorContatou = 'blue'
     const corDestaque = '#000'
     const columns: TableColumnsType<PropsProfPremios> = [
         {
             title: 'ID', dataIndex: 'id_brinde', key: 'id_brinde', width: '90px', align: 'right',
+            render: (text, record) => (
+                <span style={{ color: record.ativo === 'N' ? 'red' : 'black', fontSize: tamFonte }}>
+                    {text}
+                </span>
+            ),
             onHeaderCell: () => {
                 return {
                     style: {
@@ -140,6 +184,11 @@ export default function AdminProfPremios() {
         },
         {
             title: 'Descrição', dataIndex: 'descricao', key: 'descricao',
+            render: (text, record) => (
+                <span style={{ color: record.ativo === 'N' ? 'red' : 'black', fontSize: tamFonte }}>
+                    {text}
+                </span>
+            ),
             onHeaderCell: () => {
                 return {
                     style: {
@@ -150,6 +199,11 @@ export default function AdminProfPremios() {
         },
         {
             title: 'Pontos', dataIndex: 'pontos', key: 'pontos', align: 'right',
+            render: (text, record) => (
+                <span style={{ color: record.ativo === 'N' ? 'red' : 'black', fontSize: tamFonte }}>
+                    {text}
+                </span>
+            ),
             onHeaderCell: () => {
                 return {
                     style: {
@@ -160,6 +214,11 @@ export default function AdminProfPremios() {
         },
         {
             title: 'Valor', dataIndex: 'valor', key: 'valor', align: 'right',
+            render: (text, record) => (
+                <span style={{ color: record.ativo === 'N' ? 'red' : 'black', fontSize: tamFonte }}>
+                    {text}
+                </span>
+            ),
             onHeaderCell: () => {
                 return {
                     style: {
@@ -189,6 +248,11 @@ export default function AdminProfPremios() {
             key: 'quantidade',
             width: '120px',
             align: 'right',
+            render: (text, record) => (
+                <span style={{ color: record.ativo === 'N' ? 'red' : 'black', fontSize: tamFonte }}>
+                    {text}
+                </span>
+            ),
             onHeaderCell: () => {
                 return {
                     style: {
@@ -199,6 +263,11 @@ export default function AdminProfPremios() {
         },
         {
             title: 'Ativo', dataIndex: 'ativo', key: 'ativo', width: '60px',
+            render: (text, record) => (
+                <span style={{ color: record.ativo === 'N' ? 'red' : 'black', fontSize: tamFonte }}>
+                    {text}
+                </span>
+            ),
             onHeaderCell: () => {
                 return {
                     style: {
@@ -213,25 +282,21 @@ export default function AdminProfPremios() {
             title: 'Opções',
             key: 'opcoes',
             align: 'center',
-            width: '120px',
+            width: '140px',
             render: (text, record) => (
                 <span>
-                    <Tooltip title="Salvar" color="#DAA520">
-                        <Button icon={<SaveOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '#DAA520' }} title="Salvarxxx" />
-                    </Tooltip>
-                    <Tooltip title="Editar" color="#DAA520">
+                    {/* <Tooltip title="Salvar" color="">
+                        <Button icon={<SaveOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '' }} title="Salvar" />
+                    </Tooltip> */}
+                    <Tooltip title="Editar" color="#000">
                         <Button icon={<EditOutlined />} onClick={() => editarPremio(record)} style={{ color: 'blue', marginRight: '5px', borderColor: 'blue' }} title="Editar Brinde" />
                     </Tooltip>
-
-                    {/* <Tooltip title="Aprovar" color="#000">
-                        <Button icon={<CheckOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '#008000' }} disabled={record.status == 'A' || record.status == 'R'} />
+                    <Tooltip title="Excluir" color="#000">
+                        <Button icon={<DeleteOutlined />} loading={loadingExcluirId === record.id_brinde} onClick={() => excluirPremioxx(record)} style={{ color: '#fff', marginRight: '5px', backgroundColor: 'red', borderColor: 'red' }} title="Excluir Brinde" />
                     </Tooltip>
-                    <Tooltip title="Rejeitar" color="#000">
-                        <Button icon={<CloseCircleOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: 'red' }} disabled={record.status == 'A' || record.status == 'R' || record.aberto == 'P' } />
-                    </Tooltip> */}
-                    {/* <Tooltip title="Premiar" color="blue">
-                        <Button icon={<TrophyOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, }} title="Premiar" disabled={(record.aberto == 'S' || record.aberto === 'P') || (record.status == 'P' || record.status == 'R')}  />
-                    </Tooltip> */}
+                    <Tooltip title="Inativar" color="#000">
+                        <Button icon={<StopOutlined />} loading={loadingInativarId === record.id_brinde} onClick={() => inativarPremioxx(record)} style={{ color: '#000', marginRight: '5px', backgroundColor: '', borderColor: '#000' }} title="Inativar Brinde" />
+                    </Tooltip>
                 </span>
             ),
 
@@ -377,7 +442,7 @@ export default function AdminProfPremios() {
                     formDataA.append('imagembrinde', imagemX);
 
                     await serviceProf.upLoadImage(formDataA);
-                }else{
+                } else {
                     console.log('************* imagem menor que zero ' + imagemSize)
                 }
 

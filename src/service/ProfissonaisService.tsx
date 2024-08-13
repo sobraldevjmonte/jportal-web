@@ -9,6 +9,45 @@ const api = axios.create({
 });
 
 class ProfissionaisService {
+  async inativarPremio(id_brinde: number) {
+    let rs;
+    let response;
+    try {
+      response = await api.put(`/profissionais/inativar-brinde/${id_brinde}`);
+
+      console.log(response)
+      rs = {
+        msg: response.data.mensagem,
+        statusCode: response.status
+      };
+    } catch (error) {
+      console.error("Error na requisição");
+      rs = {
+        msg: 'Não foi possível excluir.',
+        status: 401,
+      };
+    }
+    return rs;
+  }
+  async excluirPremio(id_brinde: number) {
+    console.log("*********** upLoadImage(ProfissionaisService) *****************");
+    let rs;
+    let response;
+    try {
+      response = await api.delete(`/profissionais/excluir-brinde/${id_brinde}`);
+      console.log(response);
+      rs = {
+        msg: response.data.mensagem,
+        statusCode: response.status
+      };
+    } catch (error: any) {
+      rs = {
+        msg: error.response?.data?.mensagem || 'Erro ao excluir brinde',
+        status: error.response?.status || 409,
+    };
+    }
+    return rs;
+  }
   async atualizarRegistro(objeto: any) {
     console.log("*********** upLoadImage(ProfissionaisService) *****************");
     let rs;
@@ -80,7 +119,7 @@ class ProfissionaisService {
   async upLoadImage(image: any) {
     let rs;
     let response;
-    
+
     try {
       response = await api.post(`/profissionais/anexar-arquivo`,
         image,

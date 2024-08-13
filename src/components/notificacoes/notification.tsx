@@ -1,8 +1,6 @@
 import { notification, NotificationArgsProps } from 'antd';
 import { useEffect } from 'react';
 
-type NotificationPlacement = NotificationArgsProps['placement'];
-
 export function Notificacao({ message, description }: { message: string, description: string }) {
     const [api, contextHolder] = notification.useNotification();
 
@@ -10,7 +8,7 @@ export function Notificacao({ message, description }: { message: string, descrip
         api.error({
             message: message,
             description: description,
-            placement: 'bottomRight'
+            placement: 'bottom'
         });
     }, [api, message, description]);
 
