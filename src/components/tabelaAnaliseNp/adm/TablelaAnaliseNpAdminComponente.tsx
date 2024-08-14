@@ -128,6 +128,8 @@ export default function TablelaAnaliseNpAdminComponente() {
         }));
     };
 
+    
+
     const handleFilter = useCallback(debounce(() => {
         setFilterLoading(true);
         try {
@@ -141,9 +143,43 @@ export default function TablelaAnaliseNpAdminComponente() {
         }
     }, 300), [filterValue, dados]); // 300ms de debounce
 
+    // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     setFilterValue(e.target.value);
+    //     handleFilter();
+    // };
+
+    const applyFilter = (value: string) => {
+        setFilterLoading(true);
+        try {
+            const filteredData = dados.filter(item => 
+                value.length > 0 
+                    ? item.np.includes(value)
+                    : true // Se o valor do filtro estiver vazio, exibe todos os dados
+            );
+    
+            // Verifica se o valor digitado corresponde exatamente a algum registro
+            const exactMatch = filteredData.some(item => item.np === value);
+    
+            // Se houver uma correspondência exata, filtra apenas ela
+            if (exactMatch) {
+                const exactFilteredData = filteredData.filter(item => item.np === value);
+                setDados(exactFilteredData);
+            } else {
+                setDados(filteredData);
+            }
+    
+            setFilters(generateFilters(filteredData));
+        } catch (error) {
+            console.error('Erro ao aplicar filtro:', error);
+        } finally {
+            setFilterLoading(false);
+        }
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFilterValue(e.target.value);
-        handleFilter();
+        const value = e.target.value;
+        setFilterValue(value);
+        applyFilter(value); // Aplica o filtro imediatamente após capturar o valor
     };
 
     const clearFilter = () => {
