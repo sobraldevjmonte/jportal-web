@@ -20,7 +20,7 @@ export default function LoginPage2() {
     const { icomp, setIcomp} = useContext(UsuarioContext);
     const { logado, setLogado } = useContext(UsuarioContext);
     const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
-
+    const { subNivel1, setSubNivel1 } = useContext(UsuarioContext);
 
     const [msg, setMsg] = useState('')
     const [senha, setSenha] = useState("");
@@ -48,6 +48,7 @@ export default function LoginPage2() {
         setIdLoja(999999)
         setNivelUsuario('999')
         setIdNivelUsuario(999)
+        setSubNivel1(999)
         setLogado(false)
         setMsg('')
         setIcomp('')
@@ -88,6 +89,7 @@ export default function LoginPage2() {
             setIcomp(resp.data.icomp)
             setNivelUsuario(resp.data.nivelusuario)
             setIdNivelUsuario(resp.data.idNivelUsuario)
+            setSubNivel1(resp.data.subNivel1)
             setMsg('Redirecionando...')
 
             setTimeout(function () {

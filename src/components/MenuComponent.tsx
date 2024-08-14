@@ -22,9 +22,11 @@ export default function HomePage() {
   const { idUsuario, setIdUsuario } = useContext(UsuarioContext);
   const { nivelUsuario, setNivelUsuario } = useContext(UsuarioContext);
   const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
+  const { subNivel1, setSubNivel1 } = useContext(UsuarioContext);
   const { loja, setLoja } = useContext(UsuarioContext);
   const { idLoja, setIdLoja } = useContext(UsuarioContext);
   const { logado, setLogado } = useContext(UsuarioContext);
+  
 
   const [collapsed, setCollapsed] = useState(true);
 
@@ -95,7 +97,7 @@ export default function HomePage() {
             key="sub-menu-vendas"
             icon={<FolderAddOutlined />}
             title="Vendas"
-          >{idNivelUsuario !== 3 ?
+          >{idNivelUsuario === 11 ?
             <SubMenu
               key="sub-menu-prof"
               icon={<FolderAddOutlined />}
@@ -205,7 +207,7 @@ export default function HomePage() {
             />
 
             <div style={{ paddingRight: 10 }}>
-              Usuário: {nomeUsuario}({nivelUsuario}/{codigoUsuario}/{idNivelUsuario}) - {loja}/{idLoja}
+              Usuário: {nomeUsuario} Nível: {nivelUsuario}/{idNivelUsuario} SubNivel: {subNivel1} Loja: {loja}/{idLoja}
             </div>
           </Header>
         </Row>

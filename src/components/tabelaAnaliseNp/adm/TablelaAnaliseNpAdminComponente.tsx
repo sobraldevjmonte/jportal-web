@@ -93,9 +93,6 @@ export default function TablelaAnaliseNpAdminComponente() {
         }
 
         listaLojas()
-
-        //setValor(formatarMoeda(2525522.25))
-        // listaNps()
     }, [])
 
     interface FilterType {
@@ -307,7 +304,7 @@ export default function TablelaAnaliseNpAdminComponente() {
                         <Row style={{ display: 'flex', flexDirection: 'column' }}>
                             <Col>
                                 <Typography style={{ fontSize: '24px' }}>
-                                    Formulário RT JMonte
+                                    Análise NP JMonte
                                 </Typography>
                             </Col>
                             <Col>

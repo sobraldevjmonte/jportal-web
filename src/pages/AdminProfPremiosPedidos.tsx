@@ -37,7 +37,7 @@ export default function AdminProfPremiosPedidos() {
     const { idUsuario, setIdUsuario } = useContext(UsuarioContext);
     const { nomeUsuario, setNomeUsuario } = useContext(UsuarioContext);
     const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
-
+    const { subNivel1, setSubNivel1 } = useContext(UsuarioContext);
     const [dados, setDados] = useState<PropsProfPremios[]>([]);
     const [registros, setQuantidade] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -221,9 +221,11 @@ export default function AdminProfPremiosPedidos() {
             width: '160px',
             render: (text, record) => (
                 <span>
+                    {subNivel1 === 1 ?
                     <Tooltip title="Liberar(Somente TI)" color="">
                         <Button icon={<UnlockOutlined  />} type="default" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '' }}  title='Liberar Pedido(Somente administradores)' onClick={() => liberarPedidox(record)} disabled={record.status === 'PENDENTE' } />
                     </Tooltip>
+                    : null}
                     <Tooltip title="Aprovar" color="">
                         <Button icon={<CheckOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '' }}  title='Aprovar Pedido' onClick={() => aprovarPedidox(record)} disabled={record.status === 'REJEITADO' || record.status === 'ENTREGUE' || record.status === 'APROVADO'}/>
                     </Tooltip>
@@ -357,7 +359,7 @@ export default function AdminProfPremiosPedidos() {
                             showSizeChanger: true, // Exibe o seletor de tamanho da página
                             pageSizeOptions: ['10', '20', '30'], // Opções de tamanho de página disponíveis
                             showQuickJumper: true, // Exibe o campo de navegação rápida
-                            showTotal: (total, range) => `Mostrando ${range[0]}-${range[1]} de ${total} produtos`, // Exibe informações sobre o total de registros
+                            showTotal: (total, range) => `Mostrando ${range[0]}-${range[1]} de ${total} pedidos`, // Exibe informações sobre o total de registros
                         }}
                     />
                 </div>
