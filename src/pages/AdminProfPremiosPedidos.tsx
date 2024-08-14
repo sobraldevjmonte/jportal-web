@@ -236,9 +236,6 @@ export default function AdminProfPremiosPedidos() {
                     <Tooltip title="Entregar" color="">
                         <Button icon={<DeliveredProcedureOutlined  />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '#669966' }} title="Entregar Pedido" onClick={() => entregarPedidox(record)} disabled={record.status === 'PENDENTE' || record.status === 'ENTREGUE' || record.status === 'REJEITADO' }/>
                     </Tooltip>
-                    {/* <Tooltip title="Premiar" color="blue">
-                        <Button icon={<TrophyOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, }} title="Premiar" disabled={(record.aberto == 'S' || record.aberto === 'P') || (record.status == 'P' || record.status == 'R')}  />
-                    </Tooltip> */}
                 </span>
             ),
 
