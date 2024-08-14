@@ -1,5 +1,5 @@
 import Typography from "antd/es/typography/Typography";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 import { formatarMoeda } from '../../../utils/formatarValores';
 import { UsuarioContext } from "../../../context/useContext";
@@ -9,6 +9,8 @@ import { TableColumnsType, Button, Col, Row, Spin, Table, DatePicker, Select, Sp
 import TabelaAnaliseNpProdutosAdminComponent from "./TabelaAnaliseNpProdutosAdminComponent";
 import Title from 'antd/es/typography/Title';
 import RtService from "../../../service/RtService";
+
+import debounce from 'lodash/debounce';
 
 const service = new AnaliseNpService()
 const serviceRt = new RtService()
@@ -45,14 +47,15 @@ export default function TablelaAnaliseNpAdminComponente() {
     const { idLoja, setIdLoja } = useContext(UsuarioContext);
 
     const [dados, setDados] = useState<AnaliseNpType[]>([])
+    const [dadosOriginais, setDadosOriginais] = useState<AnaliseNpType[]>([]);
     const [registros, setRegistros] = useState(0);
-    
+
     const [loading, setLoading] = useState(false);
 
     const [filters, setFilters] = useState<FilterType[]>([]);
     const [filterLoading, setFilterLoading] = useState(false); // Estado para controlar o loading do filtro
     const [filterValue, setFilterValue] = useState<string>('');
-    
+
 
     const [mes, setMes] = useState(0)
     const [ano, setAno] = useState(0)
@@ -97,7 +100,7 @@ export default function TablelaAnaliseNpAdminComponente() {
 
     interface FilterType {
         text: string;
-        value: string;      
+        value: string;
     }
 
     const listaNps = async (mes: number, ano: number, loja: string) => {
@@ -105,14 +108,10 @@ export default function TablelaAnaliseNpAdminComponente() {
         try {
             const rs = await service.listarNps(mes, ano, lojaSelecionada);
             setDados(rs.data.lista_nps);
+            setDadosOriginais(rs.data.lista_nps);
             setRegistros(rs.data.registros)
 
-            // Gerar filtros únicos para 'np'
-            const uniqueNp: string[] = [...new Set((rs.data.lista_nps as AnaliseNpType[]).map(item => item.np))];
-            const generatedFilters = uniqueNp.map(np => ({
-                text: np,
-                value: np,
-            }));
+            const generatedFilters = generateFilters(rs.data.lista_nps);
             setFilters(generatedFilters);
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
@@ -129,32 +128,34 @@ export default function TablelaAnaliseNpAdminComponente() {
         }));
     };
 
-    const handleFilter = () => {
-        setFilterLoading(true); // Ativa o loading do filtro
+    const handleFilter = useCallback(debounce(() => {
+        setFilterLoading(true);
         try {
             const filteredData = dados.filter(item => item.np.startsWith(filterValue));
-            setDados(filteredData); // Atualiza os dados com o filtro aplicado
-            setFilters(generateFilters(filteredData)); // Atualiza os filtros com base nos dados filtrados
-
+            setDados(filteredData);
+            setFilters(generateFilters(filteredData));
         } catch (error) {
             console.error('Erro ao aplicar filtro:', error);
         } finally {
-            setFilterLoading(false); // Desativa o loading do filtro
+            setFilterLoading(false);
         }
+    }, 300), [filterValue, dados]); // 300ms de debounce
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFilterValue(e.target.value);
+        handleFilter();
     };
 
-
     const clearFilter = () => {
-        setFilterLoading(true); // Ativa o loading do filtro
+        setFilterLoading(true);
         try {
             setFilterValue(''); // Limpa o valor do filtro
-            setDados(dados); // Restaura os dados originais
-            setFilters(generateFilters(dados)); // Atualiza os filtros com base nos dados originais
-
+            setDados(dadosOriginais); // Restaura os dados originais
+            setFilters(generateFilters(dadosOriginais)); // Atualiza os filtros com base nos dados originais
         } catch (error) {
             console.error('Erro ao limpar filtro:', error);
         } finally {
-            setFilterLoading(false); // Desativa o loading do filtro
+            setFilterLoading(false);
         }
     };
     
@@ -165,13 +166,27 @@ export default function TablelaAnaliseNpAdminComponente() {
     const columns: TableColumnsType<AnaliseNpType> = [
         {
             title: 'Np', dataIndex: 'np', key: 'np',
-            filterSearch: true,
-            filters: filters,
-            filterIcon: <FilterOutlined style={{ color: filterLoading ? '#1890ff' : undefined }} spin={filterLoading} />,
-            onFilter: (value, record) => record.np.startsWith(value as string),
+            filterDropdown: (
+                <div style={{ padding: 8 }}>
+                    <Input
+                        placeholder="Filtrar por NP"
+                        value={filterValue}
+                        onChange={handleInputChange}
+                        style={{ marginBottom: 8, display: 'block' }}
+                    />
+                    <Button
+                        onClick={clearFilter}
+                        size="small"
+                        type="link"
+                    >
+                        Limpar Filtro
+                    </Button>
+                </div>
+            ),
+            filterIcon: <Spin spinning={filterLoading}><FilterOutlined style={{ color: filterLoading ? '#1890ff' : undefined }} /></Spin>,
         },
 
-       
+
         { title: 'DATA', dataIndex: 'data_formatada', key: 'data_formatada', },
         { title: 'F10', dataIndex: 'f10', key: 'f10', width: '400px' },
         {
@@ -218,18 +233,15 @@ export default function TablelaAnaliseNpAdminComponente() {
     }
     function selecionarLoja(e: any, lojax: any) {
         console.log(e);
-        //console.log(loja);
-        //const descricao = loja.data.descricao;
-
-        if(e == 'sem'){
+        if (e == 'sem') {
             console.log('------------- sem ----------------')
             setLojaSelecionada(idLoja)
             setLojaSelecionadaDescricao(loja)
-        }else{
+        } else {
             setLojaSelecionada(e)
             setLojaSelecionadaDescricao(lojax.data.descricao)
         }
-        
+
     }
 
     function filtrar() {
@@ -280,8 +292,8 @@ export default function TablelaAnaliseNpAdminComponente() {
                             <Typography style={{ fontSize: '1.0rem', color: 'blue', paddingLeft: '8px' }}> {lojaSelecionadaDescricao}({lojaSelecionada}) </Typography>
                         </Row>
                     </Col>
-                    <Col style={{ paddingLeft: '30px', paddingTop: '58px'}}>
-                        <Button title='Filtrar' style={{ backgroundColor: '#1E90FF', borderColor: '#1E90FF', color: '#fff', width: '150px'  }} icon={<FilterOutlined title='Filtrar' />} onClick={filtrar} >Filtrar</Button>
+                    <Col style={{ paddingLeft: '30px', paddingTop: '58px' }}>
+                        <Button title='Filtrar' style={{ backgroundColor: '#1E90FF', borderColor: '#1E90FF', color: '#fff', width: '150px' }} icon={<FilterOutlined title='Filtrar' />} onClick={filtrar} >Filtrar</Button>
                     </Col>
                 </Row>
             </>
@@ -290,7 +302,7 @@ export default function TablelaAnaliseNpAdminComponente() {
 
     const onChange: TableProps<AnaliseNpType>['onChange'] = (pagination, filters, sorter, extra) => {
         console.log('params', pagination, filters, sorter, extra);
-      };
+    };
 
 
     return (
