@@ -54,11 +54,13 @@ class ProfissionaisService {
     let response;
 
     const dados = {
+      id_brinde: objeto.id_brinde,
       descricao: objeto.descricao,
       pontos: objeto.pontos,
       valor: objeto.valor,
       quantidade: objeto.quantidade,
       imagem: objeto.imagem,
+      codigo: objeto.codigo,
       ativo: 'S'
     }
     try {
@@ -100,6 +102,7 @@ class ProfissionaisService {
       valor: objeto.valor,
       quantidade: objeto.quantidade,
       imagem: objeto.imagem,
+      codigo: objeto.codigo,
       ativo: 'S'
     }
     console.log("********* xibiu 1 **************")

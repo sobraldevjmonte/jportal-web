@@ -19,6 +19,7 @@ interface PropsProfPremios {
     quantidade: number;
     imagem: string;
     ativo: string;
+    codigo: string;
 }
 
 
@@ -82,7 +83,8 @@ export default function AdminProfPremios() {
             valor: '0.00',
             quantidade: 0,
             imagem: '',
-            ativo: 'S'
+            ativo: 'S',
+            codigo: ''
         })
 
         form.setFieldsValue({
@@ -92,6 +94,7 @@ export default function AdminProfPremios() {
             valor: '0.00',
             quantidade: 0,
             imagem: '',
+            codigo: '',
             ativo: 'S'
         });
 
@@ -109,7 +112,9 @@ export default function AdminProfPremios() {
             valor: dadosrecebidos.valor,
             quantidade: dadosrecebidos.quantidade,
             imagem: dadosrecebidos.imagem,
-            ativo: dadosrecebidos.ativo
+            ativo: dadosrecebidos.ativo,
+            codigo: dadosrecebidos.codigo
+
         })
 
         form.setFieldsValue({
@@ -155,7 +160,7 @@ export default function AdminProfPremios() {
                 listaPremiosxx()
             }
             setNotificacao({ message: 'Atenção!', description: rs.msg });
-            
+
             setTimeout(() => setNotificacao(null), 3000);
         } catch (error) {
             console.error('Erro ao buscar indicadores:', error);
@@ -169,6 +174,21 @@ export default function AdminProfPremios() {
     const columns: TableColumnsType<PropsProfPremios> = [
         {
             title: 'ID', dataIndex: 'id_brinde', key: 'id_brinde', width: '90px', align: 'right',
+            render: (text, record) => (
+                <span style={{ color: record.ativo === 'N' ? 'red' : 'black', fontSize: tamFonte }}>
+                    {text}
+                </span>
+            ),
+            onHeaderCell: () => {
+                return {
+                    style: {
+                        backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
+                    },
+                };
+            },
+        },
+        {
+            title: 'Código', dataIndex: 'codigo', key: 'codigo', width: '90px', align: 'right',
             render: (text, record) => (
                 <span style={{ color: record.ativo === 'N' ? 'red' : 'black', fontSize: tamFonte }}>
                     {text}
@@ -343,7 +363,8 @@ export default function AdminProfPremios() {
         valor: '0.00',
         quantidade: 0,
         imagem: '',
-        ativo: 'S'
+        ativo: 'S',
+        codigo: ''
     });
 
     const onReset = () => {
@@ -355,7 +376,8 @@ export default function AdminProfPremios() {
             valor: '0.00',
             quantidade: 0,
             imagem: '',
-            ativo: 'S'
+            ativo: 'S',
+            codigo: ''
         })
 
         setImagemX(null);
@@ -409,11 +431,22 @@ export default function AdminProfPremios() {
         // console.log(imagemNome)
     };
 
+
     const beforeUpload = (img: any) => {
         return false; // Evita o upload automático
     };
 
     const validateUpload = (_: any, value: any) => {
+        if (editando) {
+            return Promise.resolve(); // Ignora a validação se estiver editando
+        }
+
+        if (!value || !value.file) {
+            return Promise.reject('Imagem não pode estar vazia.');
+        }
+
+        // Outras validações, como tamanho de arquivo, podem ser adicionadas aqui
+
         setImagemX(value.file);
         setImagemSize(value.file.size);
         setImagemNome(value.file.name);
@@ -421,7 +454,42 @@ export default function AdminProfPremios() {
         return Promise.resolve();
     };
 
+    // const validateUpload = (_: any, value: any) => {
+    //     // Se estiver editando, ignora a validação do upload
+    //     if (editando) {
+    //         return Promise.resolve();
+    //     }
+
+    //     if (!value || !value.file) {
+    //         return Promise.reject('Imagem não pode estar vazia.');
+    //     }
+
+    //     // Aqui você pode adicionar validações adicionais, como tamanho de arquivo, tipo, etc.
+    //     if (value.file.size > 1024 * 1024) { // Exemplo: arquivo maior que 1MB
+    //         return Promise.reject('O tamanho da imagem deve ser menor que 1MB.');
+    //     }
+
+    //     setImagemX(value.file);
+    //     setImagemSize(value.file.size);
+    //     setImagemNome(value.file.name);
+
+    //     return Promise.resolve();
+    // };
+
+    // const validateUpload = (_: any, value: any) => {
+    //     setImagemX(value.file);
+    //     setImagemSize(value.file.size);
+    //     setImagemNome(value.file.name);
+
+    //     return Promise.resolve();
+    // };
+
+
+    // Função de Salvamento
+
+
     async function salvarRegistrox(values: any) {
+        console.log(values);
         setLoading(true)
 
         console.log('*************** Salvar registrox *********************');
@@ -435,29 +503,34 @@ export default function AdminProfPremios() {
         try {
 
             let res;
-            !editando ? res = await serviceProf.salvarRegistro(updatedFormData) : res = await serviceProf.atualizarRegistro(updatedFormData)
+            !editando ? res = await serviceProf.salvarRegistro(updatedFormData) : res = await serviceProf.atualizarRegistro(values);
             if (imagemX) {
-                if (imagemSize > 0) {
-                    const formDataA = new FormData();
-                    formDataA.append('imagembrinde', imagemX);
 
-                    await serviceProf.upLoadImage(formDataA);
+                if (imagemNome !== formData.imagem) {
+                    if (imagemSize > 0) {
+                        const formDataA = new FormData();
+                        formDataA.append('imagembrinde', imagemX);
+
+                        await serviceProf.upLoadImage(formDataA);
+                    } else {
+                        console.log('************* Imagem menor que zero ' + imagemSize);
+                    }
                 } else {
-                    console.log('************* imagem menor que zero ' + imagemSize)
+                    console.log('O nome da imagem não mudou, upload não necessário.');
                 }
 
-                // console.log(saveResponse);
                 console.log('************* editando >> ' + editando)
 
                 form.resetFields();
 
-                setOpen(false)
-                onReset()
-                listaPremiosxx()
-                // Salvar o registro com a URL do arquivo
+
             } else {
                 setNotificacao({ message: 'Atenção!', description: 'Nenhum arquivo carregado' });
             }
+
+            setOpen(false)
+            onReset()
+            listaPremiosxx()
         } catch (error) {
             console.error('Erro ao enviar dados para o servidor:', error);
         } finally {
@@ -503,7 +576,7 @@ export default function AdminProfPremios() {
                     >
 
                         <Space>
-                            <div>editando : {editando ? 'true' : 'false'}</div>
+                            <div>Editando : {editando ? 'true' : 'false'}</div>
                             <Button onClick={onClose}>Fechar</Button>
 
                             <Button type="primary" htmlType="submit" tabIndex={20} loading={loading}>
@@ -517,7 +590,7 @@ export default function AdminProfPremios() {
                         </Space>
                         <Divider />
                         <Row gutter={gutterPadrao}>
-                            <Col span={4}>
+                            <Col span={2}>
                                 <Form.Item
                                     label="ID"
                                     name='id_brinde'
@@ -525,7 +598,7 @@ export default function AdminProfPremios() {
                                     <Input placeholder="Id" readOnly value={editando ? formData.id_brinde : ''} id="id" />
                                 </Form.Item>
                             </Col>
-                            <Col span={24}>
+                            <Col span={16}>
                                 <Form.Item
                                     label="Descrição"
                                     name='descricao'
@@ -540,6 +613,24 @@ export default function AdminProfPremios() {
                                         showCount
                                         maxLength={40}
                                         onChange={(e) => handleInputChange('descricao', e.target.value)}
+                                    />
+                                </Form.Item>
+                            </Col>
+                            <Col span={6}>
+                                <Form.Item
+                                    label="Código"
+                                    name='codigo'
+                                    validateFirst
+                                    hasFeedback={formData.codigo.length > 0 ? true : false}
+                                    rules={[{ required: true, message: 'Digite a descrição', min: 1, max: 6 }]}
+                                // validateFirst
+                                >
+                                    <Input
+                                        placeholder="Código"
+                                        tabIndex={1}
+                                        showCount
+                                        maxLength={6}
+                                        onChange={(e) => handleInputChange('codigo', e.target.value)}
                                     />
                                 </Form.Item>
                             </Col>
@@ -606,13 +697,11 @@ export default function AdminProfPremios() {
                             <Col span={24}>
                                 <Form.Item
                                     label="Imagem"
-                                    name='imagem'
-                                    // rules={[{ required: true, message: 'Imagem não pode estar vazia.', min: 1, max: 200 }]}
+                                    name="imagem"
                                     rules={[{ validator: validateUpload }]}
                                 >
                                     <Upload
                                         name="file"
-
                                         beforeUpload={!editando ? beforeUpload : undefined}
                                         onChange={handleUploadChange}
                                         listType="picture-card"
