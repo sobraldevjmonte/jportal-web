@@ -100,6 +100,7 @@ class RtService {
     let rs;
     try {
       const response = await api.get(`/prevendas/listarlojas`);
+      console.log(response)
       rs = {
         statusCode: 200,
         data: response.data,

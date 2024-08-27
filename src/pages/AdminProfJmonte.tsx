@@ -5,6 +5,7 @@ import { CheckOutlined, CloseCircleOutlined, DollarCircleOutlined, DownloadOutli
 import Title from 'antd/es/typography/Title';
 import RtService from "../service/RtService";
 import ProfissionaisService from "../service/ProfissonaisService";
+import SelecaoNpModal from "./modal_np";
 
 const serviceProf = new ProfissionaisService()
 
@@ -14,7 +15,7 @@ interface PropsProfJMonte {
     key: number;
     id_vendas: number;
     id_usuario: number;
-    idNp: number;
+    id_np: number;
     numero_venda: number;
     numero_np: number;
     data_venda: string;
@@ -54,6 +55,8 @@ export default function AdminProjJmonte(props: any) {
     const [lojas, setLojas] = useState<LojasType[]>([])
     const [lojaSelecionada, setLojaSelecionada] = useState(idLoja)
     const [lojaSelecionadaDescricao, setLojaSelecionadaDescricao] = useState(loja)
+
+    const [numeroNp, setNumeroNp] = useState(0)
 
     //******************************** DATAS PERÍODO FIM ******************************************/
     //******************** mes/ano  *************************/
@@ -107,39 +110,50 @@ export default function AdminProjJmonte(props: any) {
         }
     }
 
+    const[idNpAtualizar, setIdNpAtualizar] = useState(0)
+
     async function buscarNpx(numero_np: any, id_np: any, id_loja: number) {
+        setIdNpAtualizar(id_np)
         console.log(numero_np, id_np, id_loja);
+        // Redefinir npList antes de buscar novos dados
+        setNpList([]);
 
         if (numero_np > 0) {
             try {
                 setLoading(true);
                 let rs = await serviceProf.buscarNp(numero_np);
-                console.log(rs);
+                console.log('************* resultado busca np ****************');
+                if (rs.data.lista_nps.length > 1) {
+                    console.log('******************** array maior que 1 *****************');
+                    setNpList(rs.data.lista_nps);
+                    setModalVisible(true);
 
-                if (rs.statusCode == 200) {
-                    const dataEncontrada = rs.data.data_np || '';
-                    const valorEncontrado = rs.data.vlr_total || '';
-                    const vlr_pp = rs.data.vlr_pp || '';
-                    const idLoja = rs.data.id_loja || '';
-                    const descricaoLoja = rs.data.descricao_loja || '';
+                } else {
+                    if (rs.statusCode == 200) {
+                        const dataEncontrada = rs.data.lista_nps[0].data_np || '';
+                        const valorEncontrado = rs.data.lista_nps[0].vlr_total || '';
+                        const vlr_pp = rs.data.lista_nps[0].vlr_pp || '';
+                        const idLoja = rs.data.lista_nps[0].id_loja || '';
+                        const descricaoLoja = rs.data.lista_nps[0].descricao_loja || '';
 
-                    setDados(prevDados =>
-                        prevDados.map(record =>
-                            record.id_vendas === id_np
-                                ? {
-                                    ...record,
-                                    numero_np: numero_np,
-                                    data_np: dataEncontrada,
-                                    valor_np: valorEncontrado,
-                                    total_pontos: vlr_pp,
-                                    id_loja: idLoja,
-                                    descricao_loja: descricaoLoja,
-                                }
-                                : record
-                        )
-                    );
-                    let rsx = await serviceProf.salvarNp(dataEncontrada, +valorEncontrado, +vlr_pp, id_np, numero_np, idLoja);
-                    console.log(rsx);
+                        setDados(prevDados =>
+                            prevDados.map(record =>
+                                record.id_vendas === id_np
+                                    ? {
+                                        ...record,
+                                        numero_np: numero_np,
+                                        data_np: dataEncontrada,
+                                        valor_np: valorEncontrado,
+                                        total_pontos: vlr_pp,
+                                        id_loja: idLoja,
+                                        descricao_loja: descricaoLoja,
+                                    }
+                                    : record
+                            )
+                        );
+                        let rsx = await serviceProf.salvarNp(dataEncontrada, +valorEncontrado, +vlr_pp, idNpAtualizar, numero_np, idLoja);
+                        console.log(rsx);
+                    }
                 }
             } catch (error) {
                 console.error('Erro ao buscar indicadores:', error);
@@ -148,6 +162,91 @@ export default function AdminProjJmonte(props: any) {
             }
         }
     }
+
+    //********************** MODAL SELECIONAR NP **********************/
+    interface NpType {
+        id_np: number;
+        numero_np: string;
+        data_np: string;
+        vlr_total: string;
+        total_pontos: string;
+        id_loja: number;
+        descricao_loja: string;
+    }
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const [isManualBlur, setIsManualBlur] = useState(false);
+    const [npList, setNpList] = useState<NpType[]>([]);
+    const [selectedNp, setSelectedNp] = useState<string | null>(null);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, record: PropsProfJMonte) => {
+        const newNumeroNp = e.target.value;
+
+        setDados(prevDados =>
+            prevDados.map(rec =>
+                rec.id_vendas === record.id_vendas
+                    ? { ...rec, numero_np: Number(newNumeroNp) }
+                    : rec
+            )
+        );
+        setIsManualBlur(true);  // Indica que o blur foi causado manualmente
+    };
+
+    const handleBlur = (newNumeroNp: number, record: PropsProfJMonte) => {
+        if (!modalVisible && isManualBlur) {  // Verifica se o modal está visível
+            buscarNpx(newNumeroNp, record.id_vendas, record.id_loja);
+        }
+        setIsManualBlur(false);  // Reseta o estado para o próximo blur
+    };
+
+    const handleSelectNp = async (np: any) => {
+        // Recebe o NP selecionado do componente filho
+        setSelectedNp(np.numero_np);
+        console.log('Objeto retornado:', np);
+
+        setDados(prevDados =>
+            prevDados.map(record =>
+                record.id_vendas === np.id_np
+                    ? {
+                        ...record,
+                        id_np: np.id_np,
+                        numero_np: np.numero_np,
+                        data_np: np.data_np,
+                        valor_np: np.vlr_total,
+                        total_pontos: np.vlr_pp,
+                        id_loja: np.id_loja,
+                        descricao_loja: np.descricao_loja,
+                    }
+                    : record
+            )
+        );
+        let rsx = await serviceProf.salvarNp(np.data_np, +np.vlr_total, +np.vlr_pp, idNpAtualizar, np.numero_np, idLoja);
+        listaPedidos()
+
+        // Chama a função no componente pai que processa o NP selecionado
+        processarNpSelecionado(np.numero_np);
+
+        setModalVisible(false);
+    };
+
+    const processarNpSelecionado = (npSelecionado: string) => {
+        console.log('Processando NP selecionado:', npSelecionado);
+        // Lógica para processar a NP selecionada
+    };
+
+    const modalNp = () => {
+        return (
+            <SelecaoNpModal
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+                npList={npList}
+                onSelect={handleSelectNp}
+            />
+        );
+    };
+
+    //********************** MODAL SELECIONAR NP **********************/
+
+
 
     async function salvarRegistro(record: PropsProfJMonte) {
         try {
@@ -161,7 +260,7 @@ export default function AdminProjJmonte(props: any) {
         }
     }
 
-    async function aprovarPedidox(record: PropsProfJMonte){
+    async function aprovarPedidox(record: PropsProfJMonte) {
         try {
             setLoading(true);
             let rs = await serviceProf.aprovarPedido(record.id_vendas, record.id_usuario, record.total_pontos);
@@ -181,7 +280,7 @@ export default function AdminProjJmonte(props: any) {
             // listaPedidos()
         }
     }
-    async function rejeitarPedidox(record: PropsProfJMonte){
+    async function rejeitarPedidox(record: PropsProfJMonte) {
         try {
             setLoading(true);
             let rs = await serviceProf.rejeitarPedido(record.id_vendas);
@@ -201,6 +300,8 @@ export default function AdminProjJmonte(props: any) {
             // listaPedidos()
         }
     }
+
+
 
 
     const tamFonte = '0.9rem';
@@ -270,8 +371,8 @@ export default function AdminProjJmonte(props: any) {
             render: (text: number, record: PropsProfJMonte) => (
                 <div>
                     <Input
-                        
-                        readOnly={record.status !='P'}
+
+                        readOnly={record.status != 'P'}
                         value={record.numero_np}
                         width="100%"
                         tabIndex={1}
@@ -288,17 +389,34 @@ export default function AdminProjJmonte(props: any) {
                             // Para Firefox
                             MozAppearance: 'textfield',
                         }}
-                        onChange={e => {
-                            const newNumeroNp = e.target.value;
-                            setDados(prevDados =>
-                                prevDados.map(rec =>
-                                    rec.id_vendas === record.id_vendas
-                                        ? { ...rec, numero_np: Number(newNumeroNp) }
-                                        : rec
-                                )
-                            );
-                            buscarNpx(Number(newNumeroNp), record.id_vendas, record.id_loja);
-                        }}
+
+                        onChange={e => handleInputChange(e, record)}
+                        onBlur={() => handleBlur(record.numero_np, record)}
+                    // onChange={e => {
+                    //     const newNumeroNp = Number(e.target.value); // Converte para number
+                    //     setDados(prevDados =>
+                    //         prevDados.map(rec =>
+                    //             rec.id_vendas === record.id_vendas
+                    //                 ? { ...rec, numero_np: newNumeroNp }
+                    //                 : rec
+                    //         )
+                    //     );
+                    // }}
+                    // onBlur={e => {
+                    //     const newNumeroNp = Number(e.target.value); // Converte para number
+                    //     buscarNpx(newNumeroNp, record.id_vendas, record.id_loja);
+                    // }}
+                    // onChange={e => {
+                    //     const newNumeroNp = e.target.value;
+                    //     setDados(prevDados =>
+                    //         prevDados.map(rec =>
+                    //             rec.id_vendas === record.id_vendas
+                    //                 ? { ...rec, numero_np: Number(newNumeroNp) }
+                    //                 : rec
+                    //         )
+                    //     );
+                    //     buscarNpx(Number(newNumeroNp), record.id_vendas, record.id_loja);
+                    // }}
                     />
                 </div>
             ),
@@ -363,7 +481,7 @@ export default function AdminProjJmonte(props: any) {
         //     },
         // },
         {
-            title: 'Status', dataIndex: 'status', key: 'status', 
+            title: 'Status', dataIndex: 'status', key: 'status',
             render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
                     {record.status === 'P' ? 'PENDENTE' : record.status === 'R' ? 'REJEITADO' : 'APROVADO'}
@@ -380,18 +498,18 @@ export default function AdminProjJmonte(props: any) {
             title: 'Opções',
             key: 'opcoes',
             align: 'center',
-            width: '120px',  
+            width: '120px',
             render: (text, record) => (
-                <span> 
+                <span>
                     {/* <Tooltip title="Salvar" color="#DAA520">
                         <Button icon={<SaveOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '#DAA520' }} title="Salvar" onClick={() => salvarRegistro(record)} disabled />
                     </Tooltip> */}
 
                     <Tooltip title="Aprovar" color="#000">
-                        <Button icon={<CheckOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '' }} disabled={record.status == 'A' || record.status == 'R' || record.valor_np == null}  onClick={() => aprovarPedidox(record)} />
+                        <Button icon={<CheckOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '' }} disabled={record.status == 'A' || record.status == 'R' || record.valor_np == null} onClick={() => aprovarPedidox(record)} />
                     </Tooltip>
                     <Tooltip title="Rejeitar" color="#000">
-                        <Button icon={<CloseCircleOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: 'red' }} disabled={record.status == 'A' || record.status == 'R'}  onClick={() => rejeitarPedidox(record)}/>
+                        <Button icon={<CloseCircleOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: 'red' }} disabled={record.status == 'A' || record.status == 'R'} onClick={() => rejeitarPedidox(record)} />
                     </Tooltip>
                     {/* <Tooltip title="Premiar" color="blue">
                         <Button icon={<TrophyOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, }} title="Premiar" disabled={(record.aberto == 'S' || record.aberto === 'P') || (record.status == 'P' || record.status == 'R')}  />
@@ -466,13 +584,13 @@ export default function AdminProjJmonte(props: any) {
                             ))} */}
                         </Select>
                     </Col>
-                    <Col>
+                    {/* <Col>
                         <Title level={5}>F.Pgto:</Title>
                         <Select defaultValue="sem" style={{ width: 200 }} disabled>
                             <Select.Option value="sem"> </Select.Option>
                             <Select.Option value="RS">DINHEIRO</Select.Option>
                         </Select>
-                    </Col>
+                    </Col> */}
                     <Col style={{ paddingTop: '60px' }}>
                         <Row style={{}}>
                             <Typography style={{ fontSize: '1.0rem' }}>FILTROS:<span> </span> </Typography>
@@ -492,6 +610,7 @@ export default function AdminProjJmonte(props: any) {
 
     return (
         <div style={{ backgroundColor: '#fff' }}>
+            {modalNp()}
             <div>
                 <Button icon={<SyncOutlined />} onClick={() => listaPedidos()} style={{ backgroundColor: '#2F4F4F', color: '#fff', borderColor: '#2F4F4F', marginRight: '5px', width: '130px' }} title="Atualizar todos os registros">Atualizar</Button>
             </div>
@@ -516,7 +635,7 @@ export default function AdminProjJmonte(props: any) {
                         size="small"
                         rowKey={(record) => record.key}
                         bordered
-                        title={() => <Typography style={{ fontSize: '1.2rem', padding: '0px' }}>NP/NFe/NFCe{props.idNp}({registros})</Typography>}
+                        title={() => <Typography style={{ fontSize: '1.2rem', padding: '0px' }}>NP/NFe/NFCe{props.id_np}({registros})</Typography>}
                         pagination={{
                             //defaultPageSize: 5, // Define o tamanho padrão da página
                             showSizeChanger: true, // Exibe o seletor de tamanho da página

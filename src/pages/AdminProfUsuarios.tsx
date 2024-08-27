@@ -2,7 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { UsuarioContext } from "../context/useContext";
 import ProfissionaisService from "../service/ProfissonaisService";
 import { Button, Col, Row, Spin, Table, TableColumnsType, Typography } from "antd";
-import { SyncOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, CloseCircleOutlined, SyncOutlined } from "@ant-design/icons";
+import { Notificacao } from '../components/notificacoes/notification';
+import { notification } from 'antd';
+
 
 
 const serviceProf = new ProfissionaisService()
@@ -28,6 +31,10 @@ export default function AdminProfUsuarios() {
     const [dados, setDados] = useState([]);
     const [registros, setQuantidade] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [loadingExcluir, setLoadingExcluir] = useState(false);
+
+    const [notificacao, setNotificacao] = useState<{ message: string, description: string } | null>(null);
+
 
     useEffect(() => {
         listaUsuarios()
@@ -47,6 +54,17 @@ export default function AdminProfUsuarios() {
         }
     }
 
+    // Função para exibir a notificação
+    const exibirNotificacao = (msg: string, tipo: 'success' | 'error') => {
+        notification.open({
+            message: tipo === 'success' ? 'Sucesso!' : 'Erro!',
+            description: msg,
+            icon: tipo === 'success' ? <CheckCircleOutlined style={{ color: 'blue' }} /> : <CloseCircleOutlined style={{ color: 'red' }} />,
+            placement: 'bottom',
+            duration: 5, // A notificação ficará visível por 3 segundos
+        });
+    };
+
     async function ativarUsuariox(record: any) {
         try {
             setLoading(true);
@@ -59,6 +77,40 @@ export default function AdminProfUsuarios() {
         } finally {
             setLoading(false);
             listaUsuarios()
+        }
+    }
+    async function excluirUsuariox(record: any) {
+        try {
+            setLoadingExcluir(true);
+            let rs = await serviceProf.excluirUsuario(record.id_usuario);
+            console.log(rs);
+
+            // Verifica se a mensagem é um objeto ou uma string
+            let msg;
+            if (typeof rs.data === 'object' && rs.data.msg) {
+                msg = rs.data.msg; // Acessa a propriedade 'msg' do objeto
+            } else if (typeof rs.data === 'string') {
+                msg = rs.data;
+            } else {
+                msg = "Usuário possui outros registros no sistema. Não é possível excluir.";
+            }
+            
+            if(rs.statusCode === 200) {
+                exibirNotificacao(msg,'success');
+            }else{
+                exibirNotificacao(msg,'error');
+            }
+
+
+            // Caso queira atualizar a lista de usuários após a exclusão
+            // setDados(rs.data.lista_usuarios);
+            // setQuantidade(rs.data.registros);
+        } catch (error) {
+            console.error('Erro ao excluir usuário:', error);
+            exibirNotificacao('Ocorreu um erro ao tentar excluir o usuário.','success');
+        } finally {
+            setLoadingExcluir(false);
+            listaUsuarios(); // Atualiza a lista de usuários
         }
     }
     const tamFonte = '0.9rem';
@@ -180,7 +232,7 @@ export default function AdminProfUsuarios() {
             title: 'Opções',
             key: 'opcoes',
             align: 'center',
-            width: '180px',
+            width: '200px',
             render: (text, record) => (
                 <span>
                     <Button type="primary"
@@ -188,7 +240,7 @@ export default function AdminProfUsuarios() {
                         onClick={() => ativarUsuariox(record)}>
                         {record.ativo === 'S' ? 'Inativar' : 'Ativar'}
                     </Button>
-                    <Button disabled>Excluir</Button>
+                    <Button loading={loadingExcluir} onClick={() => excluirUsuariox(record)}>Excluir</Button>
                 </span>
             ),
 
@@ -204,6 +256,7 @@ export default function AdminProfUsuarios() {
     ]
     return (
         <div style={{ backgroundColor: '#fff' }}>
+            {notificacao && <Notificacao message={notificacao.message} description={notificacao.description} />}
             <div>
                 <Button icon={<SyncOutlined />} onClick={() => listaUsuarios()} style={{ backgroundColor: '#2F4F4F', color: '#fff', borderColor: '#2F4F4F', marginRight: '5px', width: '130px' }} title="Atualizar todos os registros">Atualizar</Button>
             </div>

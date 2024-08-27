@@ -44,7 +44,7 @@ class ProfissionaisService {
       rs = {
         msg: error.response?.data?.mensagem || 'Erro ao excluir brinde',
         status: error.response?.status || 409,
-    };
+      };
     }
     return rs;
   }
@@ -80,18 +80,6 @@ class ProfissionaisService {
     return rs;
   }
 
-  // async cadastrarEmpresa(perfil: EmpresaModel) {
-  //   let rs;
-  //   try {
-  //     rs = await api.post(`${pre_url}/cadastrar`, perfil, {
-  //       headers: { "Content-Type": "application/json" },
-  //     });
-  //     console.log(rs.data);
-  //     return rs.data;
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }
   async salvarRegistro(objeto: any) {
     console.log("*********** upLoadImage(ProfissionaisService) *****************");
     let rs;
@@ -145,32 +133,11 @@ class ProfissionaisService {
     }
     return rs;
   }
-  async ativarUsuario(id: number, ativo: string) {
-    console.log("*********** listarPedidos(ProfissionaisService) *****************");
-    let rs;
-    let response;
-    try {
-      if (ativo === 'S') {
-        response = await api.put(`/profissionais/inativar-usuario/${id}`);
-      } else {
-        response = await api.put(`/profissionais/ativar-usuario/${id}`);
-      }
 
-      rs = {
-        statusCode: response.status,
-        data: response.data,
-      };
-    } catch (error) {
-      console.error("Error na requisição");
-      rs = {
-        status: 401,
-        msg: "Erro na requisição",
-      };
-    }
-    return rs;
-  }
-  async salvarNp(dataEncontrada: string, valorEncontrado: number, vlr_pp: number, id_np: string, numero_np: string, idLoja: number) {
+  async salvarNp(dataEncontrada: string, valorEncontrado: number, vlr_pp: number, id_np: number, numero_np: string, idLoja: number) {
+    console.log('********* service salvarnp ********************************')
     console.log(dataEncontrada, valorEncontrado, vlr_pp, id_np);
+    console.log('********* service salvarnp ********************************')
 
     console.log("*********** salvarNp(ProfissionaisService) *****************");
     let rs;
@@ -307,6 +274,26 @@ class ProfissionaisService {
     return rs;
   }
 
+  async listarPremios() {
+    console.log("*********** listarPremios(ProfissionaisService) *****************");
+    let rs;
+    try {
+      const response = await api.get(`/profissionais/premios-listar`);
+
+      rs = {
+        statusCode: 200,
+        data: response.data,
+      };
+    } catch (error) {
+      console.error("Error na requisição");
+      rs = {
+        status: 401,
+        msg: "Erro na requisição",
+      };
+    }
+    return rs;
+  }
+
   async listarUsuarios() {
     console.log("*********** listarPedidos(ProfissionaisService) *****************");
     let rs;
@@ -326,14 +313,19 @@ class ProfissionaisService {
     }
     return rs;
   }
-  async listarPremios() {
-    console.log("*********** listarPremios(ProfissionaisService) *****************");
+  async ativarUsuario(id: number, ativo: string) {
+    console.log("*********** ativar/inativar usuario(ProfissionaisService) *****************");
     let rs;
+    let response;
     try {
-      const response = await api.get(`/profissionais/premios-listar`);
+      if (ativo === 'S') {
+        response = await api.put(`/profissionais/inativar-usuario/${id}`);
+      } else {
+        response = await api.put(`/profissionais/ativar-usuario/${id}`);
+      }
 
       rs = {
-        statusCode: 200,
+        statusCode: response.status,
         data: response.data,
       };
     } catch (error) {
@@ -341,6 +333,25 @@ class ProfissionaisService {
       rs = {
         status: 401,
         msg: "Erro na requisição",
+      };
+    }
+    return rs;
+  }
+  async excluirUsuario(id: number) {
+    console.log("*********** excluir usuario(ProfissionaisService) *****************");
+    let rs;
+    let response;
+    try {
+      response = await api.delete(`/profissionais/excluir-usuario/${id}`);
+      rs = {
+        statusCode: response.status,
+        data: response.data,
+      };
+    } catch (error) {
+      console.error("Error na requisição");
+      rs = {
+        statusCode: 401,
+        msg: "Não é permito a exclusão.",
       };
     }
     return rs;
