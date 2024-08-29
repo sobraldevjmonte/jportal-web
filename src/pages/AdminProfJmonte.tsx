@@ -7,6 +7,8 @@ import RtService from "../service/RtService";
 import ProfissionaisService from "../service/ProfissonaisService";
 import SelecaoNpModal from "./modal_np";
 
+import { Notificacao } from '../components/notificacoes/notification';
+
 const serviceProf = new ProfissionaisService()
 
 const serviceRt = new RtService()
@@ -110,7 +112,8 @@ export default function AdminProjJmonte(props: any) {
         }
     }
 
-    const[idNpAtualizar, setIdNpAtualizar] = useState(0)
+    const [idNpAtualizar, setIdNpAtualizar] = useState(0)
+    const [notificacao, setNotificacao] = useState<{ message: string, description: string } | null>(null);
 
     async function buscarNpx(numero_np: any, id_np: any, id_loja: number) {
         setIdNpAtualizar(id_np)
@@ -123,17 +126,24 @@ export default function AdminProjJmonte(props: any) {
                 setLoading(true);
                 let rs = await serviceProf.buscarNp(numero_np);
                 console.log('************* resultado busca np ****************');
+               
                 if (rs.data.lista_nps.length > 1) {
                     console.log('******************** array maior que 1 *****************');
+                    console.log(rs.data.lista_nps)
+                    console.log('******************** array maior que 1 *****************');
+
                     setNpList(rs.data.lista_nps);
                     setModalVisible(true);
 
-                } else {
+                } else if (rs.data.lista_nps.length === 1) {
                     if (rs.statusCode == 200) {
+                        console.log('******************** array maior que 1 *****************');
+                        console.log(rs.data.lista_nps)
+                        console.log('******************** array maior que 1 *****************');
                         const dataEncontrada = rs.data.lista_nps[0].data_np || '';
                         const valorEncontrado = rs.data.lista_nps[0].vlr_total || '';
                         const vlr_pp = rs.data.lista_nps[0].vlr_pp || '';
-                        const idLoja = rs.data.lista_nps[0].id_loja || '';
+                        const idLoja = rs.data.lista_nps[0].codloja || '';
                         const descricaoLoja = rs.data.lista_nps[0].descricao_loja || '';
 
                         setDados(prevDados =>
@@ -155,8 +165,11 @@ export default function AdminProjJmonte(props: any) {
                         console.log(rsx);
                     }
                 }
+               
             } catch (error) {
                 console.error('Erro ao buscar indicadores:', error);
+                setNotificacao({ message: 'Atenção!', description: 'NP não encontrada.' });
+                    setTimeout(() => setNotificacao(null), 3000);
             } finally {
                 setLoading(false);
             }
@@ -213,13 +226,13 @@ export default function AdminProjJmonte(props: any) {
                         data_np: np.data_np,
                         valor_np: np.vlr_total,
                         total_pontos: np.vlr_pp,
-                        id_loja: np.id_loja,
+                        id_loja: np.codloja,
                         descricao_loja: np.descricao_loja,
                     }
                     : record
             )
         );
-        let rsx = await serviceProf.salvarNp(np.data_np, +np.vlr_total, +np.vlr_pp, idNpAtualizar, np.numero_np, idLoja);
+        let rsx = await serviceProf.salvarNp(np.data_np, +np.vlr_total, +np.vlr_pp, idNpAtualizar, np.numero_np, np.codloja);
         listaPedidos()
 
         // Chama a função no componente pai que processa o NP selecionado
@@ -319,7 +332,7 @@ export default function AdminProjJmonte(props: any) {
             },
         },
         {
-            title: 'Data', dataIndex: 'data_lancamento', key: 'data_lancamento', width: '80px',
+            title: 'Data', dataIndex: 'data_lancamento', width: '80px',
             onHeaderCell: () => {
                 return {
                     style: {
@@ -392,31 +405,6 @@ export default function AdminProjJmonte(props: any) {
 
                         onChange={e => handleInputChange(e, record)}
                         onBlur={() => handleBlur(record.numero_np, record)}
-                    // onChange={e => {
-                    //     const newNumeroNp = Number(e.target.value); // Converte para number
-                    //     setDados(prevDados =>
-                    //         prevDados.map(rec =>
-                    //             rec.id_vendas === record.id_vendas
-                    //                 ? { ...rec, numero_np: newNumeroNp }
-                    //                 : rec
-                    //         )
-                    //     );
-                    // }}
-                    // onBlur={e => {
-                    //     const newNumeroNp = Number(e.target.value); // Converte para number
-                    //     buscarNpx(newNumeroNp, record.id_vendas, record.id_loja);
-                    // }}
-                    // onChange={e => {
-                    //     const newNumeroNp = e.target.value;
-                    //     setDados(prevDados =>
-                    //         prevDados.map(rec =>
-                    //             rec.id_vendas === record.id_vendas
-                    //                 ? { ...rec, numero_np: Number(newNumeroNp) }
-                    //                 : rec
-                    //         )
-                    //     );
-                    //     buscarNpx(Number(newNumeroNp), record.id_vendas, record.id_loja);
-                    // }}
                     />
                 </div>
             ),
@@ -610,6 +598,7 @@ export default function AdminProjJmonte(props: any) {
 
     return (
         <div style={{ backgroundColor: '#fff' }}>
+            {notificacao && <Notificacao message={notificacao.message} description={notificacao.description} />}
             {modalNp()}
             <div>
                 <Button icon={<SyncOutlined />} onClick={() => listaPedidos()} style={{ backgroundColor: '#2F4F4F', color: '#fff', borderColor: '#2F4F4F', marginRight: '5px', width: '130px' }} title="Atualizar todos os registros">Atualizar</Button>
