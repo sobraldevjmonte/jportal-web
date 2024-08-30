@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { UsuarioContext } from "../context/useContext";
 import { Button, Col, DatePicker, DatePickerProps, Row, Select, Space, Spin, Table, TableColumnsType, Typography, Input, Tooltip } from "antd";
-import { CheckOutlined, CloseCircleOutlined, DollarCircleOutlined, DownloadOutlined, FilterOutlined, SaveOutlined, SyncOutlined, TrophyOutlined } from "@ant-design/icons";
+import { CheckOutlined, CloseCircleOutlined, DollarCircleOutlined, DownloadOutlined, FilterOutlined, SaveOutlined, SearchOutlined, SyncOutlined, TrophyOutlined } from "@ant-design/icons";
 import Title from 'antd/es/typography/Title';
 import RtService from "../service/RtService";
 import ProfissionaisService from "../service/ProfissonaisService";
@@ -313,16 +313,6 @@ export default function AdminProjJmonte(props: any) {
     const corDestaque = '#000'
     const columns: TableColumnsType<PropsProfJMonte> = [
         {
-            title: 'ID', dataIndex: 'id_vendas', key: 'id_vendas', width: '90px', align: 'right',
-            onHeaderCell: () => {
-                return {
-                    style: {
-                        backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
-                    },
-                };
-            },
-        },
-        {
             title: 'Nº', dataIndex: 'numero_venda', key: 'numero_venda', width: '90px', align: 'right',
             onHeaderCell: () => {
                 return {
@@ -353,7 +343,37 @@ export default function AdminProjJmonte(props: any) {
             },
         },
         {
-            title: 'Profissional', dataIndex: 'profissional', key: 'profissional', width: '300px',
+            title: 'Profissional',
+            dataIndex: 'profissional',
+            key: 'profissional',
+            width: '300px',
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+                <div style={{ padding: 8 }}>
+                    <Input
+                        placeholder={`Filtrar Profissional`}
+                        value={selectedKeys[0]}
+                        onChange={e => setSelectedKeys(e.target.value ? [e.target.value.toUpperCase()] : [])}
+                        onPressEnter={() => confirm()}
+                        style={{ marginBottom: 8, display: 'block' }}
+                    />
+                    <Button
+                        type="primary"
+                        onClick={() => confirm()}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{ width: 90, marginRight: 8 }}
+                    >
+                        Filtrar
+                    </Button>
+                    <Button onClick={() => clearFilters && clearFilters()} size="small" style={{ width: 90 }}>
+                        Resetar
+                    </Button>
+                </div>
+            ),
+            filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+            onFilter: (value, record) => {
+                return record.profissional.toUpperCase().includes(value.toString());
+            },
             onHeaderCell: () => {
                 return {
                     style: {
@@ -362,6 +382,17 @@ export default function AdminProjJmonte(props: any) {
                 };
             },
         },
+        
+        // {
+        //     title: 'Profissional', dataIndex: 'profissional', key: 'profissional', width: '300px',
+        //     onHeaderCell: () => {
+        //         return {
+        //             style: {
+        //                 backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
+        //             },
+        //         };
+        //     },
+        // },
         {
             title: 'Imagem', dataIndex: 'imagem', key: 'imagem', align: 'center', width: '50px',
             render: (text, record) => (
