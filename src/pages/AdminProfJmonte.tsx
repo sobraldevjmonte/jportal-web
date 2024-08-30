@@ -118,33 +118,25 @@ export default function AdminProjJmonte(props: any) {
     async function buscarNpx(numero_np: any, id_np: any, id_loja: number) {
         setIdNpAtualizar(id_np)
         console.log(numero_np, id_np, id_loja);
-        // Redefinir npList antes de buscar novos dados
         setNpList([]);
 
         if (numero_np > 0) {
             try {
                 setLoading(true);
                 let rs = await serviceProf.buscarNp(numero_np);
-                console.log('************* resultado busca np ****************');
+                console.log(rs)
                
                 if (rs.data.lista_nps.length > 1) {
-                    console.log('******************** array maior que 1 *****************');
-                    console.log(rs.data.lista_nps)
-                    console.log('******************** array maior que 1 *****************');
-
                     setNpList(rs.data.lista_nps);
                     setModalVisible(true);
 
                 } else if (rs.data.lista_nps.length === 1) {
                     if (rs.statusCode == 200) {
-                        console.log('******************** array maior que 1 *****************');
-                        console.log(rs.data.lista_nps)
-                        console.log('******************** array maior que 1 *****************');
-                        const dataEncontrada = rs.data.lista_nps[0].data_np || '';
-                        const valorEncontrado = rs.data.lista_nps[0].vlr_total || '';
-                        const vlr_pp = rs.data.lista_nps[0].vlr_pp || '';
-                        const idLoja = rs.data.lista_nps[0].codloja || '';
-                        const descricaoLoja = rs.data.lista_nps[0].descricao_loja || '';
+                        let dataEncontrada = rs.data.lista_nps[0].data_np || '';
+                        let valorEncontrado = rs.data.lista_nps[0].vlr_total || '';
+                        let vlr_pp = rs.data.lista_nps[0].vlr_pp || '';
+                        let idLoja = rs.data.lista_nps[0].codloja || '';
+                        let descricaoLoja = rs.data.lista_nps[0].descricao_loja || '';
 
                         setDados(prevDados =>
                             prevDados.map(record =>
@@ -161,13 +153,12 @@ export default function AdminProjJmonte(props: any) {
                                     : record
                             )
                         );
-                        let rsx = await serviceProf.salvarNp(dataEncontrada, +valorEncontrado, +vlr_pp, idNpAtualizar, numero_np, idLoja);
+                        let rsx = await serviceProf.salvarNp(dataEncontrada, +valorEncontrado, +vlr_pp, id_np, numero_np, idLoja);
                         console.log(rsx);
                     }
                 }
                
             } catch (error) {
-                console.error('Erro ao buscar indicadores:', error);
                 setNotificacao({ message: 'Atenção!', description: 'NP não encontrada.' });
                     setTimeout(() => setNotificacao(null), 3000);
             } finally {
@@ -321,6 +312,16 @@ export default function AdminProjJmonte(props: any) {
     const colorContatou = 'blue'
     const corDestaque = '#000'
     const columns: TableColumnsType<PropsProfJMonte> = [
+        {
+            title: 'ID', dataIndex: 'id_vendas', key: 'id_vendas', width: '90px', align: 'right',
+            onHeaderCell: () => {
+                return {
+                    style: {
+                        backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
+                    },
+                };
+            },
+        },
         {
             title: 'Nº', dataIndex: 'numero_venda', key: 'numero_venda', width: '90px', align: 'right',
             onHeaderCell: () => {

@@ -6,7 +6,6 @@ import { UsuarioContext } from "../../../context/useContext";
 import TabelaPendenciasSomaEtapasGerentesComponent from "./TabelaPendenciasSomaEtapasGerentesComponent";
 import { SyncOutlined } from "@ant-design/icons";
 import TabelaPendeciasVendasVendedoresGerenciaComponent from "./TabelaPendeciasVendasVendedoresGerenciaComponent";
-import Title from "antd/es/typography/Title";
 
 const service = new EtapasService()
 
@@ -74,7 +73,7 @@ export default function TabelaPendeciasVendasGerentesComponent() {
     const columns: TableColumnsType<PendenciasVendasType> = [
         {
             title: 'Vendedor',
-            dataIndex: 'nomevendedor', 
+            dataIndex: 'nomevendedor',
             key: 'nomevendedor',
             width: '200px',
             sorter: (a: any, b: any) => a.nomevendedor.localeCompare(b.nomevendedor),
@@ -91,26 +90,46 @@ export default function TabelaPendeciasVendasGerentesComponent() {
             defaultSortOrder: 'descend', // Ordem padrão descendente
             render: (total_reais_pendencias, record) => <span style={{ fontSize: tamFonte, }}> {total_reais_pendencias !== null ? total_reais_pendencias : '0.00'}</span>
         },
-        { title: 'BASICOS', dataIndex: 'etapa1', key: 'nomeVendedor', align: 'right', 
-            render: (etapa1, record) => <span style={{ fontSize: tamFonte, color: record.etapa1 > 1000 ? corDestaque : '#000' }}> {etapa1 !== null ? etapa1 : '0.00'}</span> },
-        { title: 'EPI/IMP/FERRAM', dataIndex: 'etapa2', key: 'nomeVendedor', align: 'right', 
-            render: (etapa2, record) => <span style={{ fontSize: tamFonte, color: record.etapa2 > 1000 ? corDestaque : '#000' }}> {etapa2 !== null ? etapa2 : '0.00'}</span> },
-        { title: 'HIDRAULICOS', dataIndex: 'etapa3', key: 'nomeVendedor', align: 'right', 
-            render: (etapa3, record) => <span style={{ fontSize: tamFonte, color: record.etapa3 > 1000 ? corDestaque : '#000' }}> {etapa3 !== null ? etapa3 : '0.00'}</span> },
-        { title: 'CABOS', dataIndex: 'etapa4', key: 'nomeVendedor', align: 'right', 
-            render: (etapa4, record) => <span style={{ fontSize: tamFonte, color: record.etapa4 > 1000 ? corDestaque : '#000' }}> {etapa4 !== null ? etapa4 : '0.00'}</span> },
-        { title: 'TOM/AC', dataIndex: 'etapa5', key: 'nomeVendedor', align: 'right', 
-            render: (etapa5, record) => <span style={{ fontSize: tamFonte, color: record.etapa5 > 1000 ? corDestaque : '#000' }}> {etapa5 !== null ? etapa5 : '0.00'}</span> },
-        { title: 'PISOS/REV/ACES/ARG/REJ', dataIndex: 'etapa6', key: 'nomeVendedor', align: 'right', 
-            render: (etapa6, record) => <span style={{ fontSize: tamFonte, color: record.etapa6 > 2000 ? corDestaque : '#000' }}> {etapa6 !== null ? etapa6 : '0.00'}</span> },
-        { title: 'LOUC/MET/PIAS/CB/GB/BAN', dataIndex: 'etapa7', key: 'nomeVendedor', align: 'right', 
-            render: (etapa7, record) => <span style={{ fontSize: tamFonte, color: record.etapa7 > 1000 ? corDestaque : '#000' }}> {etapa7 !== null ? etapa7 : '0.00'}</span> },
-        { title: 'PORTAS/FERRAG/FECH', dataIndex: 'etapa8', key: 'nomeVendedor', align: 'right', 
-            render: (etapa8, record) => <span style={{ fontSize: tamFonte, color: record.etapa8 > 1000 ? corDestaque : '#000' }}> {etapa8 !== null ? etapa8 : '0.00'}</span> },
-        { title: 'PINTURAS', dataIndex: 'etapa9', key: 'nomeVendedor', align: 'right', 
-            render: (etapa9, record) => <span style={{ fontSize: tamFonte, color: record.etapa9 > 1000 ? corDestaque : '#000' }}> {etapa9 !== null ? etapa9 : '0.00'}</span> },
-        { title: 'ILUMINACAO', dataIndex: 'etapa10', key: 'nomeVendedor', align: 'right', 
-            render: (etapa10, record) => <span style={{ fontSize: tamFonte, color: record.etapa10 > 1000 ? corDestaque : '#000' }}> {etapa10 !== null ? etapa10 : '0.00'}</span> },
+        {
+            title: 'BASICOS', dataIndex: 'etapa1', key: 'nomeVendedor', align: 'right',
+            render: (etapa1, record) => <span style={{ fontSize: tamFonte, color: record.etapa1 > 1000 ? corDestaque : '#000' }}> {etapa1 !== null ? etapa1 : '0.00'}</span>
+        },
+        {
+            title: 'EPI/IMP/FERRAM', dataIndex: 'etapa2', key: 'nomeVendedor', align: 'right',
+            render: (etapa2, record) => <span style={{ fontSize: tamFonte, color: record.etapa2 > 1000 ? corDestaque : '#000' }}> {etapa2 !== null ? etapa2 : '0.00'}</span>
+        },
+        {
+            title: 'HIDRAULICOS', dataIndex: 'etapa3', key: 'nomeVendedor', align: 'right',
+            render: (etapa3, record) => <span style={{ fontSize: tamFonte, color: record.etapa3 > 1000 ? corDestaque : '#000' }}> {etapa3 !== null ? etapa3 : '0.00'}</span>
+        },
+        {
+            title: 'CABOS', dataIndex: 'etapa4', key: 'nomeVendedor', align: 'right',
+            render: (etapa4, record) => <span style={{ fontSize: tamFonte, color: record.etapa4 > 1000 ? corDestaque : '#000' }}> {etapa4 !== null ? etapa4 : '0.00'}</span>
+        },
+        {
+            title: 'TOM/AC', dataIndex: 'etapa5', key: 'nomeVendedor', align: 'right',
+            render: (etapa5, record) => <span style={{ fontSize: tamFonte, color: record.etapa5 > 1000 ? corDestaque : '#000' }}> {etapa5 !== null ? etapa5 : '0.00'}</span>
+        },
+        {
+            title: 'PISOS/REV/ACES/ARG/REJ', dataIndex: 'etapa6', key: 'nomeVendedor', align: 'right',
+            render: (etapa6, record) => <span style={{ fontSize: tamFonte, color: record.etapa6 > 2000 ? corDestaque : '#000' }}> {etapa6 !== null ? etapa6 : '0.00'}</span>
+        },
+        {
+            title: 'LOUC/MET/PIAS/CB/GB/BAN', dataIndex: 'etapa7', key: 'nomeVendedor', align: 'right',
+            render: (etapa7, record) => <span style={{ fontSize: tamFonte, color: record.etapa7 > 1000 ? corDestaque : '#000' }}> {etapa7 !== null ? etapa7 : '0.00'}</span>
+        },
+        {
+            title: 'PORTAS/FERRAG/FECH', dataIndex: 'etapa8', key: 'nomeVendedor', align: 'right',
+            render: (etapa8, record) => <span style={{ fontSize: tamFonte, color: record.etapa8 > 1000 ? corDestaque : '#000' }}> {etapa8 !== null ? etapa8 : '0.00'}</span>
+        },
+        {
+            title: 'PINTURAS', dataIndex: 'etapa9', key: 'nomeVendedor', align: 'right',
+            render: (etapa9, record) => <span style={{ fontSize: tamFonte, color: record.etapa9 > 1000 ? corDestaque : '#000' }}> {etapa9 !== null ? etapa9 : '0.00'}</span>
+        },
+        {
+            title: 'ILUMINACAO', dataIndex: 'etapa10', key: 'nomeVendedor', align: 'right',
+            render: (etapa10, record) => <span style={{ fontSize: tamFonte, color: record.etapa10 > 1000 ? corDestaque : '#000' }}> {etapa10 !== null ? etapa10 : '0.00'}</span>
+        },
     ];
 
     const escolherOrdem = (value: string) => {
@@ -126,7 +145,7 @@ export default function TabelaPendeciasVendasGerentesComponent() {
 
     return (
         <>
-            <div style={{maxWidth: '2000px'}}>
+            <div style={{ maxWidth: '2000px' }}>
 
                 <Spin spinning={loading} tip="Carregando..." style={{ position: 'absolute', left: '50%', top: '30%', transform: 'translate(-50%, -50%)' }}>
                     <div style={{ backgroundColor: '#fff' }}>
@@ -151,7 +170,7 @@ export default function TabelaPendeciasVendasGerentesComponent() {
                                    
                                 </Select>
                             </Col> */}
-                            {/*<Col style={{ paddingLeft: '5px' }}>
+                    {/*<Col style={{ paddingLeft: '5px' }}>
                                 <Title level={5}>Ordem(Alfabética):</Title>
                                 <Select id="selectLoja" onSelect={escolherOrdem} defaultValue="DESC" style={{ width: 200 }} disabled>
                                     <Select.Option value="DESC">Decrescente</Select.Option>
