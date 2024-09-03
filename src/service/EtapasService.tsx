@@ -136,6 +136,24 @@ class EtapasService {
     }
     return rs;
   }
+  async listaPendenciasVendasdoCliente(idCliente: number){
+    console.log("*********** listaVendedores *****************");
+    let rs;
+    try {
+      const response = await api.get(`/etapas/lista-pendencias-vendas-cliente/${idCliente}`);
+      rs = {
+        statusCode: 200,
+        data: response.data,
+      };
+    } catch (error) {
+      console.error("Error na requisição");
+      rs = {
+        status: 401,
+        msg: "Erro na requisição",
+      };
+    }
+    return rs;
+  }
   async listaSomaEtapasPorVendedor(idVendedor: number) {
     console.log("*********** listaSomaTotalEtapas *****************");
     let rs;

@@ -54,6 +54,28 @@ class RtService {
     }
     return rs;
   }
+  async listaPreVendasDoCliente(idCliente: number ){
+    console.log("*********** listaPreVendas *****************");
+    let rs;
+
+    try {
+      const response = await api.get(`prevendas-do-cliente/${idCliente}`, {
+        headers: { "Content-Type": "application/json" },
+      });
+      rs = {
+        statusCode: 200,
+        data: response.data,
+      };
+
+    } catch (e) {
+      console.error("Error na requisição");
+      rs = {
+        status: 401,
+        msg: "Erro na requisição",
+      };
+    }
+    return rs;
+  }
   async listaProdutos(prevenda: string) {
     console.log("*********** listaProdutos *****************");
     let rs;

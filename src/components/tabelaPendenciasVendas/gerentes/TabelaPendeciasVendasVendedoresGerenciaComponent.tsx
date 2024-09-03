@@ -1,11 +1,10 @@
-import { EditOutlined, FileSearchOutlined, SyncOutlined } from "@ant-design/icons";
-import { TableColumnsType, Button, Modal, Typography, Spin, Row, Col, Table } from "antd";
-import TextArea from "antd/es/input/TextArea";
-import { useContext, useState, useEffect } from "react";
+import { FileTextOutlined, SyncOutlined } from "@ant-design/icons";
+import { Button, Spin, Table, TableColumnsType, Tooltip, Typography } from "antd";
+import { useContext, useEffect, useState } from "react";
 import { UsuarioContext } from "../../../context/useContext";
-import TabelaPendenciasVendasContatosComponent from "../TabelaPendenciasVendasContatosComponent";
-import TabelaPendenciasSomaEtapasComponent from "../vendedores/TabelaPendenciasSomaEtapasComponent";
 import EtapasService from "../../../service/EtapasService";
+import TabelaPendenciasVendasContatosComponent from "../TabelaPendenciasVendasContatosComponent";
+import ModalGerentesNpsComponent from "./ModalGerentesNpsComponent";
 
 const service = new EtapasService()
 
@@ -66,11 +65,47 @@ export default function TabelaPendeciasVendasVendedoresGerenciaComponent(props: 
         }
     }
 
+    //************************ MODAL PARA INSERIR CONTATOS COM OS CLIENTE **************************/
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [clienteModal, setClienteModal] = useState('');
+    const [idClienteModal, setIdClienteModal] = useState(0);
+
+    function setDadosModal(nomeCliente: string, idCliente: number) {
+        setClienteModal(nomeCliente)
+        setIdClienteModal(idCliente)
+        setModalVisible(true)
+    }
+
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const modalNp = () => {
+        return (
+            <ModalGerentesNpsComponent
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+                idCliente={idClienteModal}
+                nomeCliente={clienteModal}
+            />
+        );
+    };
+
+
     const tamFonte = '0.9rem';
     const colorContatou = 'blue'
     const corDestaque = 'red'
 
     const columns: TableColumnsType<PendenciasVendasType> = [
+        {
+            title: 'NPs.',
+            key: 'percentual_repasse',
+            dataIndex: 'percentual_repasse',
+            align: 'right',
+            width: '60px',
+            render: (text, record) => (
+                <Tooltip title={`Lista de NPs do Cliente ${record.nomecliente}`} color="#000">
+                    <Button icon={<FileTextOutlined />} onClick={() => setDadosModal(record.nomecliente, record.idcliente)} style={{ marginRight: '5px', width: '30px' }} title="Lista de NPs do cliente" />
+                </Tooltip>
+            ),
+        },
         {
             title: 'Cliente',
             dataIndex: 'nomecliente',
@@ -135,6 +170,7 @@ export default function TabelaPendeciasVendasVendedoresGerenciaComponent(props: 
     return (
         <>
             <div style={{ paddingTop: '10px', backgroundColor: '#FFF5EE' }} >
+                {modalNp()}
                 <div>
                     <Button type="primary" icon={<SyncOutlined />} onClick={() => listaPendenciasVendas()} style={{ marginTop: '5px', marginBottom: '15px',  marginLeft: '15px',  width: '130px' }} title="Atualizar registros do vendedor">Atualizar</Button>
                 </div>
