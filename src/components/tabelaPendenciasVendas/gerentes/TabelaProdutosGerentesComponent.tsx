@@ -27,20 +27,23 @@ export default function TabelaProdutosGerentesComponent(props: any) {
     const [dados, setDados] = useState([]);
     const [loading, setLoading] = useState(true);
     const [aux, setAux] = useState('')
+    const [quantidade, setQuantidade] = useState(0)
 
     console.log('---------- Component produtos pre-vendas --------------')
     useEffect(() => {
-        if (aux != props.idIndicador) {
+        if (aux != props.numeroNp) {
             listaProdutosPreVendas()
-            setAux(props.idIndicador)
+            setAux(props.numeroNp)
         }
-    }, [])
+    }, [props])
 
     async function listaProdutosPreVendas() {
         try {
             setLoading(true);
-            let rs = await service.listaProdutos(props.np);
+            let rs = await service.listaProdutos(props.numeroNp);
+            console.log(rs)
             setDados(rs.data.produtos)
+            setQuantidade(rs.data.quantidade)
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
         } finally {
@@ -66,16 +69,19 @@ export default function TabelaProdutosGerentesComponent(props: any) {
 
     return (
         <>
-            <Spin spinning={loading} tip="Carregando..." style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
-                <Table
-                    columns={columns} 
-                    dataSource={dados} 
-                    pagination={false} 
-                    style={{backgroundColor: '#FFF8DC'}}
-                    rowKey={(record) => record.cod_produto_pre}
-                    title={() => <Typography style={{fontSize: '1.2rem', padding: '0px'}}>Produtos</Typography>}
-                />
-            </Spin>
+            <div style={{ padding: '10px', margin: '10px', backgroundColor: '#B0E0E6' }}>
+                <div style={{ backgroundColor: '#B0E0E6' }}>
+                    <Spin spinning={loading} tip="Carregando..." style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
+                        <Table
+                            columns={columns}
+                            dataSource={dados}
+                            pagination={false}
+                            rowKey={(record) => record.cod_produto_pre}
+                            title={() => <Typography style={{ fontSize: '1.2rem', padding: '0px' }}>Produtos( Quant. {quantidade})</Typography>}
+                        />
+                    </Spin>
+                </div>
+            </div>
         </>
     );
 }

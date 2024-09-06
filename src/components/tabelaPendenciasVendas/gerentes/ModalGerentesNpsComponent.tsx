@@ -8,6 +8,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import type { RangePickerProps } from 'antd/es/date-picker';
 
 import isBetween from 'dayjs/plugin/isBetween';
+import TabelaProdutosGerentesComponent from './TabelaProdutosGerentesComponent';
 dayjs.extend(isBetween);
 const { RangePicker } = DatePicker;
 
@@ -158,8 +159,8 @@ const ModalGerentesNpsComponent: React.FC<SelecaoNpModalProps> = ({ visible, onC
             filterIcon: <Spin spinning={filterLoading}><FilterOutlined style={{ color: filterLoading ? '#1890ff' : undefined }} /></Spin>,
         },
         {
-            title: 'Data', 
-            dataIndex: 'data_pre', 
+            title: 'Data Np',
+            dataIndex: 'data_pre',
             key: 'data_pre',
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
                 <div style={{ padding: 8 }}>
@@ -210,8 +211,8 @@ const ModalGerentesNpsComponent: React.FC<SelecaoNpModalProps> = ({ visible, onC
             // onFilter: (value, record) => {
             //     return record.profissional.toUpperCase().includes(value.toString());
             // },
-            
-            
+
+
         },
         { title: 'Loja', dataIndex: 'loja', key: 'loja', width: '100px' },
         { title: 'Cliente', dataIndex: 'nome_cliente', key: 'nome_cliente' },
@@ -227,21 +228,42 @@ const ModalGerentesNpsComponent: React.FC<SelecaoNpModalProps> = ({ visible, onC
         // { title: 'VL.PP.', dataIndex: 'valor_pp', key: 'valor_pp', align: 'right', render: (text: string) => <span >{text}</span> },
     ];
 
+    //***************** Inserindo Componente TabelaPendenciasVendasVendedoreNps  ******************/
+    const expandedRowRender = (record: any) => {
+        let x = record.np
+        console.log(x)
+        return <TabelaProdutosGerentesComponent numeroNp={x} />;
+    };
+
+
     return (
         <Modal
-            title={`Lista de NPs do Cliente ${nomeCliente} - Quantidade: ${quantidade}`}
+            title={`Lista de NPs do Cliente: ${nomeCliente} - Quantidade: ${quantidade}`}
             visible={visible}
             onCancel={onClose}
             footer={null}
             width={1800}
         >
             {loading ? (
-                <Skeleton active />
+                <Skeleton
+                    active
+                    style={{ backgroundColor: '#fff' }} // Cor de fundo para todo o Skeleton
+                    paragraph={{ rows: 4, style: { backgroundColor: '#fff' } }} // Cor para as linhas
+                    title={{ style: { backgroundColor: '#fff' } }} // Cor para o título
+                />
             ) : (
                 <Table
                     columns={columns}
-                    rowKey="numero"
                     dataSource={dados}
+                    rowKey={(record) => record.np}
+                    pagination={{
+                        //defaultPageSize: 5, // Define o tamanho padrão da página
+                        showSizeChanger: true, // Exibe o seletor de tamanho da página
+                        pageSizeOptions: ['10', '20', '30'], // Opções de tamanho de página disponíveis
+                        showQuickJumper: true, // Exibe o campo de navegação rápida
+                        showTotal: (total, range) => `Mostrando ${range[0]}-${range[1]} de ${total} Pré Vendas`, // Exibe informações sobre o total de registros
+                    }}
+                    expandedRowRender={expandedRowRender}
                 />
             )}
         </Modal>
