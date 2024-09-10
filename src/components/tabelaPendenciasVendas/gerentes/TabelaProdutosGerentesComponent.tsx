@@ -1,5 +1,5 @@
 import { DownOutlined } from "@ant-design/icons";
-import { Badge, Dropdown, Input, Space, Spin, Table, TableColumnsType } from "antd";
+import { Badge, Dropdown, Input, Skeleton, Space, Spin, Table, TableColumnsType } from "antd";
 import { useEffect, useState } from "react";
 import RtService from '../../../service/RtService';
 import Typography from "antd/es/typography/Typography";
@@ -71,7 +71,13 @@ export default function TabelaProdutosGerentesComponent(props: any) {
         <>
             <div style={{ padding: '10px', margin: '10px', backgroundColor: '#B0E0E6' }}>
                 <div style={{ backgroundColor: '#B0E0E6' }}>
-                    <Spin spinning={loading} tip="Carregando..." style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
+                    <Skeleton
+                        active
+                        loading={loading}
+                        style={{ backgroundColor: '#fff' }} // Cor de fundo para todo o Skeleton
+                        paragraph={{ rows: 4, style: { backgroundColor: '#fff' } }} // Cor para as linhas
+                        title={{ style: { backgroundColor: '#fff' } }} // Cor para o título
+                    >
                         <Table
                             columns={columns}
                             dataSource={dados}
@@ -79,7 +85,7 @@ export default function TabelaProdutosGerentesComponent(props: any) {
                             rowKey={(record) => record.cod_produto_pre}
                             title={() => <Typography style={{ fontSize: '1.2rem', padding: '0px' }}>Produtos( Quant. {quantidade})</Typography>}
                         />
-                    </Spin>
+                    </Skeleton>
                 </div>
             </div>
         </>

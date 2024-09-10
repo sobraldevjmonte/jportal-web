@@ -37,7 +37,7 @@ interface PropsProfJMonte {
 
 interface LojasType {
     cod_loja_pre: number;
-    codloja: string;
+    id_loja: string;
     descricao: string;
 }
 export default function AdminProjJmonte(props: any) {
@@ -90,7 +90,7 @@ export default function AdminProjJmonte(props: any) {
     async function listaLojas() {
         try {
             let rs = await serviceRt.listarLojas();
-            //console.log(rs)
+            console.log(rs)
             setLojas(rs.data.lojas)
         } catch (error) {
             console.error('Erro ao buscar lojas:', error);
@@ -549,6 +549,7 @@ export default function AdminProjJmonte(props: any) {
     ];
 
     function selecionarLoja(e: any, loja: any) {
+        console.log(e)
         setLojaSelecionada(e)
         setLojaSelecionadaDescricao(loja.data.descricao)
     }
@@ -593,7 +594,7 @@ export default function AdminProjJmonte(props: any) {
                         <Select id="selectLoja" onSelect={selecionarLoja} defaultValue="sem" style={{ width: 200 }}>
                             <Select.Option value="sem"> </Select.Option>
                             {lojas.map(loja => (
-                                <Select.Option key={loja.codloja} value={loja.codloja} data={loja}>
+                                <Select.Option key={loja.id_loja} value={loja.id_loja} data={loja}>
                                     {loja.descricao}
                                 </Select.Option>
                             ))}

@@ -29,7 +29,7 @@ interface IndicadoresType {
 
 interface LojasType {
     cod_loja_pre: number;
-    codloja: string;
+    id_loja: string;
     descricao: string;
 }
 
@@ -226,9 +226,8 @@ export default function TabelaIndicadoresComponent() {
     }
 
     function selecionarLoja(e: any, loja: any) {
-        //console.log(e);
-        //console.log(loja.data.descricao);
-        //const descricao = loja.data.descricao;
+        console.log(e);
+        console.log(loja.data.descricao);
         setLojaSelecionada(e)
         setLojaSelecionadaDescricao(loja.data.descricao)
     }
@@ -254,7 +253,7 @@ export default function TabelaIndicadoresComponent() {
                         <Select id="selectLoja" onSelect={selecionarLoja} defaultValue="sem" style={{ width: 200 }}>
                             <Select.Option value="sem"> </Select.Option>
                             {lojas.map(loja => (
-                            <Select.Option key={loja.codloja} value={loja.codloja} data={loja}>
+                            <Select.Option key={loja.id_loja} value={loja.id_loja} data={loja}>
                                 {loja.descricao}
                             </Select.Option>
                             ))}

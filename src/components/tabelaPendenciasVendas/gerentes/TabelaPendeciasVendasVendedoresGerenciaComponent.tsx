@@ -48,7 +48,8 @@ export default function TabelaPendeciasVendasVendedoresGerenciaComponent(props: 
 
     useEffect(() => {
         listaPendenciasVendas()
-    }, [])
+        setQuantidade(0)
+    }, [props])
 
     async function listaPendenciasVendas() {
 

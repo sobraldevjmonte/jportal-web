@@ -56,6 +56,7 @@ const ModalGerentesNpsComponent: React.FC<SelecaoNpModalProps> = ({ visible, onC
         if (visible) {
             _listaPendenciasVendas();
         }
+        setQuantidade(0)
     }, [visible, idCliente])
 
     async function _listaPendenciasVendas() {
