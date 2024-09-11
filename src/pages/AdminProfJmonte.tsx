@@ -486,20 +486,6 @@ export default function AdminProjJmonte(props: any) {
                 };
             },
         },
-        // {
-        //     title: 'Troca?', dataIndex: 'aberto', key: 'aberto', 
-        //     render: (text: string, record: any) =>
-        //         <span style={{ fontSize: tamFonte }} >
-        //             {record.aberto === 'S' ? '' : record.aberto === 'X' ? 'SOLICITADO' : 'PREMIADO'}
-        //         </span>,
-        //     onHeaderCell: () => {
-        //         return {
-        //             style: {
-        //                 backgroundColor: 'yellow', // Cor de fundo do cabeçalho
-        //             },
-        //         };
-        //     },
-        // },
         {
             title: 'Status', dataIndex: 'status', key: 'status',
             render: (text: string, record: any) =>
