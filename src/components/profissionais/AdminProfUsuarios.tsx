@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import { UsuarioContext } from "../context/useContext";
-import ProfissionaisService from "../service/ProfissonaisService";
+import { UsuarioContext } from "../../context/useContext";
+import ProfissionaisService from "../../service/ProfissonaisService";
 import { Button, Col, Row, Spin, Table, TableColumnsType, Typography } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined, SyncOutlined } from "@ant-design/icons";
-import { Notificacao } from '../components/notificacoes/notification';
+import { Notificacao } from '../notificacoes/notification';
 import { notification } from 'antd';
 
 

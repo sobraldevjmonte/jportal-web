@@ -1,12 +1,12 @@
 import { DeleteOutlined, DownloadOutlined, EditOutlined, PlusOutlined, SaveOutlined, StopOutlined, SyncOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Col, Divider, Drawer, DrawerProps, Form, Input, RadioChangeEvent, Row, Space, Spin, Switch, Table, TableColumnsType, Tooltip, Typography, Upload } from "antd";
 import { useContext, useEffect, useState } from "react";
-import { UsuarioContext } from "../context/useContext";
-import ProfissionaisService from "../service/ProfissonaisService";
-import { Notificacao } from '../components/notificacoes/notification';
+import { UsuarioContext } from "../../context/useContext";
+import ProfissionaisService from "../../service/ProfissonaisService";
+import { Notificacao } from '../notificacoes/notification';
 
 
-const { retornarDouble } = require('../../src/utils/formatarValores');
+const { retornarDouble } = require('../../../src/utils/formatarValores');
 
 
 const serviceProf = new ProfissionaisService()

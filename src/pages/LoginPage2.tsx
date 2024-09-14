@@ -85,6 +85,7 @@ export default function LoginPage2() {
             setIdUsuario(resp.data.idusuario)
             setCodigoUsuario(resp.data.codigousuario)
             setLoja(resp.data.loja)
+            // setIdLoja(0)
             setIdLoja(resp.data.idLoja)
             setIcomp(resp.data.icomp)
             setNivelUsuario(resp.data.nivelusuario)

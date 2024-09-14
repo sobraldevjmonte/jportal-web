@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { UsuarioContext } from "../context/useContext";
+import { UsuarioContext } from "../../context/useContext";
 import { Button, Col, DatePicker, DatePickerProps, Row, Select, Space, Spin, Table, TableColumnsType, Typography, Input, Tooltip } from "antd";
 import { CheckOutlined, CloseCircleOutlined, DeliveredProcedureOutlined, DollarCircleOutlined, DownloadOutlined, FilterOutlined, IssuesCloseOutlined, SaveOutlined, SyncOutlined, TrophyOutlined, UnlockOutlined } from "@ant-design/icons";
 import Title from 'antd/es/typography/Title';
-import RtService from "../service/RtService";
-import ProfissionaisPremiosPedidosService from "../service/ProfissionaisPremiosPedidosService";
+import RtService from "../../service/RtService";
+import ProfissionaisPremiosPedidosService from "../../service/ProfissionaisPremiosPedidosService";
 
 const serviceProf = new ProfissionaisPremiosPedidosService()
 

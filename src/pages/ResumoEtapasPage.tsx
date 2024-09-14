@@ -54,16 +54,13 @@ export default function ResumoEtapasPage() {
         <>
             <div>
                 <Row>
-                    {/*<ListaLojasComponent funcao={_selecionarLoja} /> */}
                     {liberarListaVendedores ? <ListaVendedoresComponent idLoja={lojaSelecionadaResumo} /> : null}
                 </Row>
 
-                {idNivelUsuario === 3 ? <TabelaPendeciasVendasVendedoresComponent/> : null} {/*vendedores*/}
-                {idNivelUsuario === 13 ? <TabelaPendeciasVendasVendedoresComponent/> : null} {/*promotores*/}
+                {idNivelUsuario === 3 || idNivelUsuario === 13 ? <TabelaPendeciasVendasVendedoresComponent /> : null} {/*vendedores*/}
                 {idNivelUsuario === 9 ? <TabelaPendeciasVendasAdministradorComponent /> : null}{/*compras*/}
-                {idNivelUsuario === 12 ? <TabelaPendeciasVendasGerentesComponent /> : null}{/*gerentes*/}
-                {idNivelUsuario === 2 ? <TabelaPendeciasVendasGerentesComponent /> : null}{/*gerentes*/}
-                {idNivelUsuario === 1 ||  idNivelUsuario === 11 ? <TabelaPendeciasVendasAdministradorComponent /> : null}{/*admin e TI*/}
+                {idNivelUsuario === 12 || idNivelUsuario === 2 ? <TabelaPendeciasVendasGerentesComponent /> : null}{/*gerentes*/}
+                {idNivelUsuario === 1 || idNivelUsuario === 11 ? <TabelaPendeciasVendasAdministradorComponent /> : null}{/*admin e TI*/}
             </div>
         </>
     )

@@ -173,11 +173,13 @@ class ProfissionaisService {
 
   }
 
-  async rejeitarPedido(id_vendas: number) {
+  async rejeitarPedido(obj: any) {
     console.log("*********** listarPedidos(ProfissionaisService) *****************");
     let rs;
     try {
-      const response = await api.put(`/profissionais/rejeitar-np/${id_vendas}`);
+      // const response = await api.put(`/profissionais/rejeitar-np/${obj}`);
+      console.log(obj)
+      const response = await api.put(`/profissionais/rejeitar-np`, {obj});
       console.log(response)
       if (response.status) {
         rs = {
@@ -254,11 +256,11 @@ class ProfissionaisService {
     }
     return rs;
   }
-  async listarPedidos() {
+  async listarPedidos(mes: number, ano: number, idLoja: number) {
     console.log("*********** listarPedidos(ProfissionaisService) *****************");
     let rs;
     try {
-      const response = await api.get(`/profissionais/listar-pedidos`);
+      const response = await api.get(`/profissionais/listar-pedidos/${mes}/${ano}/${idLoja}`);
 
       rs = {
         statusCode: 200,

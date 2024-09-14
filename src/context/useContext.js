@@ -7,7 +7,7 @@ export const UserProvider = ({ children }) => {
   const [nivelUsuario, setNivelUsuario] = useState("");
   const [codigoUsuario, setCodigoUsuario] = useState("");
   const [idUsuario, setIdUsuario] = useState(0);
-  const [loja, setLoja] = useState("");
+  const [loja, setLoja] = useState(0);
   const [idNivelUsuario, setIdNivelUsuario] = useState(999);
   const [subNivel1, setSubNivel1] = useState(999);
   const [idLoja, setIdLoja] = useState(9999)

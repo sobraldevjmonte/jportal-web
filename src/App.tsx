@@ -5,10 +5,10 @@ import HomePage from './pages/HomePage';
 import ResumoEtapasPage from './pages/ResumoEtapasPage';
 import LoginPage2 from './pages/LoginPage2';
 import AnaliseNpPage from './pages/AnaliseNpPage';
-import AdminProjJmonte from './pages/AdminProfJmonte';
-import AdminProfUsuarios from './pages/AdminProfUsuarios';
-import AdminProfPremios from './pages/AdminProfPremios';
-import AdminProfPremiosPedidos from './pages/AdminProfPremiosPedidos';
+import AdminProjJmonte from './components/profissionais/AdminProfJmonte';
+import AdminProfUsuarios from './components/profissionais/AdminProfUsuarios';
+import AdminProfPremios from './components/profissionais/AdminProfPremios';
+import AdminProfPremiosPedidos from './components/profissionais/AdminProfPremiosPedidos';
 
 function App() {
   return (

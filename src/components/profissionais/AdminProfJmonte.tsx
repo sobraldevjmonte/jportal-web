@@ -1,13 +1,14 @@
 import { useContext, useEffect, useState } from "react";
-import { UsuarioContext } from "../context/useContext";
+import { UsuarioContext } from "../../context/useContext";
 import { Button, Col, DatePicker, DatePickerProps, Row, Select, Space, Spin, Table, TableColumnsType, Typography, Input, Tooltip } from "antd";
 import { CheckOutlined, CloseCircleOutlined, DollarCircleOutlined, DownloadOutlined, FilterOutlined, SaveOutlined, SearchOutlined, SyncOutlined, TrophyOutlined } from "@ant-design/icons";
 import Title from 'antd/es/typography/Title';
-import RtService from "../service/RtService";
-import ProfissionaisService from "../service/ProfissonaisService";
-import SelecaoNpModal from "./modal_np";
+import RtService from "../../service/RtService";
+import ProfissionaisService from "../../service/ProfissonaisService";
+import SelecaoNpModal from "../../pages/modal_np";
 
-import { Notificacao } from '../components/notificacoes/notification';
+import { Notificacao } from '../notificacoes/notification';
+import ModalJustificativaRejeicao from "./ModalJustificativaRejeitar";
 
 const serviceProf = new ProfissionaisService()
 
@@ -33,6 +34,7 @@ interface PropsProfJMonte {
     premiado: boolean;
     aberto: string;
     comissao: number;
+    motivo_rejeicao: string;
 }
 
 interface LojasType {
@@ -55,7 +57,7 @@ export default function AdminProjJmonte(props: any) {
 
     const [periodo, setPeriodo] = useState(0)
     const [lojas, setLojas] = useState<LojasType[]>([])
-    const [lojaSelecionada, setLojaSelecionada] = useState(idLoja)
+    const [lojaSelecionada, setLojaSelecionada] = useState(0)
     const [lojaSelecionadaDescricao, setLojaSelecionadaDescricao] = useState(loja)
 
     const [numeroNp, setNumeroNp] = useState(0)
@@ -74,14 +76,12 @@ export default function AdminProjJmonte(props: any) {
         if (mesAtual == 1) {
             setMes(11)
             setAno(anoAtual - 1)
-            listaDados(11, anoAtual - 1, lojaSelecionada)
-            setLojaSelecionada(idLoja)
         } else {
             setMes(mesAtual - 1)
             setAno(anoAtual)
-            listaDados(mesAtual - 1, anoAtual, lojaSelecionada)
-            setLojaSelecionada(idLoja)
         }
+        // setLojaSelecionada(idLoja)
+        setLojaSelecionada(0)
 
         listaLojas()
         listaPedidos()
@@ -90,7 +90,6 @@ export default function AdminProjJmonte(props: any) {
     async function listaLojas() {
         try {
             let rs = await serviceRt.listarLojas();
-            console.log(rs)
             setLojas(rs.data.lojas)
         } catch (error) {
             console.error('Erro ao buscar lojas:', error);
@@ -100,8 +99,7 @@ export default function AdminProjJmonte(props: any) {
     async function listaPedidos() {
         try {
             setLoading(true);
-            let rs = await serviceProf.listarPedidos();
-            console.log(rs)
+            let rs = await serviceProf.listarPedidos(mes, ano, lojaSelecionada);
 
             setDados(rs.data.lista_pedidos);
             setQuantidade(rs.data.registros);
@@ -117,7 +115,6 @@ export default function AdminProjJmonte(props: any) {
 
     async function buscarNpx(numero_np: any, id_np: any, id_loja: number) {
         setIdNpAtualizar(id_np)
-        console.log(numero_np, id_np, id_loja);
         setNpList([]);
 
         if (numero_np > 0) {
@@ -125,7 +122,7 @@ export default function AdminProjJmonte(props: any) {
                 setLoading(true);
                 let rs = await serviceProf.buscarNp(numero_np);
                 console.log(rs)
-               
+
                 if (rs.data.lista_nps.length > 1) {
                     setNpList(rs.data.lista_nps);
                     setModalVisible(true);
@@ -157,10 +154,10 @@ export default function AdminProjJmonte(props: any) {
                         console.log(rsx);
                     }
                 }
-               
+
             } catch (error) {
                 setNotificacao({ message: 'Atenção!', description: 'NP não encontrada.' });
-                    setTimeout(() => setNotificacao(null), 3000);
+                setTimeout(() => setNotificacao(null), 3000);
             } finally {
                 setLoading(false);
             }
@@ -234,7 +231,6 @@ export default function AdminProjJmonte(props: any) {
 
     const processarNpSelecionado = (npSelecionado: string) => {
         console.log('Processando NP selecionado:', npSelecionado);
-        // Lógica para processar a NP selecionada
     };
 
     const modalNp = () => {
@@ -250,19 +246,17 @@ export default function AdminProjJmonte(props: any) {
 
     //********************** MODAL SELECIONAR NP **********************/
 
+    // async function salvarRegistro(record: PropsProfJMonte) {
+    //     try {
+    //         setLoading(true);
+    //         // let rs = await serviceProf.salvarNp(record);
 
-
-    async function salvarRegistro(record: PropsProfJMonte) {
-        try {
-            setLoading(true);
-            // let rs = await serviceProf.salvarNp(record);
-
-        } catch (error) {
-            console.error('Erro ao buscar indicadores:', error);
-        } finally {
-            setLoading(false);
-        }
-    }
+    //     } catch (error) {
+    //         console.error('Erro ao buscar indicadores:', error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }
 
     async function aprovarPedidox(record: PropsProfJMonte) {
         try {
@@ -273,26 +267,6 @@ export default function AdminProjJmonte(props: any) {
                 setDados(prevDados =>
                     prevDados.map(item =>
                         item.id_vendas === record.id_vendas ? { ...item, status: 'A' } : item
-                    )
-                );
-            }
-
-        } catch (error) {
-            console.error('Erro ao buscar indicadores:', error);
-        } finally {
-            setLoading(false);
-            // listaPedidos()
-        }
-    }
-    async function rejeitarPedidox(record: PropsProfJMonte) {
-        try {
-            setLoading(true);
-            let rs = await serviceProf.rejeitarPedido(record.id_vendas);
-
-            if (rs.statusCode === 200) {
-                setDados(prevDados =>
-                    prevDados.map(item =>
-                        item.id_vendas === record.id_vendas ? { ...item, status: 'R' } : item
                     )
                 );
             }
@@ -382,17 +356,6 @@ export default function AdminProjJmonte(props: any) {
                 };
             },
         },
-        
-        // {
-        //     title: 'Profissional', dataIndex: 'profissional', key: 'profissional', width: '300px',
-        //     onHeaderCell: () => {
-        //         return {
-        //             style: {
-        //                 backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
-        //             },
-        //         };
-        //     },
-        // },
         {
             title: 'Imagem', dataIndex: 'imagem', key: 'imagem', align: 'center', width: '50px',
             render: (text, record) => (
@@ -412,7 +375,7 @@ export default function AdminProjJmonte(props: any) {
             title: 'Número NP',
             dataIndex: 'numero_np',
             key: 'numero_np',
-            width: '120px',
+            width: '130px',
             render: (text: number, record: PropsProfJMonte) => (
                 <div>
                     <Input
@@ -515,7 +478,7 @@ export default function AdminProjJmonte(props: any) {
                         <Button icon={<CheckOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '' }} disabled={record.status == 'A' || record.status == 'R' || record.valor_np == null} onClick={() => aprovarPedidox(record)} />
                     </Tooltip>
                     <Tooltip title="Rejeitar" color="#000">
-                        <Button icon={<CloseCircleOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: 'red' }} disabled={record.status == 'A' || record.status == 'R'} onClick={() => rejeitarPedidox(record)} />
+                        <Button icon={<CloseCircleOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: 'red' }} disabled={record.status == 'A' || record.status == 'R'} onClick={() => abrirModalRejeitarPedido(record)} />
                     </Tooltip>
                     {/* <Tooltip title="Premiar" color="blue">
                         <Button icon={<TrophyOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, }} title="Premiar" disabled={(record.aberto == 'S' || record.aberto === 'P') || (record.status == 'P' || record.status == 'R')}  />
@@ -535,7 +498,6 @@ export default function AdminProjJmonte(props: any) {
     ];
 
     function selecionarLoja(e: any, loja: any) {
-        console.log(e)
         setLojaSelecionada(e)
         setLojaSelecionadaDescricao(loja.data.descricao)
     }
@@ -547,23 +509,16 @@ export default function AdminProjJmonte(props: any) {
         setAno(+anoF);
     };
 
-    async function listaDados(mes: number, ano: number, loja: string) {
-        console.log(mes, ano)
-        try {
-            setLoading(true);
-        } catch (error) {
-            console.error('Erro ao buscar indicadores:', error);
-        } finally {
-            setLoading(false);
-        }
-    }
-
-
-    function filtrar() {
-        let per = ano + '' + mes
-        setPeriodo(+per)
-        listaDados(mes, ano, lojaSelecionada)
-    }
+    // async function listaDados(mes: number, ano: number, loja: number) {
+    //     console.log(mes, ano)
+    //     try {
+    //         setLoading(true);
+    //     } catch (error) {
+    //         console.error('Erro ao buscar indicadores:', error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }
 
     const filtrosPesquisa = () => {
         return (
@@ -577,8 +532,8 @@ export default function AdminProjJmonte(props: any) {
                     </Col>
                     <Col >
                         <Title level={5}>Loja:</Title>
-                        <Select id="selectLoja" onSelect={selecionarLoja} defaultValue="sem" style={{ width: 200 }}>
-                            <Select.Option value="sem"> </Select.Option>
+                        <Select id="selectLoja" onSelect={selecionarLoja} defaultValue="0" style={{ width: 200 }}>
+                            <Select.Option key={0} value="0" data={"TODAS"}>TODAS</Select.Option>
                             {lojas.map(loja => (
                                 <Select.Option key={loja.id_loja} value={loja.id_loja} data={loja}>
                                     {loja.descricao}
@@ -604,19 +559,73 @@ export default function AdminProjJmonte(props: any) {
                             <Typography style={{ fontSize: '1.0rem', paddingLeft: '8px' }}> Mês/Ano: </Typography>
                             <Typography style={{ fontSize: '1.0rem', paddingLeft: '8px', color: 'blue' }}> {mes}/{ano}</Typography>
                             <Typography style={{ fontSize: '1.0rem', paddingLeft: '8px' }}> Loja: </Typography>
-                            <Typography style={{ fontSize: '1.0rem', color: 'blue', paddingLeft: '8px' }}> {lojaSelecionadaDescricao}({lojaSelecionada}) </Typography>
+                            <Typography style={{ fontSize: '1.0rem', color: 'blue', paddingLeft: '8px' }}> {lojaSelecionadaDescricao}({idLoja}) </Typography>
                         </Row>
                     </Col>
                     <Col style={{ paddingLeft: '30px', paddingTop: '58px' }}>
-                        <Button title='Filtrar' style={{ backgroundColor: '#1E90FF', borderColor: '#1E90FF', color: '#fff', width: '150px' }} icon={<FilterOutlined title='Filtrar' />} onClick={filtrar} >Filtrar</Button>
+                        <Button title='Filtrar' style={{ backgroundColor: '#1E90FF', borderColor: '#1E90FF', color: '#fff', width: '150px' }} icon={<FilterOutlined title='Filtrar' />} onClick={listaPedidos} >Filtrar</Button>
                     </Col>
                 </Row>
             </>
         )
     }
 
+    //********************** MODAL REJEITAR PEDIDO ****************/
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [pedidoId, setPedidoId] = useState<number | null>(null);
+
+    async function rejeitarPedidoxOld(record: PropsProfJMonte) {
+        try {
+            setLoading(true);
+            let rs = await serviceProf.rejeitarPedido(record.id_vendas);
+
+            if (rs.statusCode === 200) {
+                setDados(prevDados =>
+                    prevDados.map(item =>
+                        item.id_vendas === record.id_vendas ? { ...item, status: 'R' } : item
+                    )
+                );
+            }
+
+        } catch (error) {
+            console.error('Erro ao buscar indicadores:', error);
+        } finally {
+            setLoading(false);
+            // listaPedidos()
+        }
+    }
+
+    const modalRejeitarPedido = () => {
+        return (
+            <ModalJustificativaRejeicao
+                pedidoId={pedidoId!}
+                visible={isModalVisible}
+                onConfirm={handleConfirmRejeitar}
+                onCancel={handleCancelModal}
+            />
+        );
+    };
+    // Função para abrir o modal
+    const abrirModalRejeitarPedido = (record: any) => {
+        setPedidoId(record.id_vendas); // Captura o ID do pedido ao abrir o modal
+        setIsModalVisible(true); // Exibe o modal
+    };
+
+    const handleConfirmRejeitar = (obs: string) => {
+        setIsModalVisible(false);
+        listaPedidos();
+    };
+    const handleCancelModal = () => {
+        setIsModalVisible(false);
+    };
+    //********************** MODAL REJEITAR PEDIDO ****************/
+
     return (
         <div style={{ backgroundColor: '#fff' }}>
+            <div style={{ backgroundColor: '#fff' }}>
+                {pedidoId !== null && modalRejeitarPedido()}
+            </div>
+
             {notificacao && <Notificacao message={notificacao.message} description={notificacao.description} />}
             {modalNp()}
             <div>
