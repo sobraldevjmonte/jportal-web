@@ -28,6 +28,7 @@ interface PendenciasVendasType {
     etapa9: number;
     etapa10: number;
     contatou: boolean;
+    cliente_obra: string;
 }
 
 interface PropsPendencias {
@@ -77,6 +78,19 @@ export default function TabelaPendeciasVendasVendedoresGerenciaComponent(props: 
         setModalVisible(true)
     }
 
+    async function setObra(idCliente: number){
+
+        setLoading(true);
+        try {
+            let rs = await service.clienteObra(idCliente);
+        } catch (error) {
+            console.error('Erro ao buscar dados:', error);
+        } finally {
+            setLoading(false);
+            listaPendenciasVendas()
+        }
+    }
+
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const modalNp = () => {
         return (
@@ -104,6 +118,14 @@ export default function TabelaPendeciasVendasVendedoresGerenciaComponent(props: 
             render: (text, record) => (
                 <Tooltip title={`Lista de NPs do Cliente ${record.nomecliente}`} color="#000">
                     <Button icon={<FileTextOutlined />} onClick={() => setDadosModal(record.nomecliente, record.idcliente)} style={{ marginRight: '5px', width: '30px' }} title="Lista de NPs do cliente" />
+                </Tooltip>
+            ),
+        },
+        { title: 'OBRA', dataIndex: 'cliente_obra', key: 'nomeVendedor', align: 'center', 
+            // render: (cliente_obra, record) => <span style={{ fontSize: tamFonte}}>{cliente_obra !== null ? 'S': '' }</span> },
+            render: (text, record) => (
+                <Tooltip title='Cliente é OBRA?' color="#000">
+                    <Button onClick={() => setObra(record.idcliente)} style={{ marginRight: '', width: '30px', border: '0px' }} title="Definir o cliente como obra ou NÃO.">{record.cliente_obra}</Button>
                 </Tooltip>
             ),
         },

@@ -14,8 +14,6 @@ class ProfissionaisService {
     let response;
     try {
       response = await api.put(`/profissionais/inativar-brinde/${id_brinde}`);
-
-      console.log(response)
       rs = {
         msg: response.data.mensagem,
         statusCode: response.status
@@ -35,7 +33,6 @@ class ProfissionaisService {
     let response;
     try {
       response = await api.delete(`/profissionais/excluir-brinde/${id_brinde}`);
-      console.log(response);
       rs = {
         msg: response.data.mensagem,
         statusCode: response.status
@@ -65,8 +62,6 @@ class ProfissionaisService {
     }
     try {
       response = await api.put(`/profissionais/atualizar-brinde`, dados, { headers: { 'Content-Type': 'application/json' } });
-
-      console.log(response)
       rs = {
         statusCode: 200
       };
@@ -79,7 +74,6 @@ class ProfissionaisService {
     }
     return rs;
   }
-
   async salvarRegistro(objeto: any) {
     console.log("*********** upLoadImage(ProfissionaisService) *****************");
     let rs;
@@ -93,20 +87,15 @@ class ProfissionaisService {
       codigo: objeto.codigo,
       ativo: 'S'
     }
-    console.log("********* xibiu 1 **************")
-    console.log(dados)
     try {
       rs = await api.post(`/profissionais/salvar-brinde`, dados);
 
-      console.log("********* xibiu 2 **************")
-      console.log(rs.data)
       return rs.data;
     } catch (error) {
       console.log(error);
     }
     return rs;
   }
-
   async upLoadImage(image: any) {
     let rs;
     let response;
@@ -133,12 +122,7 @@ class ProfissionaisService {
     }
     return rs;
   }
-
   async salvarNp(dataEncontrada: string, valorEncontrado: number, vlr_pp: number, id_np: number, numero_np: string, idLoja: number) {
-    console.log('********* service salvarnp ********************************')
-    console.log(dataEncontrada, valorEncontrado, vlr_pp, id_np);
-    console.log('********* service salvarnp ********************************')
-
     console.log("*********** salvarNp(ProfissionaisService) *****************");
     let rs;
 
@@ -151,13 +135,6 @@ class ProfissionaisService {
     }
     try {
       const response = await api.put(`/profissionais/salvar-np/${id_np}`, dados, { headers: { 'Content-Type': 'application/json' } });
-
-      // const resposta = await axios.put(
-      //   `${this.host}adm_vendas/atualizarStatusPedido`,
-      //   dados,
-      //   { headers: { 'Content-Type': 'application/json' } }
-      // )
-
       rs = {
         statusCode: response.status,
         data: response.data,
@@ -172,15 +149,11 @@ class ProfissionaisService {
     return rs;
 
   }
-
   async rejeitarPedido(obj: any) {
     console.log("*********** listarPedidos(ProfissionaisService) *****************");
     let rs;
     try {
-      // const response = await api.put(`/profissionais/rejeitar-np/${obj}`);
-      console.log(obj)
-      const response = await api.put(`/profissionais/rejeitar-np`, {obj});
-      console.log(response)
+      const response = await api.put(`/profissionais/rejeitar-np`, { obj });
       if (response.status) {
         rs = {
           statusCode: response.status,
@@ -234,7 +207,6 @@ class ProfissionaisService {
     let rs;
     try {
       const response = await api.get(`/profissionais/buscar-np/${id_np}`);
-      console.log(response)
       if (response.status) {
         rs = {
           statusCode: response.status,
@@ -261,7 +233,6 @@ class ProfissionaisService {
     let rs;
     try {
       const response = await api.get(`/profissionais/listar-pedidos/${mes}/${ano}/${idLoja}`);
-
       rs = {
         statusCode: 200,
         data: response.data,
@@ -275,6 +246,19 @@ class ProfissionaisService {
     }
     return rs;
   }
+
+
+
+  async imprimirPedidos(mes: number, ano: number, idLoja: number) {
+    const response = await api.get(`/profissionais/imprimir-pedidos/${mes}/${ano}/${idLoja}`, {
+      responseType: 'blob',  // Importante para garantir que o PDF seja tratado como um arquivo
+    });
+    return response;
+  }
+
+
+
+
 
   async listarPremios() {
     console.log("*********** listarPremios(ProfissionaisService) *****************");
@@ -295,7 +279,6 @@ class ProfissionaisService {
     }
     return rs;
   }
-
   async listarUsuarios() {
     console.log("*********** listarPedidos(ProfissionaisService) *****************");
     let rs;
@@ -331,7 +314,7 @@ class ProfissionaisService {
         data: response.data,
       };
     } catch (error) {
-      console.error("Error na requisição");
+      console.error(error);
       rs = {
         status: 401,
         msg: "Erro na requisição",
@@ -350,7 +333,7 @@ class ProfissionaisService {
         data: response.data,
       };
     } catch (error) {
-      console.error("Error na requisição");
+      console.error(error);
       rs = {
         statusCode: 401,
         msg: "Não é permito a exclusão.",
@@ -358,7 +341,6 @@ class ProfissionaisService {
     }
     return rs;
   }
-
 }
 
 export default ProfissionaisService;

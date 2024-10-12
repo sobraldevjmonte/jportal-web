@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { UsuarioContext } from "../../context/useContext";
 import { Button, Col, DatePicker, DatePickerProps, Row, Select, Space, Spin, Table, TableColumnsType, Typography, Input, Tooltip } from "antd";
-import { CheckOutlined, CloseCircleOutlined, DollarCircleOutlined, DownloadOutlined, FilterOutlined, SaveOutlined, SearchOutlined, SyncOutlined, TrophyOutlined } from "@ant-design/icons";
+import { CheckOutlined, CloseCircleOutlined, DollarCircleOutlined, DownloadOutlined, FilterOutlined, PrinterFilled, SaveOutlined, SearchOutlined, SyncOutlined, TrophyOutlined } from "@ant-design/icons";
 import Title from 'antd/es/typography/Title';
 import RtService from "../../service/RtService";
 import ProfissionaisService from "../../service/ProfissonaisService";
@@ -73,14 +73,13 @@ export default function AdminProjJmonte(props: any) {
         mesAtual = dataAtual.getMonth();
         anoAtual = dataAtual.getFullYear();
 
-        if (mesAtual == 1) {
+        if (mesAtual === 1) {
             setMes(11)
             setAno(anoAtual - 1)
         } else {
             setMes(mesAtual - 1)
             setAno(anoAtual)
         }
-        // setLojaSelecionada(idLoja)
         setLojaSelecionada(0)
 
         listaLojas()
@@ -110,6 +109,29 @@ export default function AdminProjJmonte(props: any) {
         }
     }
 
+    async function imprimirPedidosx() {
+        try {
+            setLoading(true);
+            const response = await serviceProf.imprimirPedidos(mes, ano, lojaSelecionada);
+    
+            // Manipulação dos dados caso necessário
+            setDados(response.data.lista_pedidos);
+            setQuantidade(response.data.registros);
+    
+            // Criar um link de download para o PDF
+            const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `pedidos_${mes}_${ano}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+        } catch (error) {
+            console.error('Erro ao gerar PDF:', error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const [idNpAtualizar, setIdNpAtualizar] = useState(0)
     const [notificacao, setNotificacao] = useState<{ message: string, description: string } | null>(null);
 
@@ -128,7 +150,7 @@ export default function AdminProjJmonte(props: any) {
                     setModalVisible(true);
 
                 } else if (rs.data.lista_nps.length === 1) {
-                    if (rs.statusCode == 200) {
+                    if (rs.statusCode === 200) {
                         let dataEncontrada = rs.data.lista_nps[0].data_np || '';
                         let valorEncontrado = rs.data.lista_nps[0].vlr_total || '';
                         let vlr_pp = rs.data.lista_nps[0].vlr_pp || '';
@@ -244,20 +266,6 @@ export default function AdminProjJmonte(props: any) {
         );
     };
 
-    //********************** MODAL SELECIONAR NP **********************/
-
-    // async function salvarRegistro(record: PropsProfJMonte) {
-    //     try {
-    //         setLoading(true);
-    //         // let rs = await serviceProf.salvarNp(record);
-
-    //     } catch (error) {
-    //         console.error('Erro ao buscar indicadores:', error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // }
-
     async function aprovarPedidox(record: PropsProfJMonte) {
         try {
             setLoading(true);
@@ -278,9 +286,6 @@ export default function AdminProjJmonte(props: any) {
             // listaPedidos()
         }
     }
-
-
-
 
     const tamFonte = '0.9rem';
     const colorContatou = 'blue'
@@ -380,7 +385,7 @@ export default function AdminProjJmonte(props: any) {
                 <div>
                     <Input
 
-                        readOnly={record.status != 'P'}
+                        readOnly={record.status !== 'P'}
                         value={record.numero_np}
                         width="100%"
                         tabIndex={1}
@@ -475,10 +480,10 @@ export default function AdminProjJmonte(props: any) {
                     </Tooltip> */}
 
                     <Tooltip title="Aprovar" color="#000">
-                        <Button icon={<CheckOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '' }} disabled={record.status == 'A' || record.status == 'R' || record.valor_np == null} onClick={() => aprovarPedidox(record)} />
+                        <Button icon={<CheckOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: '' }} disabled={record.status === 'A' || record.status === 'R' || record.valor_np === null} onClick={() => aprovarPedidox(record)} />
                     </Tooltip>
                     <Tooltip title="Rejeitar" color="#000">
-                        <Button icon={<CloseCircleOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: 'red' }} disabled={record.status == 'A' || record.status == 'R'} onClick={() => abrirModalRejeitarPedido(record)} />
+                        <Button icon={<CloseCircleOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, backgroundColor: 'red' }} disabled={record.status === 'A' || record.status === 'R'} onClick={() => abrirModalRejeitarPedido(record)} />
                     </Tooltip>
                     {/* <Tooltip title="Premiar" color="blue">
                         <Button icon={<TrophyOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2, }} title="Premiar" disabled={(record.aberto == 'S' || record.aberto === 'P') || (record.status == 'P' || record.status == 'R')}  />
@@ -562,8 +567,15 @@ export default function AdminProjJmonte(props: any) {
                             <Typography style={{ fontSize: '1.0rem', color: 'blue', paddingLeft: '8px' }}> {lojaSelecionadaDescricao}({idLoja}) </Typography>
                         </Row>
                     </Col>
-                    <Col style={{ paddingLeft: '30px', paddingTop: '58px' }}>
-                        <Button title='Filtrar' style={{ backgroundColor: '#1E90FF', borderColor: '#1E90FF', color: '#fff', width: '150px' }} icon={<FilterOutlined title='Filtrar' />} onClick={listaPedidos} >Filtrar</Button>
+                    <Col style={{ paddingLeft: '10px', paddingTop: '58px' }}>
+                        <Tooltip title="Filtrar baseado nos filtros." placement="bottomLeft">
+                            <Button style={{ backgroundColor: '#4682B4', borderColor: '#4682B4', color: '#fff', width: '150px' }} icon={<FilterOutlined title='Filtrar' />} onClick={listaPedidos} >Filtrar</Button>
+                        </Tooltip>
+                    </Col>
+                    <Col style={{ paddingLeft: '00px', paddingTop: '58px' }}>
+                        <Tooltip title="Imprimir baseado nos filtros." placement="bottomLeft">
+                            <Button style={{ backgroundColor: '#fff', borderColor: '#000', color: '#000', width: '150px' }} icon={<PrinterFilled title='Imprimir' />} onClick={imprimirPedidosx} >Imprimir</Button>
+                        </Tooltip>
                     </Col>
                 </Row>
             </>

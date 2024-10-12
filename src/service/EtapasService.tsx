@@ -118,6 +118,22 @@ class EtapasService {
     }
     return rs;
   }
+  async clienteObra(idCliente: number){
+    let rs;
+    try {
+      const response = await api.get(`/etapas/cliente-obra/${idCliente}`);
+      rs = {
+        statusCode: 200,
+        data: response.data,
+      };
+    } catch (error) {
+      console.error("Error na requisição");
+      rs = {
+        status: 401,
+        msg: "Erro na requisição",
+      };
+    }
+  }
   async listaPendenciasVendas(idVendedor: number, ordem: string){
     console.log("*********** listaVendedores *****************");
     let rs;

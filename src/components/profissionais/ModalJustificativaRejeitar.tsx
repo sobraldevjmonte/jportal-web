@@ -17,10 +17,6 @@ export default function ModalJustificativaRejeicao({ pedidoId, visible, onConfir
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        console.log(' ******** ModalJustificativaRejeicao ***********')
-        console.log('***** dados passado nos parametros *********')
-        console.log(pedidoId, visible, onConfirm, onCancel)
-        console.log('***** dados passado nos parametros *********')
         if (visible) {
             form.resetFields();
             setObs("");
@@ -28,7 +24,6 @@ export default function ModalJustificativaRejeicao({ pedidoId, visible, onConfir
     }, [visible]);
 
     function atualizarValorObs(e: any){
-        console.log("atualizar valor ", e)
         setObs(e)
     }
 

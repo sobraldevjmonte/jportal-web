@@ -58,9 +58,8 @@ export default function ResumoEtapasPage() {
                 </Row>
 
                 {idNivelUsuario === 3 || idNivelUsuario === 13 ? <TabelaPendeciasVendasVendedoresComponent /> : null} {/*vendedores*/}
-                {idNivelUsuario === 9 ? <TabelaPendeciasVendasAdministradorComponent /> : null}{/*compras*/}
                 {idNivelUsuario === 12 || idNivelUsuario === 2 ? <TabelaPendeciasVendasGerentesComponent /> : null}{/*gerentes*/}
-                {idNivelUsuario === 1 || idNivelUsuario === 11 ? <TabelaPendeciasVendasAdministradorComponent /> : null}{/*admin e TI*/}
+                {idNivelUsuario === 1 || idNivelUsuario === 11 || idNivelUsuario === 9 ? <TabelaPendeciasVendasAdministradorComponent /> : null}{/*admin,TI, compras*/}
             </div>
         </>
     )
