@@ -9,6 +9,7 @@ import AdminProjJmonte from './components/profissionais/AdminProfJmonte';
 import AdminProfUsuarios from './components/profissionais/AdminProfUsuarios';
 import AdminProfPremios from './components/profissionais/AdminProfPremios';
 import AdminProfPremiosPedidos from './components/profissionais/AdminProfPremiosPedidos';
+import EntregasPedidos from './pages/EntregasPedidos';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/adm-prof-usuarios" element={<AdminProfUsuarios />} />
           <Route path="/adm-prof-premios" element={<AdminProfPremios />} />
           <Route path="/adm-prof-premios-pedidos" element={<AdminProfPremiosPedidos />} />
+          <Route path="/entregas-pedidos" element={<EntregasPedidos />} />
         </Route>
         <Route path="/login" element={<LoginPage2 />} />
         {/*<Route path="*" element={<ErrorPage />} />*/}

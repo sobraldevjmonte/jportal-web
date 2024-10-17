@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import EtapasService from "../../../service/EtapasService";
-import { Button, Col, Divider, Input, Modal, Row, Select, Space, Spin, Table, TableColumnsType, Typography } from "antd";
+import { Button, Col, Divider, Input, Modal, Row, Select, Space, Spin, Table, TableColumnsType, Tooltip, Typography } from "antd";
 import TabelaPendenciasSomaEtapasComponent from "./TabelaPendenciasSomaEtapasComponent";
 import TabelaPendenciasVendasContatosComponent from "../TabelaPendenciasVendasContatosComponent";
 import { EditOutlined, SyncOutlined, TagOutlined } from "@ant-design/icons";
@@ -34,6 +34,7 @@ interface PendenciasVendasType {
     etapa9: number;
     etapa10: number;
     contatou: boolean;
+    cliente_obra: string;
 }
 
 interface PropsPendencias {
@@ -88,6 +89,14 @@ export default function TabelaPendeciasVendasVendedoresComponent() {
             width: '60px',
             render: (text, record) => (
                 <Button icon={<TagOutlined />} onClick={() => setDadosModal(record.nomecliente, record.idcliente)} style={{ color: 'orange', marginRight: '5px', borderColor: 'orange', width: '30px' }} title="Inserir Obs. de contato com o cliente." />
+            ),
+        },
+        { title: 'OBRA', dataIndex: 'cliente_obra', key: 'nomeVendedor', align: 'center', 
+            // render: (cliente_obra, record) => <span style={{ fontSize: tamFonte}}>{cliente_obra !== null ? 'S': '' }</span> },
+            render: (text, record) => (
+                <Tooltip title='Cliente é OBRA?' color="#000" style={{alignContent: 'center'}}>
+                    <Typography>{record.cliente_obra}</Typography>
+                </Tooltip>
             ),
         },
         {

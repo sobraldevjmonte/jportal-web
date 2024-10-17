@@ -160,6 +160,11 @@ export default function HomePage() {
                 Etapas/Pendencias
               </Link>
             </Menu.Item>
+            <Menu.Item key="entregas-pedidos">
+              <Link to="/entregas-pedidos" className="nav-text">
+                Entregas Pedidos
+              </Link>
+            </Menu.Item>
 
             {idNivelUsuario !== 3 || idNivelUsuario !== 9 ?
               <Menu.Item key="analise-np-page">
@@ -207,7 +212,7 @@ export default function HomePage() {
             />
 
             <div style={{ paddingRight: 10 }}>
-              Usuário: {nomeUsuario} Nível: {nivelUsuario}/{idNivelUsuario} SubNivel: {subNivel1} Loja: {loja}/{idLoja}
+              Usuário: {nomeUsuario}({codigoUsuario}) Nível: {nivelUsuario}/{idNivelUsuario} SubNivel: {subNivel1} Loja: {loja}/{idLoja}
             </div>
           </Header>
         </Row>
