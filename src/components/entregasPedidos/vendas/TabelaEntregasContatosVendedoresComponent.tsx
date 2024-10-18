@@ -27,7 +27,7 @@ interface EntregasContatosType {
 }
 
 export default function TabelaEntregasContatosVendedoresComponent() {
-    const [dados, setDados] = useState([]);
+    const [dados, setDados] = useState<EntregasContatosType[]>([]);
     const [loading, setLoading] = useState(false);
     const [quantidade, setQuantidade] = useState(0);
 
@@ -37,7 +37,7 @@ export default function TabelaEntregasContatosVendedoresComponent() {
     const [obsx, setObsx] = useState("");
     const [form] = Form.useForm();
 
-    const[idAux,setIdAux] = useState(0)
+    const [idAux, setIdAux] = useState(0)
 
     const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
 
@@ -109,10 +109,18 @@ export default function TabelaEntregasContatosVendedoresComponent() {
             if (obsx === obs) {
 
             }
-            let rs = await service.salvarObsVendedor(dadosx) ;
+            let rs = await service.salvarObsVendedor(dadosx);
             console.log(rs.data)
-            setDados(rs.data.lista_contatos)
-            setQuantidade(rs.data.registros)
+            // setDados(rs.data.lista_contatos)
+            // setQuantidade(rs.data.registros)
+
+            // Atualizar somente o record que foi modificado
+            setDados((prevDados) =>
+                prevDados.map((item) =>
+                    item.np === npModal ? { ...item, obs: obs } : item
+                )
+            );
+
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
         } finally {
@@ -141,8 +149,14 @@ export default function TabelaEntregasContatosVendedoresComponent() {
             }
             let rs = await service.alterarObsVendedor(dadosx);
             console.log(rs.data)
-            setDados(rs.data.lista_contatos)
-            setQuantidade(rs.data.registros)
+            // setDados(rs.data.lista_contatos)
+            // setQuantidade(rs.data.registros)
+
+            setDados((prevDados) =>
+                prevDados.map((item) =>
+                    item.np === npModal ? { ...item, obs: obs } : item
+                )
+            );
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
         } finally {
@@ -162,7 +176,7 @@ export default function TabelaEntregasContatosVendedoresComponent() {
                 visible={isModalVisible}
                 onOk={idAux === null ? salvarObs : alterarObsx}
                 onCancel={handleCancel}
-                okText={idAux === null ?"Salvar" : 'Alterar'}
+                okText={idAux === null ? "Salvar" : 'Alterar'}
                 cancelText="Cancelar"
             >
                 <Typography>NP: {npModal} Data: {dataNpModal} iddewt: {idAux}</Typography>
@@ -176,7 +190,7 @@ export default function TabelaEntregasContatosVendedoresComponent() {
                         <Input.TextArea
                             rows={4}
                             value={obs}
-                            onChange={(e) =>  alterarObs(e.target.value)}
+                            onChange={(e) => alterarObs(e.target.value)}
                         />
                     </Form.Item>
                 </Form>
