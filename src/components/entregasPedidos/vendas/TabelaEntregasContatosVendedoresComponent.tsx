@@ -249,12 +249,19 @@ export default function TabelaEntregasContatosVendedoresComponent() {
                         <Table
                             columns={columns}
                             dataSource={dados}
-                            pagination={false}
+                            // pagination={false}
                             size="small"
                             rowKey={(record) => record.np}
                             style={{ backgroundColor: '#fff' }}
                             title={() => <Typography style={{ fontSize: '1.2rem', padding: '0px' }}>Lista Entregas do Vendedor({quantidade})</Typography>}
                             bordered
+                            pagination={{
+                                //defaultPageSize: 5, // Define o tamanho padrão da página
+                                showSizeChanger: true, // Exibe o seletor de tamanho da página
+                                pageSizeOptions: ['10', '20', '30'], // Opções de tamanho de página disponíveis
+                                showQuickJumper: true, // Exibe o campo de navegação rápida
+                                showTotal: (total, range) => `Mostrando ${range[0]}-${range[1]} de ${total} entregas`, // Exibe informações sobre o total de registros
+                            }}
                         />
                     </div>
                 </Spin>
