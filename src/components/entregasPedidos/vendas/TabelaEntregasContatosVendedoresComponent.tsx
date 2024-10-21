@@ -1,8 +1,9 @@
-import Icon, { CheckCircleOutlined, CloseCircleOutlined, EditOutlined, ExclamationCircleOutlined, SyncOutlined } from "@ant-design/icons";
+import Icon, { CheckCircleOutlined, CloseCircleOutlined, EditOutlined, ExclamationCircleOutlined, SearchOutlined, SyncOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Spin, Table, TableColumnsType, Tooltip, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 import EntregasContatosService from "../../../service/EntregasContatosService";
 import { UsuarioContext } from "../../../context/useContext";
+import dayjs from 'dayjs';
 
 const service = new EntregasContatosService()
 
@@ -179,7 +180,7 @@ export default function TabelaEntregasContatosVendedoresComponent() {
                 okText={idAux === null ? "Salvar" : 'Alterar'}
                 cancelText="Cancelar"
             >
-                <Typography>NP: {npModal} Data: {dataNpModal} iddewt: {idAux}</Typography>
+                <Typography>NP: {npModal} Data: {dataNpModal}</Typography>
                 <Typography>Cliente: {clienteModal}</Typography>
                 <Form form={form} layout="vertical">
                     <Form.Item
@@ -221,8 +222,48 @@ export default function TabelaEntregasContatosVendedoresComponent() {
         },
         { title: 'ID', dataIndex: 'id', key: 'id', width: '5%' },
         { title: 'Data', dataIndex: 'dataprevenda', key: 'dataprevenda', width: '5%' },
-        { title: 'Data Compromisso', dataIndex: 'datacompromisso', key: 'datacompromisso', width: '12%' },
-        { title: 'NP.', dataIndex: 'np', key: 'np', width: '80px' },
+        {
+            title: 'Data Compromisso',
+            dataIndex: 'datacompromisso',
+            key: 'datacompromisso',
+            width: '12%',
+            sorter: (a, b) => {
+                const dateA = dayjs(a.datacompromisso, 'DD/MM/YYYY'); // Ajuste o formato conforme necessário
+                const dateB = dayjs(b.datacompromisso, 'DD/MM/YYYY');
+                return dateA.valueOf() - dateB.valueOf();
+            },
+            defaultSortOrder: 'ascend'
+        },
+        {
+            title: 'NP.', dataIndex: 'np', key: 'np', width: '80px', filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+                <div style={{ padding: 8 }}>
+                    <Input
+                        placeholder="Buscar NP"
+                        value={selectedKeys[0]}
+                        onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                        onPressEnter={() => confirm()}
+                        style={{ width: 188, marginBottom: 8, display: 'block' }}
+                    />
+                    <Button
+                        type="primary"
+                        onClick={() => confirm()}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{ width: 90, marginRight: 8 }}
+                    >
+                        Buscar
+                    </Button>
+                    <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
+                        Limpar
+                    </Button>
+                </div>
+            ),
+            filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+            onFilter: (value, record) => {
+                const searchValue = typeof value === 'string' ? value.toLowerCase() : '';
+                return record.np?.toString().toLowerCase().includes(searchValue);
+            },
+        },
         { title: 'Cliente', dataIndex: 'cliente', key: 'cliente' },
         { title: 'Fone', dataIndex: 'fone', key: 'fone' },
         { title: 'Cel.', dataIndex: 'celular', key: 'celular' },
