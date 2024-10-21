@@ -232,7 +232,7 @@ export default function TabelaEntregasContatosVendedoresComponent() {
                 const dateB = dayjs(b.datacompromisso, 'DD/MM/YYYY');
                 return dateA.valueOf() - dateB.valueOf();
             },
-            defaultSortOrder: 'ascend'
+            defaultSortOrder: 'descend'
         },
         {
             title: 'NP.', dataIndex: 'np', key: 'np', width: '80px', filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
