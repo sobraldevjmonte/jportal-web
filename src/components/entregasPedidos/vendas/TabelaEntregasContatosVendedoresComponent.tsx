@@ -24,10 +24,9 @@ interface EntregasContatosType {
     status: string;
     valortotal: number;
     obs: string;
-
 }
 
-export default function TabelaEntregasContatosVendedoresComponent() {
+export default function TabelaEntregasContatosVendedoresComponent(props: any) {
     const [dados, setDados] = useState<EntregasContatosType[]>([]);
     const [loading, setLoading] = useState(false);
     const [quantidade, setQuantidade] = useState(0);
@@ -41,6 +40,7 @@ export default function TabelaEntregasContatosVendedoresComponent() {
     const [idAux, setIdAux] = useState(0)
 
     const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
+    const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
 
     console.log('---------- Component pre-vendas --------------')
     useEffect(() => {
@@ -51,8 +51,11 @@ export default function TabelaEntregasContatosVendedoresComponent() {
 
     async function listaEntregasContatos() {
         setLoading(true);
+        console.log(idNivelUsuario)
+        console.log(codigoUsuario)
+        console.log(props)
         try {
-            let rs = await service.listaEntregasContatosDoVendedor(codigoUsuario);
+            let rs = await service.listaEntregasContatosDoVendedor(idNivelUsuario === 3 ? codigoUsuario : props.codigoVendedor) ;
             console.log(rs.data)
             setDados(rs.data.lista_contatos)
             setQuantidade(rs.data.registros)
@@ -175,9 +178,9 @@ export default function TabelaEntregasContatosVendedoresComponent() {
         <div>
             <Modal
                 visible={isModalVisible}
-                onOk={idAux === null ? salvarObs : alterarObsx}
+                onOk={idNivelUsuario === 2 ? handleCancel :idAux === null ? salvarObs : alterarObsx}
                 onCancel={handleCancel}
-                okText={idAux === null ? "Salvar" : 'Alterar'}
+                okText={idNivelUsuario === 2 ? 'Ok' : idAux === null ? "Salvar" : 'Alterar'}
                 cancelText="Cancelar"
             >
                 <Typography>NP: {npModal} Data: {dataNpModal}</Typography>
@@ -197,8 +200,6 @@ export default function TabelaEntregasContatosVendedoresComponent() {
                 </Form>
             </Modal>
         </div>
-
-
     )
 
 
@@ -220,7 +221,6 @@ export default function TabelaEntregasContatosVendedoresComponent() {
                 </div>
             ),
         },
-        { title: 'ID', dataIndex: 'id', key: 'id', width: '5%' },
         { title: 'Data', dataIndex: 'dataprevenda', key: 'dataprevenda', width: '5%' },
         {
             title: 'Data Compromisso',
@@ -274,7 +274,7 @@ export default function TabelaEntregasContatosVendedoresComponent() {
             // render: (cliente_obra, record) => <span style={{ fontSize: tamFonte}}>{cliente_obra !== null ? 'S': '' }</span> },
             render: (text, record) => (
                 <Tooltip color="#000" title="Editar Entrega">
-                    <Button icon={<EditOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2 }} disabled={record.status === 'A' || record.status === 'R'} onClick={() => editarEntrega(record)} />
+                    <Button icon={idNivelUsuario === 2 ? <SearchOutlined/> : <EditOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2 }} disabled={record.status === 'A' || record.status === 'R'} onClick={() => editarEntrega(record)} />
                 </Tooltip>
             ),
         },
