@@ -51,9 +51,6 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
 
     async function listaEntregasContatos() {
         setLoading(true);
-        console.log(idNivelUsuario)
-        console.log(codigoUsuario)
-        console.log(props)
         try {
             let rs = await service.listaEntregasContatosDoVendedor(idNivelUsuario === 3 ? codigoUsuario : props.codigoVendedor) ;
             console.log(rs.data)
@@ -108,7 +105,7 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
             np: npModal
         };
 
-        setLoading(true);
+        // setLoading(true);
         try {
             if (obsx === obs) {
 
@@ -128,7 +125,7 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
         } finally {
-            setLoading(false);
+            // setLoading(false);
         }
 
         setIsModalVisible(false);
@@ -146,7 +143,7 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
             np: npModal
         };
 
-        setLoading(true);
+        // setLoading(true);
         try {
             if (obsx === obs) {
 
@@ -164,7 +161,7 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
         } finally {
-            setLoading(false);
+            // setLoading(false);
         }
 
         setIsModalVisible(false);
