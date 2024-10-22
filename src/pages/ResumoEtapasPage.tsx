@@ -8,6 +8,8 @@ import TabelaPendeciasVendasAdministradorComponent from "../components/tabelaPen
 import { UsuarioContext } from "../context/useContext";
 
 
+
+
 export default function ResumoEtapasPage() {
 
     const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
