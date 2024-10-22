@@ -7,9 +7,6 @@ import TabelaPendeciasVendasVendedoresComponent from "../components/tabelaPenden
 import TabelaPendeciasVendasAdministradorComponent from "../components/tabelaPendenciasVendas/adm/TabelaPendeciasVendasAdministradorComponent";
 import { UsuarioContext } from "../context/useContext";
 
-
-
-
 export default function ResumoEtapasPage() {
 
     const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
