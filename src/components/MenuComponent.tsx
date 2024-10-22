@@ -178,10 +178,7 @@ export default function HomePage() {
               </Menu.Item>
               : null}
 
-
-
           </SubMenu>
-
 
           <Menu.Item key="relatorios" icon={<FilePdfOutlined />}>
             <Link to="/relatorios" className="nav-text">
