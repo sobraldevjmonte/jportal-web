@@ -44,6 +44,7 @@ export default function TabelaEntregasContatosGerentesComponent() {
 
     // const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
     const { idLoja, setIdLoja } = useContext(UsuarioContext);
+    const { icomp, setIcomp } = useContext(UsuarioContext);  
 
     useEffect(() => {
         listaEntregasContatos()
@@ -54,7 +55,7 @@ export default function TabelaEntregasContatosGerentesComponent() {
     async function listaEntregasContatos() {
         setLoading(true);
         try {
-            let rs = await service.listaVendedoresDoGerente(idLoja);
+            let rs = await service.listaVendedoresDoGerente(icomp);
             console.log(rs.data)
             setDados(rs.data.lista_contatos)
             setQuantidade(rs.data.registros)

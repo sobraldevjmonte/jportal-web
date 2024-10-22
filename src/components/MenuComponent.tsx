@@ -26,6 +26,8 @@ export default function HomePage() {
   const { loja, setLoja } = useContext(UsuarioContext);
   const { idLoja, setIdLoja } = useContext(UsuarioContext);
   const { logado, setLogado } = useContext(UsuarioContext);
+  const { icomp, setIcomp } = useContext(UsuarioContext);  
+  
   
 
   const [collapsed, setCollapsed] = useState(true);
@@ -160,11 +162,13 @@ export default function HomePage() {
                 Etapas/Pendencias
               </Link>
             </Menu.Item>
+            {idNivelUsuario === 1 || idNivelUsuario === 2 || idNivelUsuario === 11 ?
             <Menu.Item key="entregas-pedidos">
               <Link to="/entregas-pedidos" className="nav-text">
                 Entregas Pedidos
               </Link>
             </Menu.Item>
+            :null}
 
             {idNivelUsuario !== 3 || idNivelUsuario !== 9 ?
               <Menu.Item key="analise-np-page">
@@ -212,7 +216,7 @@ export default function HomePage() {
             />
 
             <div style={{ paddingRight: 10 }}>
-              Usuário: {nomeUsuario}({codigoUsuario}) Nível: {nivelUsuario}/{idNivelUsuario} SubNivel: {subNivel1} Loja: {loja}/{idLoja}
+              Usuário: {nomeUsuario}({codigoUsuario}) Nível: {nivelUsuario}/{idNivelUsuario} SubNivel: {subNivel1} Loja: {loja}/{idLoja}/Icompany: {icomp}
             </div>
           </Header>
         </Row>
