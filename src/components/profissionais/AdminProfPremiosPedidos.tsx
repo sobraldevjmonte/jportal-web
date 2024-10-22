@@ -38,6 +38,10 @@ export default function AdminProfPremiosPedidos() {
     const { nomeUsuario, setNomeUsuario } = useContext(UsuarioContext);
     const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
     const { subNivel1, setSubNivel1 } = useContext(UsuarioContext);
+
+    // subNivel1 = 2 profissionais premios
+    // subNivel1 = 3 etapas nao gerente
+    
     const [dados, setDados] = useState<PropsProfPremios[]>([]);
     const [registros, setQuantidade] = useState(0);
     const [loading, setLoading] = useState(false);

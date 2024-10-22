@@ -14,6 +14,9 @@ export default function ResumoEtapasPage() {
     const { idUsuario, setIdUsuario } = useContext(UsuarioContext);
     const { nivelUsuario, setNivelUsuario } = useContext(UsuarioContext);
     const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
+    const { subNivel1, setSubNivel1 } = useContext(UsuarioContext); 
+    // subNivel1 = 2 profissionais premios
+    // subNivel1 = 3 etapas nao gerente
     const { idLoja, setIdLoja } = useContext(UsuarioContext)
 
     const [lojaSelecionadaResumo, setLojaSelecionadaResumo] = useState(0);
@@ -28,6 +31,7 @@ export default function ResumoEtapasPage() {
                 </Row>
 
                 {idNivelUsuario === 3 || idNivelUsuario === 13 ? <TabelaPendeciasVendasVendedoresComponent /> : null} {/*vendedores*/}
+                {idNivelUsuario === 4 && subNivel1 === 3 ? <TabelaPendeciasVendasGerentesComponent /> : null} {/*vendedores*/}
                 {idNivelUsuario === 12 || idNivelUsuario === 2 ? <TabelaPendeciasVendasGerentesComponent /> : null}{/*gerentes*/}
                 {idNivelUsuario === 1 || idNivelUsuario === 11 || idNivelUsuario === 9 ? <TabelaPendeciasVendasAdministradorComponent /> : null}{/*admin,TI, compras*/}
             </div>
