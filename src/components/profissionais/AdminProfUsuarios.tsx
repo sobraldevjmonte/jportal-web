@@ -100,11 +100,6 @@ export default function AdminProfUsuarios() {
             }else{
                 exibirNotificacao(msg,'error');
             }
-
-
-            // Caso queira atualizar a lista de usuários após a exclusão
-            // setDados(rs.data.lista_usuarios);
-            // setQuantidade(rs.data.registros);
         } catch (error) {
             console.error('Erro ao excluir usuário:', error);
             exibirNotificacao('Ocorreu um erro ao tentar excluir o usuário.','success');
@@ -164,6 +159,11 @@ export default function AdminProfUsuarios() {
             onFilter: (value, record) => {
                 return record.nome.toUpperCase().includes(value.toString());
             },
+            render: (text, record) => (
+                <span style={{ color: record.ativo === 'N' ? 'red' : 'black', fontSize: tamFonte }}>
+                    {text}
+                </span>
+            ),
             onHeaderCell: () => {
                 return {
                     style: {
