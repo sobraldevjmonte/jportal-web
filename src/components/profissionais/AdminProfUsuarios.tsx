@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { UsuarioContext } from "../../context/useContext";
 import ProfissionaisService from "../../service/ProfissonaisService";
-import { Button, Col, Row, Spin, Table, TableColumnsType, Typography } from "antd";
-import { CheckCircleOutlined, CloseCircleOutlined, SyncOutlined } from "@ant-design/icons";
+import { Button, Col, Input, Row, Spin, Table, TableColumnsType, Typography } from "antd";
+import { CheckCircleOutlined, CloseCircleOutlined, SearchOutlined, SyncOutlined } from "@ant-design/icons";
 import { Notificacao } from '../notificacoes/notification';
 import { notification } from 'antd';
 
@@ -131,20 +131,54 @@ export default function AdminProfUsuarios() {
                     },
                 };
             },
-            // onHeaderCell: () => {
-            //     return {
-            //         style: {
-            //             backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
-            //         },
-            //     };
-            // },
         },
+        // {
+        //     title: 'Nome', dataIndex: 'nome', key: 'nome', align: 'left', render: (text, record) => (
+        //         <span style={{ color: record.ativo === 'N' ? 'red' : 'black', fontSize: tamFonte }}>
+        //             {text}
+        //         </span>
+        //     ),
+        //     onHeaderCell: () => {
+        //         return {
+        //             style: {
+        //                 backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
+        //             },
+        //         };
+        //     },
+        // },
+
         {
-            title: 'Nome', dataIndex: 'nome', key: 'nome', align: 'left', render: (text, record) => (
-                <span style={{ color: record.ativo === 'N' ? 'red' : 'black', fontSize: tamFonte }}>
-                    {text}
-                </span>
+            title: 'Nome',
+            dataIndex: 'nome',
+            key: 'nome',
+            width: '300px',
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+                <div style={{ padding: 8 }}>
+                    <Input
+                        placeholder={`Filtrar Profissional`}
+                        value={selectedKeys[0]}
+                        onChange={e => setSelectedKeys(e.target.value ? [e.target.value.toUpperCase()] : [])}
+                        onPressEnter={() => confirm()}
+                        style={{ marginBottom: 8, display: 'block' }}
+                    />
+                    <Button
+                        type="primary"
+                        onClick={() => confirm()}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{ width: 90, marginRight: 8 }}
+                    >
+                        Filtrar
+                    </Button>
+                    <Button onClick={() => clearFilters && clearFilters()} size="small" style={{ width: 90 }}>
+                        Resetar
+                    </Button>
+                </div>
             ),
+            filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+            onFilter: (value, record) => {
+                return record.nome.toUpperCase().includes(value.toString());
+            },
             onHeaderCell: () => {
                 return {
                     style: {
