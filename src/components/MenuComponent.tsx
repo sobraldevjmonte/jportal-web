@@ -162,7 +162,7 @@ export default function HomePage() {
                 Etapas/Pendencias
               </Link>
             </Menu.Item>
-            {idNivelUsuario === 1 || idNivelUsuario === 2 || idNivelUsuario === 11 || idNivelUsuario === 3  ?
+            {idNivelUsuario === 1 || idNivelUsuario === 2 || idNivelUsuario === 11 || idNivelUsuario === 3  || idNivelUsuario === 4 ?
             <Menu.Item key="entregas-pedidos">
               <Link to="/entregas-pedidos" className="nav-text">
                 Entregas Pedidos

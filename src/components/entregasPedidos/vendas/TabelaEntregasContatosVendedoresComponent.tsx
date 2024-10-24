@@ -191,7 +191,9 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
                         <Input.TextArea
                             rows={4}
                             value={obs}
+                            maxLength={255}
                             onChange={(e) => alterarObs(e.target.value)}
+                            showCount
                         />
                     </Form.Item>
                 </Form>
