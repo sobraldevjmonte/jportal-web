@@ -132,21 +132,6 @@ export default function AdminProfUsuarios() {
                 };
             },
         },
-        // {
-        //     title: 'Nome', dataIndex: 'nome', key: 'nome', align: 'left', render: (text, record) => (
-        //         <span style={{ color: record.ativo === 'N' ? 'red' : 'black', fontSize: tamFonte }}>
-        //             {text}
-        //         </span>
-        //     ),
-        //     onHeaderCell: () => {
-        //         return {
-        //             style: {
-        //                 backgroundColor: 'lightblue', // Cor de fundo do cabeçalho
-        //             },
-        //         };
-        //     },
-        // },
-
         {
             title: 'Nome',
             dataIndex: 'nome',
