@@ -1,4 +1,4 @@
-import Icon, { CheckCircleOutlined, CloseCircleOutlined, EditOutlined, ExclamationCircleOutlined, SearchOutlined, SyncOutlined } from "@ant-design/icons";
+import Icon, { CheckCircleOutlined, CloseCircleOutlined, EditOutlined, ExclamationCircleOutlined, FilterOutlined, SearchOutlined, SyncOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Spin, Table, TableColumnsType, Tooltip, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 import EntregasContatosService from "../../../service/EntregasContatosService";
@@ -37,6 +37,8 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
     const [obsx, setObsx] = useState("");
     const [form] = Form.useForm();
 
+    const [dadosOriginais, setDadosOriginais] = useState<EntregasContatosType[]>([]);
+
     const [idAux, setIdAux] = useState(0)
 
     const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
@@ -52,10 +54,15 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
     async function listaEntregasContatos() {
         setLoading(true);
         try {
-            let rs = await service.listaEntregasContatosDoVendedor(idNivelUsuario === 3 ? codigoUsuario : props.codigoVendedor) ;
+            let rs = await service.listaEntregasContatosDoVendedor(idNivelUsuario === 3 ? codigoUsuario : props.codigoVendedor);
             console.log(rs.data)
             setDados(rs.data.lista_contatos)
+            setDadosOriginais(rs.data.lista_contatos)
             setQuantidade(rs.data.registros)
+
+            const generatedFilters = generateFilters(rs.data.lista_contatos);
+            setFilters(generatedFilters);
+
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
         } finally {
@@ -70,8 +77,6 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
     const [npModal, setNpModal] = useState('');
     const [dataNpModal, setDataNpModal] = useState('');
     const [codigoLojaModal, setCodigoLojaModal] = useState('');
-
-
 
     const editarEntrega = (record: any) => {
         console.log(record)
@@ -175,9 +180,10 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
         <div>
             <Modal
                 visible={isModalVisible}
-                onOk={idNivelUsuario === 2 ? handleCancel :idAux === null ? salvarObs : alterarObsx}
+                onOk={idNivelUsuario === 2 ? handleCancel : idAux === null ? salvarObs : alterarObsx}
                 onCancel={handleCancel}
-                okText={idNivelUsuario === 2 ? 'Ok' : idAux === null ? "Salvar" : 'Alterar'}
+                okText={[2, 11, 1, 0].includes(idNivelUsuario) ? 'Ok' : idAux === null ? "Salvar" : 'Alterar'}
+                // [1, 11, 0].includes(idNivelUsuario) ? props.icomp: icomp 
                 cancelText="Cancelar"
             >
                 <Typography>NP: {npModal} Data: {dataNpModal}</Typography>
@@ -200,6 +206,79 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
             </Modal>
         </div>
     )
+
+    // Interface para tipo de filtro
+    interface FilterType {
+        text: string;
+        value: string;
+    }
+
+    // Estado para gerenciar filtros e valores
+    const [filters, setFilters] = useState<FilterType[]>([]);
+    const [filterLoading, setFilterLoading] = useState(false);
+    const [filterValue, setFilterValue] = useState<string>('');
+
+    // Função para gerar opções de filtros baseados na lista
+    const generateFilters = (listaNps: EntregasContatosType[]) => {
+        const uniqueNp: string[] = [...new Set(listaNps.map(item => item.cliente))];
+        return uniqueNp.map(cliente => ({
+            text: cliente,
+            value: cliente,
+        }));
+    };
+
+    // Função para aplicar filtro
+    const applyFilter = (value: string) => {
+        setFilterLoading(true);
+        try {
+            const lowerCaseValue = value.toLowerCase(); // Convert search term to lowercase
+            const filteredData = dados.filter(item => 
+                lowerCaseValue.length > 0 
+                    ? item.cliente.toLowerCase().includes(lowerCaseValue) // Convert item to lowercase before comparing
+                    : true // If filter is empty, show all data
+            );
+    
+            // Check for exact matches and filter accordingly
+            const exactMatch = filteredData.some(item => item.cliente.toLowerCase() === lowerCaseValue);
+    
+            if (exactMatch) {
+                const exactFilteredData = filteredData.filter(item => item.cliente.toLowerCase() === lowerCaseValue);
+                setDados(exactFilteredData);
+            } else {
+                setDados(filteredData);
+            }
+    
+            // Generate updated filters based on filtered data
+            setFilters(generateFilters(filteredData));
+        } catch (error) {
+            console.error('Erro ao aplicar filtro:', error);
+        } finally {
+            setFilterLoading(false);
+        }
+    };
+    
+
+
+    // Função para capturar alterações no Input
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setFilterValue(value);
+        applyFilter(value);
+    };
+
+    // Função para limpar o filtro e restaurar dados originais
+    const clearFilter = () => {
+        setFilterLoading(true);
+        try {
+            setFilterValue(''); // Limpa o valor do filtro
+            setDados(dadosOriginais); // Restaura os dados originais
+            setFilters(generateFilters(dadosOriginais)); // Atualiza os filtros com base nos dados originais
+        } catch (error) {
+            console.error('Erro ao limpar filtro:', error);
+        } finally {
+            setFilterLoading(false);
+        }
+    };
 
 
     const columns: TableColumnsType<EntregasContatosType> = [
@@ -263,7 +342,28 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
                 return record.np?.toString().toLowerCase().includes(searchValue);
             },
         },
-        { title: 'Cliente', dataIndex: 'cliente', key: 'cliente' },
+        // { title: 'Cliente', dataIndex: 'cliente', key: 'cliente' },
+        {
+            title: 'Cliente', dataIndex: 'cliente', key: 'cliente',
+            filterDropdown: (
+                <div style={{ padding: 8 }}>
+                    <Input
+                        placeholder="Filtrar por NP"
+                        value={filterValue}
+                        onChange={handleInputChange}
+                        style={{ marginBottom: 8, display: 'block' }}
+                    />
+                    <Button
+                        onClick={clearFilter}
+                        size="small"
+                        type="link"
+                    >
+                        Limpar Filtro
+                    </Button>
+                </div>
+            ),
+            filterIcon: <Spin spinning={filterLoading}><FilterOutlined style={{ color: filterLoading ? '#1890ff' : undefined }} /></Spin>,
+        },
         { title: 'Fone', dataIndex: 'fone', key: 'fone' },
         { title: 'Cel.', dataIndex: 'celular', key: 'celular' },
         // { title: 'Valor', dataIndex: 'valortotal', key: 'valortotal', width: '120px' },
@@ -272,8 +372,8 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
             title: 'OP.', dataIndex: 'cliente_obra', key: 'nomeVendedor', align: 'center', width: '40px',
             // render: (cliente_obra, record) => <span style={{ fontSize: tamFonte}}>{cliente_obra !== null ? 'S': '' }</span> },
             render: (text, record) => (
-                <Tooltip color="#000" title="Editar Entrega">
-                    <Button icon={idNivelUsuario === 2 ? <SearchOutlined/> : <EditOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2 }} disabled={record.status === 'A' || record.status === 'R'} onClick={() => editarEntrega(record)} />
+                <Tooltip color="#000" title={[2, 11, 1, 0].includes(idNivelUsuario) ? "Visualizar Entrega" : "Editar entrega"}>
+                    <Button icon={[2, 11, 1, 0].includes(idNivelUsuario) ? <SearchOutlined /> : <EditOutlined />} type="primary" style={{ marginRight: 2, marginBottom: 2 }} disabled={record.status === 'A' || record.status === 'R'} onClick={() => editarEntrega(record)} />
                 </Tooltip>
             ),
         },
@@ -293,7 +393,7 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
                             size="small"
                             rowKey={(record) => record.np}
                             style={{ backgroundColor: '#fff' }}
-                            title={() => <Typography style={{ fontSize: '1.2rem', padding: '0px' }}>Lista Entregas do Vendedor({quantidade})</Typography>}
+                            title={() => <Typography style={{ fontSize: '1.2rem', padding: '0px' }}>Lista Entregas do Vendedor({quantidade}) - Vendedores</Typography>}
                             bordered
                             pagination={{
                                 //defaultPageSize: 5, // Define o tamanho padrão da página

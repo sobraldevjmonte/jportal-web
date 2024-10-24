@@ -53,6 +53,26 @@ class EntregasContatosService {
     return rs;
   }
 
+  async listaLojasDoAdmin() {
+    console.log("*********** listaVendedoresDoGerente *****************");
+    let rs;
+    try {
+      const response = await api.get(`/entregas-contatos/lista-lojas-do-admin`);
+      var q = response.data.quantidade
+      rs = {
+        statusCode: 200,
+        data: response.data,
+        quantidade: response.data.quantidade
+      };
+    } catch (error) {
+      console.error("Error na requisição");
+      rs = {
+        status: 401,
+        msg: "Erro na requisição",
+      };
+    }
+    return rs;
+  }
 
   async listaVendedoresDoGerente(codigoLoja: string) {
     console.log("*********** listaVendedoresDoGerente *****************");

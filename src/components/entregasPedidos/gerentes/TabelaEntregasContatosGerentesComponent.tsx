@@ -28,7 +28,7 @@ interface EntregasContatosType {
     obs: string;
 }
 
-export default function TabelaEntregasContatosGerentesComponent() {
+export default function TabelaEntregasContatosGerentesComponent(props: any) {
     const [dados, setDados] = useState<EntregasContatosType[]>([]);
     const [loading, setLoading] = useState(false);
     const [quantidade, setQuantidade] = useState(0);
@@ -45,6 +45,7 @@ export default function TabelaEntregasContatosGerentesComponent() {
     // const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
     const { idLoja, setIdLoja } = useContext(UsuarioContext);
     const { icomp, setIcomp } = useContext(UsuarioContext);  
+    const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
 
     useEffect(() => {
         listaEntregasContatos()
@@ -55,7 +56,8 @@ export default function TabelaEntregasContatosGerentesComponent() {
     async function listaEntregasContatos() {
         setLoading(true);
         try {
-            let rs = await service.listaVendedoresDoGerente(icomp);
+            let rs = await service.listaVendedoresDoGerente([1, 11, 0].includes(idNivelUsuario) ? props.icomp: icomp ); 
+
             console.log(rs.data)
             setDados(rs.data.lista_contatos)
             setQuantidade(rs.data.registros)
@@ -157,7 +159,7 @@ export default function TabelaEntregasContatosGerentesComponent() {
                             size="small"
                             rowKey={(record) => record.codvendedor}
                             style={{ backgroundColor: '#fff' }}
-                            title={() => <Typography style={{ fontSize: '1.2rem', padding: '0px' }}>Lista dos vendedores da loja.({quantidade})</Typography>}
+                            title={() => <Typography style={{ fontSize: '1.2rem', padding: '0px' }}>Lista dos vendedores da loja.({quantidade}) - Gerentes</Typography>}
                             bordered
                             pagination={{
                                 //defaultPageSize: 5, // Define o tamanho padrão da página
