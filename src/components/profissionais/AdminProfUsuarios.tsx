@@ -160,7 +160,7 @@ export default function AdminProfUsuarios() {
                     </Button>
                 </div>
             ),
-            filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+            filterIcon: (filtered) => <SearchOutlined width={20} style={{ fontSize: '18px' , color: filtered ? '#1890ff' : undefined }} />,
             onFilter: (value, record) => {
                 return record.nome.toUpperCase().includes(value.toString());
             },
