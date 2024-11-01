@@ -42,6 +42,7 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
     const [idAux, setIdAux] = useState(0)
 
     const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
+    const { icomp, setIcomp } = useContext(UsuarioContext);  
     const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
 
     console.log('---------- Component pre-vendas --------------')
@@ -53,8 +54,13 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
 
     async function listaEntregasContatos() {
         setLoading(true);
+        let rs;
         try {
-            let rs = await service.listaEntregasContatosDoVendedor(idNivelUsuario === 3 ? codigoUsuario : props.codigoVendedor);
+            if(idNivelUsuario === 3){
+                rs = await service.listaEntregasContatosDoVendedor("ALL", idNivelUsuario === 3 ? codigoUsuario : props.codigoVendedor);
+            }else{
+                rs = await service.listaEntregasContatosDoVendedor(icomp, idNivelUsuario === 3 ? codigoUsuario : props.codigoVendedor);
+            }
             console.log(rs.data)
             setDados(rs.data.lista_contatos)
             setDadosOriginais(rs.data.lista_contatos)

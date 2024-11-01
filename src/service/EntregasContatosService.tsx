@@ -116,11 +116,11 @@ class EntregasContatosService {
     return rs;
   }
 
-  async listaEntregasContatosDoVendedor(codigoVendedor: string) {
+  async listaEntregasContatosDoVendedor(codigoLoja: string,codigoVendedor: string)  {
     console.log("*********** listaEntregasContatosDoVendedor *****************");
     let rs;
     try {
-      const response = await api.get(`/entregas-contatos/lista-entregas-contatos-vendedor/${codigoVendedor}`);
+      const response = await api.get(`/entregas-contatos/lista-entregas-contatos-vendedor/${codigoLoja}/${codigoVendedor}`);
       var q = response.data.quantidade
       rs = {
         statusCode: 200,
