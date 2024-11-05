@@ -97,7 +97,7 @@ export default function TabelaAnaliseNpProdutosAdminComponent(props: any) {
             title: 'FF%', dataIndex: 'fator_financeiro', key: 'fator_financeiro', align: 'right',
             render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.fator_financeiro)).toFixed(2)} </span>
         },
-        ...(idNivelUsuario === 1 && subNivel1 === 1 || idNivelUsuario === 11 && subNivel1 === 1
+        ...(idNivelUsuario === 1 && subNivel1 === 1 || idNivelUsuario === 11 && subNivel1 === 1 || idNivelUsuario === 9 && subNivel1 === 1
             ? [{
                 title: 'LUCRO', 
                 dataIndex: 'lucro', 
