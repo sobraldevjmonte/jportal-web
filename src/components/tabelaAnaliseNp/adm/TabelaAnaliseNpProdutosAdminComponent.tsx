@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import AnaliseNpService from "../../../service/AnaliseNpService";
 import { Spin, Table, TableColumnsType, Typography } from "antd";
 import { UsuarioContext } from "../../../context/useContext";
+// import { AlignType } from 'antd/es/table/interface';
 
 const service = new AnaliseNpService()
 
@@ -36,6 +37,7 @@ export default function TabelaAnaliseNpProdutosAdminComponent(props: any) {
 
     const { nivelUsuario, setNivelUsuario } = useContext(UsuarioContext);
     const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
+    const { subNivel1, setSubNivel1 } = useContext(UsuarioContext);
 
     useEffect(() => {
         listaProdutosNp()
@@ -95,10 +97,22 @@ export default function TabelaAnaliseNpProdutosAdminComponent(props: any) {
             title: 'FF%', dataIndex: 'fator_financeiro', key: 'fator_financeiro', align: 'right',
             render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.fator_financeiro)).toFixed(2)} </span>
         },
-        {
-            title: 'LUCRO', dataIndex: 'lucro', key: 'lucro', align: 'right',
-            render: (text: string, record: any) => idNivelUsuario === 1 || idNivelUsuario === 11 ?  <span style={{ fontSize: tamFonte }} >{(parseFloat(record.lucro)).toFixed(2)} </span> : null 
-        },
+        ...(idNivelUsuario === 1 && subNivel1 === 1 || idNivelUsuario === 11 && subNivel1 === 1
+            ? [{
+                title: 'LUCRO', 
+                dataIndex: 'lucro', 
+                key: 'lucro', 
+                align: 'right' as 'right', // Define o alinhamento com casting explícito
+                render: (text: string, record: any) => (
+                    <span style={{ fontSize: tamFonte }}>{parseFloat(record.lucro).toFixed(2)}</span>
+                ),
+            }]
+            : []
+        ),
+        // {
+        //     title: 'LUCRO', dataIndex: 'lucro', key: 'lucro', align: 'right',
+        //     render: (text: string, record: any) => (idNivelUsuario === 1 && subNivel1 === 1)|| (idNivelUsuario === 11 && subNivel1 === 1) ?  <span style={{ fontSize: tamFonte }} >{(parseFloat(record.lucro)).toFixed(2)} </span> : null 
+        // },
         {
             title: 'TAXA ENTREGA', dataIndex: 'taxaentrega', key: 'taxaentrega', align: 'right',
             render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.taxaentrega)).toFixed(2)} </span>
