@@ -118,6 +118,7 @@ class EntregasContatosService {
 
   async listaEntregasContatosDoVendedor(codigoLoja: string,codigoVendedor: string)  {
     console.log("*********** listaEntregasContatosDoVendedor *****************");
+    console.log(codigoLoja,codigoVendedor)
     let rs;
     try {
       const response = await api.get(`/entregas-contatos/lista-entregas-contatos-vendedor/${codigoLoja}/${codigoVendedor}`);

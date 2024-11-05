@@ -5,7 +5,7 @@ import { formatarMoeda } from '../../../utils/formatarValores';
 import { UsuarioContext } from "../../../context/useContext";
 import AnaliseNpService from "../../../service/AnaliseNpService";
 import { FilterOutlined, SyncOutlined, TagOutlined } from "@ant-design/icons";
-import { TableColumnsType, Button, Col, Row, Spin, Table, DatePicker, Select, Space, DatePickerProps, TableProps, Input } from "antd";
+import { TableColumnsType, Button, Col, Row, Spin, Table, DatePicker, Select, Space, DatePickerProps, TableProps, Input, Tooltip } from "antd";
 import TabelaAnaliseNpProdutosAdminComponent from "./TabelaAnaliseNpProdutosAdminComponent";
 import Title from 'antd/es/typography/Title';
 import RtService from "../../../service/RtService";
@@ -329,7 +329,23 @@ export default function TablelaAnaliseNpAdminComponente() {
                         </Row>
                     </Col>
                     <Col style={{ paddingLeft: '30px', paddingTop: '58px' }}>
-                        <Button title='Filtrar' style={{ backgroundColor: '#1E90FF', borderColor: '#1E90FF', color: '#fff', width: '150px' }} icon={<FilterOutlined title='Filtrar' />} onClick={filtrar} >Filtrar</Button>
+                        {/* <Button title='Filtrar' style={{ backgroundColor: '#1E90FF', borderColor: '#1E90FF', color: '#fff', width: '150px' }} icon={<FilterOutlined title='Filtrar' />} onClick={filtrar} >Filtrar</Button> */}
+                        {/* <Tooltip title="Filtrar" color="#000">
+                            <Button
+                                type="primary"
+                                onClick={() => filtrar()}
+                                icon={<FilterOutlined />}
+                                size="small"
+                                style={{ width: 90, marginRight: 8 }}
+                                title='Filtrar'
+                            >
+                                Filtrar
+                            </Button>
+                        </Tooltip> */}
+
+                        <Tooltip title="Filtrar baseado nos filtros." placement="bottomLeft">
+                            <Button style={{ backgroundColor: '#4682B4', borderColor: '#4682B4', color: '#fff', width: '150px' }} icon={<FilterOutlined title='Filtrar' />} onClick={filtrar} >Filtrar</Button>
+                        </Tooltip>
                     </Col>
                 </Row>
             </>

@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { DollarCircleOutlined, DownOutlined, EditOutlined, FilterOutlined, PlusCircleOutlined, SaveFilled, SaveOutlined, SyncOutlined, TaobaoOutlined, WalletOutlined } from '@ant-design/icons';
 import type { DatePickerProps, TableColumnsType } from 'antd';
-import { Badge, Button, Col, DatePicker, Divider, Dropdown, Input, Menu, Row, Select, Space, Spin, Table, Typography } from 'antd';
+import { Badge, Button, Col, DatePicker, Divider, Dropdown, Input, Menu, Row, Select, Space, Spin, Table, Tooltip, Typography } from 'antd';
 import TabelaPreVendasComponent from './TabelaPreVendasComponent';
 import RtService from '../../service/RtService';
 import Title from 'antd/es/typography/Title';
@@ -39,7 +39,7 @@ export default function TabelaIndicadoresComponent() {
     const { loja, setLoja } = useContext(UsuarioContext);
     const { idLoja, setIdLoja } = useContext(UsuarioContext);
     const { nivelUsuario, setNivelUsuario } = useContext(UsuarioContext);
-    
+
     const [dados, setDados] = useState([]);
     const [loading, setLoading] = useState(true);
     const [quantidade, setQuantidade] = useState(0);
@@ -83,7 +83,7 @@ export default function TabelaIndicadoresComponent() {
 
 
 
-    async function listaIndicadores(mes: number, ano: number, loja: string){
+    async function listaIndicadores(mes: number, ano: number, loja: string) {
         console.log(mes, ano)
         try {
             setLoading(true);
@@ -104,7 +104,7 @@ export default function TabelaIndicadoresComponent() {
             setLojas(rs.data.lojas)
         } catch (error) {
             console.error('Erro ao buscar lojas:', error);
-        } 
+        }
     }
     const handleInputChange = (e: any, key: string) => {
         // Lógica para lidar com a mudança nos campos de entrada
@@ -253,9 +253,9 @@ export default function TabelaIndicadoresComponent() {
                         <Select id="selectLoja" onSelect={selecionarLoja} defaultValue="sem" style={{ width: 200 }}>
                             <Select.Option value="sem"> </Select.Option>
                             {lojas.map(loja => (
-                            <Select.Option key={loja.id_loja} value={loja.id_loja} data={loja}>
-                                {loja.descricao}
-                            </Select.Option>
+                                <Select.Option key={loja.id_loja} value={loja.id_loja} data={loja}>
+                                    {loja.descricao}
+                                </Select.Option>
                             ))}
                             {/* {lojas.map(loja => (
                                 <Select.Option key={loja.descricao} value={loja.codloja}>
@@ -281,7 +281,22 @@ export default function TabelaIndicadoresComponent() {
                         </Row>
                     </Col>
                     <Col style={{ paddingLeft: '30px', paddingTop: '60px' }}>
-                        <Button title='Filtrar' style={{ backgroundColor: 'blue', color: '#fff' }} icon={<FilterOutlined title='Filtrar' />} onClick={filtrar} />
+                        {/* <Button title='Filtrar' style={{ backgroundColor: 'blue', color: '#fff' }} icon={<FilterOutlined title='Filtrar' />} onClick={filtrar} /> */}
+                        {/* <Tooltip title="Filtrar" color="#000">
+                            <Button
+                                type="primary"
+                                onClick={() => filtrar()}
+                                icon={<FilterOutlined />}
+                                size="small"
+                                style={{ width: 90, marginRight: 8 }}
+                                title='Filtrar'
+                            >
+                                Filtrar
+                            </Button>
+                        </Tooltip> */}
+                        <Tooltip title="Filtrar baseado nos filtros." placement="bottomLeft">
+                            <Button style={{ backgroundColor: '#4682B4', borderColor: '#4682B4', color: '#fff', width: '150px' }} icon={<FilterOutlined title='Filtrar' />} onClick={filtrar} >Filtrar</Button>
+                        </Tooltip>
                     </Col>
                 </Row>
             </>

@@ -49,7 +49,7 @@ export default function TabelaEntregasContatosAdminComponent() {
         setLoading(true);
         try {
             let rs = await service.listaLojasDoAdmin();
-            console.log(rs.data)
+            // console.log(rs.data)
             setDados(rs.data.lista_lojas)
             setQuantidade(rs.data.registros)
         } catch (error) {
@@ -109,8 +109,8 @@ export default function TabelaEntregasContatosAdminComponent() {
 
     //***************** Inserindo Componente TabelaEntregasContatosGerentesComponent  ******************/
     const expandedRowRender = (record: any) => {
-        let codigoLoja = record.icomp
-        return <TabelaEntregasContatosGerentesComponent icomp={codigoLoja} />;
+        let icomp = record.icomp
+        return <TabelaEntregasContatosGerentesComponent icomp={icomp} />;
     };
 
 

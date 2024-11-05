@@ -1,5 +1,5 @@
 import Icon, { CheckCircleOutlined, CloseCircleOutlined, EditOutlined, ExclamationCircleOutlined, SearchOutlined, SyncOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Spin, Table, TableColumnsType, Tooltip, Typography } from "antd";
+import { Button, Form, Input, Modal, Select, Spin, Table, TableColumnsType, Tooltip, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 import EntregasContatosService from "../../../service/EntregasContatosService";
 import { UsuarioContext } from "../../../context/useContext";
@@ -13,7 +13,7 @@ interface EntregasContatosType {
     key: number;
     id: number;
     iddetalhe: number;
-    codigoloja: number;
+    codloja: number;
     np: string;
     datacompromisso: string;
     dataprevenda: string;
@@ -44,19 +44,29 @@ export default function TabelaEntregasContatosGerentesComponent(props: any) {
 
     // const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
     const { idLoja, setIdLoja } = useContext(UsuarioContext);
-    const { icomp, setIcomp } = useContext(UsuarioContext);  
+    const { icomp, setIcomp } = useContext(UsuarioContext);
     const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
 
     useEffect(() => {
         listaEntregasContatos()
         console.log('-------------- TabelaEntregasContatosGerente ------------------')
+        console.log(props)
     }, [])
 
 
     async function listaEntregasContatos() {
         setLoading(true);
+        let rs
         try {
-            let rs = await service.listaVendedoresDoGerente([1, 11, 0].includes(idNivelUsuario) ? props.icomp: icomp ); 
+            console.log('idNivelUsuario ' + idNivelUsuario)
+            if (idNivelUsuario == 11) {
+                console.log('============== TabelaEntregasContatosGerentesComponent(opção 1) =================')
+                rs = await service.listaVendedoresDoGerente(props.icomp );
+            } else {
+                console.log('============== TabelaEntregasContatosGerentesComponent(opção 2) =================')
+                rs = await service.listaVendedoresDoGerente(icomp);
+            }
+            // let rs = await service.listaVendedoresDoGerente([1, 11, 0].includes(idNivelUsuario) ? props.icomp: icomp ); 
 
             console.log(rs.data)
             setDados(rs.data.lista_contatos)
@@ -119,6 +129,8 @@ export default function TabelaEntregasContatosGerentesComponent(props: any) {
                             value={obs}
                             onChange={(e) => alterarObs(e.target.value)}
                         />
+
+                        <Select></Select>
                     </Form.Item>
                 </Form>
             </Modal>
@@ -127,7 +139,7 @@ export default function TabelaEntregasContatosGerentesComponent(props: any) {
 
     const columns: TableColumnsType<EntregasContatosType> = [
         { title: 'Cód. Vendedor', dataIndex: 'codvendedor', key: 'codvendedor', width: '15%' },
-        { title: 'Vendedor', dataIndex: 'vendedor', key: 'vendedor',  },
+        { title: 'Vendedor', dataIndex: 'vendedor', key: 'vendedor', },
         // {
         //     render: (text, record) => (
         //         <Tooltip color="#000" title="Editar Entrega">
@@ -139,8 +151,9 @@ export default function TabelaEntregasContatosGerentesComponent(props: any) {
 
     //***************** Inserindo Componente TabelaPendenciasVendasVendedoreNps  ******************/
     const expandedRowRender = (record: any) => {
-        let codigo = record.codvendedor
-        return <TabelaEntregasContatosVendedoresComponent codigoVendedor={codigo} />;
+        let codigoVendedor = record.codvendedor
+        let codigoLoja = record.codloja
+        return <TabelaEntregasContatosVendedoresComponent codigoVendedor={codigoVendedor} codigoLoja={codigoLoja} />;
     };
 
 

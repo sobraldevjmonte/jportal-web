@@ -49,6 +49,7 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
     useEffect(() => {
         listaEntregasContatos()
         console.log('-------------- TabelaEntregasContatosVendedoresComponent ------------------')
+        console.log(props)
     }, [])
 
 
@@ -56,10 +57,12 @@ export default function TabelaEntregasContatosVendedoresComponent(props: any) {
         setLoading(true);
         let rs;
         try {
-            if(idNivelUsuario === 3){
+            if(idNivelUsuario == 3){
+                console.log("listaEntregasContatos ALL opção 1")
                 rs = await service.listaEntregasContatosDoVendedor("ALL", idNivelUsuario === 3 ? codigoUsuario : props.codigoVendedor);
             }else{
-                rs = await service.listaEntregasContatosDoVendedor(icomp, idNivelUsuario === 3 ? codigoUsuario : props.codigoVendedor);
+                console.log("listaEntregasContatos opção 2")
+                rs = await service.listaEntregasContatosDoVendedor(props.codigoLoja, idNivelUsuario === 3 ? codigoUsuario : props.codigoVendedor);
             }
             console.log(rs.data)
             setDados(rs.data.lista_contatos)
