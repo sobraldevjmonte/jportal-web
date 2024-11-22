@@ -420,7 +420,7 @@ export default function HomePage() {
 
   return (
     <div>
-      {idLoja === 1 ? menuJmonte() : menuDurafix()}
+      {idLoja !== 9 ? menuJmonte() : menuDurafix()}
     </div>
   );
 }
