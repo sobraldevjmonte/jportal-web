@@ -1,15 +1,15 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
-import Rtadmin2 from './pages/Rtadmin2';
 import HomePage from './pages/HomePage';
-import ResumoEtapasPage from './pages/ResumoEtapasPage';
 import LoginPage2 from './pages/LoginPage2';
-import AnaliseNpPage from './pages/AnaliseNpPage';
-import AdminProjJmonte from './components/profissionais/AdminProfJmonte';
-import AdminProfUsuarios from './components/profissionais/AdminProfUsuarios';
-import AdminProfPremios from './components/profissionais/AdminProfPremios';
-import AdminProfPremiosPedidos from './components/profissionais/AdminProfPremiosPedidos';
-import EntregasPedidos from './pages/EntregasPedidos';
+import AnaliseNpPage from './pages/jmonte/AnaliseNpPage';
+import EntregasPedidos from './pages/jmonte/EntregasPedidos';
+import Rtadmin2 from './pages/jmonte/Rtadmin2';
+import ResumoEtapasPage from './pages/jmonte/ResumoEtapasPage';
+import AdminProjJmonte from './components/jmonte/profissionais/AdminProfJmonte';
+import AdminProfUsuarios from './components/jmonte/profissionais/AdminProfUsuarios';
+import AdminProfPremiosPedidos from './components/jmonte/profissionais/AdminProfPremiosPedidos';
+import AdminProfPremios from './components/jmonte/profissionais/AdminProfPremios';
 
 function App() {
   return (

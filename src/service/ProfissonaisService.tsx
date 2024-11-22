@@ -253,6 +253,14 @@ class ProfissionaisService {
     const response = await api.get(`/profissionais/imprimir-pedidos/${mes}/${ano}/${idLoja}`, {
       responseType: 'blob',  // Importante para garantir que o PDF seja tratado como um arquivo
     });
+    console.log(response);
+    return response;
+  }
+
+  async imprimirTodosPedidos() {
+    const response = await api.get(`/profissionais/imprimir-todos-pedidos`, {
+      responseType: 'blob',  // Importante para garantir que o PDF seja tratado como um arquivo
+    });
     return response;
   }
 

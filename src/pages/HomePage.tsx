@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import MenuComponent from './../components/MenuComponent';
+import MenuComponent from '../common/MenuComponent';
 import LoginPage2 from "./LoginPage2";
 
 import { UsuarioContext } from "../context/useContext";
