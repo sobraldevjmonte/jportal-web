@@ -9,21 +9,35 @@ const api = axios.create({
 });
 class EtapasService {
   //********************** PENDENCIAS ADMIN LOJAS  *****************/
+  async gerarPdfObras(idUsuario: number) {
+    let idLoja = 0;
+    let mes = 0;
+    let tipo = ''
+    let ano = ''
+
+    // const response = await api.get(`/etapas/gerar-pdf-obras/${tipo}/${idLoja}/${mes}/${ano}`, {
+    const response = await api.get(`/etapas/gerar-pdf-obras/A/B/C/D`, {
+      responseType: 'blob',  // Importante para garantir que o PDF seja tratado como um arquivo
+    });
+    // console.log(response);
+    return response;
+
+  }
   async listaPendenciasVendasAdmin(idUsuario: number) {
     console.log("*********** listaPendenciasVendasAdmin *****************");
     let rs;
     try {
       const response = await api.get(`/etapas/lista-admin-pendencias-por-loja/${idUsuario}`);
       var q = response.data.quantidade
-      let totalgx = 80.00 ;
-      for(var i = 0; i < q; i++){
-        let xx =  parseFloat(response.data.pendenciasAdminVendas[i].totalvendas)
-        if(xx > 0){
+      let totalgx = 80.00;
+      for (var i = 0; i < q; i++) {
+        let xx = parseFloat(response.data.pendenciasAdminVendas[i].totalvendas)
+        if (xx > 0) {
           totalgx += xx
         }
         response.data.totalgeral = totalgx
       }
-      
+
       rs = {
         statusCode: 200,
         data: response.data,
@@ -37,7 +51,7 @@ class EtapasService {
     }
     return rs;
   }
-  async listaPendenciasVendasGerentes(idLoja: number,  ordem: string) {
+  async listaPendenciasVendasGerentes(idLoja: number, ordem: string) {
     console.log("*********** listaPendenciasVendasGerentes *****************");
     let rs;
     try {
@@ -118,7 +132,7 @@ class EtapasService {
     }
     return rs;
   }
-  async clienteObra(idCliente: number){
+  async clienteObra(idCliente: number) {
     let rs;
     try {
       const response = await api.get(`/etapas/cliente-obra/${idCliente}`);
@@ -134,7 +148,7 @@ class EtapasService {
       };
     }
   }
-  async listaPendenciasVendas(idVendedor: number, ordem: string){
+  async listaPendenciasVendas(idVendedor: number, ordem: string) {
     console.log("*********** listaVendedores *****************");
     let rs;
     try {
@@ -152,7 +166,7 @@ class EtapasService {
     }
     return rs;
   }
-  async listaPendenciasVendasdoCliente(idCliente: number){
+  async listaPendenciasVendasdoCliente(idCliente: number) {
     console.log("*********** listaVendedores *****************");
     let rs;
     try {
