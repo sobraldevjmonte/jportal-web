@@ -62,7 +62,7 @@ export default function DashboardDetalhesVendedoresClientes(props: any) {
 
     const columnsClientes: TableColumnsType<DataTypeClientes> = [
         {
-            title: "D-1",
+            title: "Dia Ant.",
             dataIndex: "umDia",
             key: "umDia",
             align: "left",
@@ -77,7 +77,7 @@ export default function DashboardDetalhesVendedoresClientes(props: any) {
             }),
         },
         {
-            title: "S-1",
+            title: "Semana Ant.",
             dataIndex: "semanaAnterior",
             key: "semanaAnterior",
             align: "left",
@@ -92,7 +92,7 @@ export default function DashboardDetalhesVendedoresClientes(props: any) {
             }),
         },
         {
-            title: "Mês Ant",
+            title: "Mês Ant.",
             dataIndex: "mesAnterior",
             key: "mesAnterior",
             align: "left",

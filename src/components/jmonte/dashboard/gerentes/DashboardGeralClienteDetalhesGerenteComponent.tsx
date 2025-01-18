@@ -62,7 +62,7 @@ export default function DashboardGeralClienteDetalhesGerenteComponent(props: any
 
     const columnsClientes: TableColumnsType<DataTypeClientes> = [
         {
-            title: "D-1",
+            title: "Dia Ant.",
             dataIndex: "umDia",
             key: "umDia",
             align: "left",
@@ -77,7 +77,7 @@ export default function DashboardGeralClienteDetalhesGerenteComponent(props: any
             }),
         },
         {
-            title: "S-1",
+            title: "Semana Ant.",
             dataIndex: "semanaAnterior",
             key: "semanaAnterior",
             align: "left",

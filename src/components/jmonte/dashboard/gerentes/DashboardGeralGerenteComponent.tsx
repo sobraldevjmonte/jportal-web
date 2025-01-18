@@ -67,7 +67,7 @@ export default function DashboardGeralGerenteComponent() {
     const corDestaque = '#000'
 
     const dadosGeral: DataType[] = [
-        { key: "1", periodo: "D-1", acumulado: `${dadosUmDia > 0 ? dadosUmDia : 'R$ 0.00'}` },
+        { key: "1", periodo: "Dia anterior", acumulado: `${dadosUmDia > 0 ? dadosUmDia : 'R$ 0.00'}` },
         { key: "2", periodo: "Semana anterior", acumulado: `${dadosSemana > 0 ? dadosSemana : 'R$ 0.00'}` },
         { key: "3", periodo: "Mês anterior", acumulado: `${dadosMesAnterior > 0 ? dadosMesAnterior : 'R$ 0.00'}` },
         { key: "4", periodo: "Seis meses", acumulado: `${dadosSeisMeses > 0 ? dadosSeisMeses : 'R$ 0.00'}` },
