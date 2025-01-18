@@ -18,6 +18,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<HomePage />}>
+          <Route path="/dashboard" element={<DashBoardPage />} />
           <Route path="/rt-page" element={<Rtadmin2 />} />
           <Route path="/resumo-etapas" element={<ResumoEtapasPage />} />
           <Route path="/analise-np" element={<AnaliseNpPage />} />
@@ -26,8 +27,7 @@ function App() {
           <Route path="/adm-prof-premios" element={<AdminProfPremios />} />
           <Route path="/adm-prof-premios-pedidos" element={<AdminProfPremiosPedidos />} />
           <Route path="/entregas-pedidos" element={<EntregasPedidos />} />
-          <Route path="/grupo-subgrupo" element={<GrupoComponente />} />
-          <Route path="/dashboard" element={<DashBoardPage />} />
+          {/* <Route path="/grupo-subgrupo" element={<GrupoComponente />} /> */}
         </Route>
         <Route path="/login" element={<LoginPage2 />} />
         {/*<Route path="*" element={<ErrorPage />} />*/}
