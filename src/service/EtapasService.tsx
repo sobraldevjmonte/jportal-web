@@ -9,6 +9,18 @@ const api = axios.create({
 });
 class EtapasService {
   //********************** PENDENCIAS ADMIN LOJAS  *****************/
+  async gerarPdfObrasLoja(idLoja: number) {
+    let mes = 0;
+    let tipo = ''
+    let ano = ''
+
+    // const response = await api.get(`/etapas/gerar-pdf-obras/${tipo}/${idLoja}/${mes}/${ano}`, {
+    const response = await api.get(`/etapas/gerar-pdf-obras-da-loja/${idLoja}`, {
+      responseType: 'blob',  // Importante para garantir que o PDF seja tratado como um arquivo
+    });
+    // console.log(response);
+    return response;
+  }
   async gerarPdfObras(idUsuario: number) {
     let idLoja = 0;
     let mes = 0;

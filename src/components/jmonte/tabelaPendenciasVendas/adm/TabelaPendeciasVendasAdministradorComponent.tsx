@@ -8,8 +8,6 @@ import TabelaPendeciasVendasLojasAdminComponent from "./TabelaPendeciasVendasLoj
 
 import { formatarMoeda } from "../../../../utils/formatarValores"
 
-import { Notificacao } from '../../notificacoes/notification';
-
 const service = new EtapasService()
 
 interface PendenciasVendasType {
@@ -57,6 +55,8 @@ export default function TabelaPendeciasVendasAdministradorComponent() {
 
         mesAtual = dataAtual.getMonth() + 1;
         anoAtual = dataAtual.getFullYear();
+        
+        console.log('mesAtual: ' + mesAtual + " /mesAtual: " + anoAtual)
     }, [])
 
     async function listaPendenciasVendasGerente() {
@@ -150,8 +150,8 @@ export default function TabelaPendeciasVendasAdministradorComponent() {
                 <div>
                     <Button icon={<SyncOutlined />} onClick={() => listaPendenciasVendasGerente()} style={{ backgroundColor: '#2F4F4F', color: '#fff', borderColor: '#2F4F4F', marginRight: '5px', width: '130px' }} title="Atualizar todos os registros">Atualizar</Button>
 
-                    <Tooltip title="Gerar pdf com todos marcados como OBRA." color="#000">
-                        <Button icon={<FilePdfOutlined />} onClick={() => gerarPdfObras()} style={{ backgroundColor: '#ffF', color: '#000', borderColor: '#2F4F4F', marginRight: '5px', width: '130px' }} title="Atualizar todos os registros">Obras Pdf</Button>
+                    <Tooltip title="Gerar pdf com todos os clientes marcados como OBRA(Geral)" color="#000">
+                        <Button icon={<FilePdfOutlined />} onClick={() => gerarPdfObras()} style={{ backgroundColor: '#ffF', color: '#000', borderColor: '#2F4F4F', marginRight: '5px', width: '130px' }} title="Gerar pdf com todos os clientes marcados como OBRA(Geral)">Obras Pdf</Button>
                     </Tooltip>
                 </div>
                 <Spin spinning={loading} tip="Carregando..." style={{ position: 'absolute', left: '50%', top: '30%', transform: 'translate(-50%, -50%)' }}>

@@ -181,6 +181,15 @@ export default function HomePage() {
                 </Menu.Item>
                 : null}
 
+              {idNivelUsuario === 1 || idNivelUsuario === 2 || idNivelUsuario === 11 || idNivelUsuario === 3 || idNivelUsuario === 4 ?
+                <Menu.Item key="entregas-pedidos">
+                  <Link to="/entregas-pedidos" className="nav-text">
+                    Entregas Pedidos
+                  </Link>
+                </Menu.Item>
+                : null}
+
+
             </SubMenu>
 
             <Menu.Item key="relatorios" icon={<FilePdfOutlined />}>
@@ -356,6 +365,15 @@ export default function HomePage() {
                 <Menu.Item key="analise-np-page">
                   <Link to="/analise-np" className="nav-text">
                     Análise NP
+                  </Link>
+                </Menu.Item>
+                : null}
+
+
+              {idNivelUsuario === 1 || idNivelUsuario === 2 || idNivelUsuario === 9 || idNivelUsuario === 11 ?
+                <Menu.Item key="analise-np-grupo-subgrupo">
+                  <Link to="/grupo-subgrupo" className="nav-text">
+                    Grupo/Sub-Grupo
                   </Link>
                 </Menu.Item>
                 : null}

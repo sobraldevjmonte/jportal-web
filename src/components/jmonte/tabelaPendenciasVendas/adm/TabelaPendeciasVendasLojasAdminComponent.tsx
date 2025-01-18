@@ -1,8 +1,8 @@
-import { Button, Col, Row, Spin, Table, TableColumnsType, Typography } from "antd";
+import { Button, Col, Row, Spin, Table, TableColumnsType, Tooltip, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 import EtapasService from "../../../../service/EtapasService";
 
-import { SyncOutlined } from "@ant-design/icons";
+import { FilePdfOutlined, SyncOutlined } from "@ant-design/icons";
 import { UsuarioContext } from "../../../../context/useContext";
 import TabelaPendeciasVendasVendedoresGerenciaComponent from "../gerentes/TabelaPendeciasVendasVendedoresGerenciaComponent";
 
@@ -129,11 +129,49 @@ export default function TabelaPendeciasVendasLojasAdminComponent(props: any) {
         return <TabelaPendeciasVendasVendedoresGerenciaComponent codigoVendedor={id} />;
     };
 
+    const [notificacao, setNotificacao] = useState<{ message: string, description: string } | null>(null);
+
+    async function gerarPdfObrasLoja() {
+        try {
+            setLoading(true);
+            const response = await service.gerarPdfObrasLoja(props.idLoja);
+
+            if (response.status === 200) {
+                if (response.data.size === 0) { // Verifica se o PDF está vazio
+                    alert('Sem dados para gerar o PDF');
+                    return; // Interrompe o fluxo se não houver dados
+                }
+
+                // Criar um link de download para o PDF
+                const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `pedidos_obras_.pdf`);
+                document.body.appendChild(link);
+                link.click();
+                link.remove(); // Remove o link após o clique
+            } else {
+                alert('Nenhum registro para o período ');
+                setNotificacao({ message: 'Atenção!', description: 'Nenhum registro para o período '  });
+            }
+
+        } catch (error) {
+            alert('Nenhum registro para o período ' );
+            setNotificacao({ message: 'Atenção!', description: 'Nenhum registro para o período ' });
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <>
             <div>
                 <div>
-                    <Button icon={<SyncOutlined />} onClick={() => listaPendenciasVendasGerente()} style={{ backgroundColor: '', color: '', borderColor: '', margin: '15px', marginTop: '15px', width: '130px' }} title="Atualizar todos os registros">Atualizar</Button>
+                    <Button icon={<SyncOutlined />} onClick={() => listaPendenciasVendasGerente()} style={{ backgroundColor: '', color: '', borderColor: '#000', margin: '15px', marginTop: '15px', width: '130px' }} title="Atualizar todos os registros">Atualizar</Button>
+                
+                    <Tooltip title="Gerar pdf com todos os clientes marcados como OBRA(Somente da loja)" color="#000">
+                        <Button icon={<FilePdfOutlined />} onClick={() => gerarPdfObrasLoja()} style={{ backgroundColor: '#ffF', color: '#000', borderColor: '#2F4F4F', marginRight: '5px', width: '130px' }} title="Gerar pdf com todos os clientes marcados como OBRA(Somente da loja)">Obras Pdf</Button>
+                    </Tooltip>
                 </div>
                 <Spin spinning={loading} tip="Carregando..." style={{ position: 'absolute', left: '50%', top: '30%', transform: 'translate(-50%, -50%)' }}>
                     <div style={{ backgroundColor: '#fff' }}>

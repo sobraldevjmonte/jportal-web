@@ -10,6 +10,8 @@ import AdminProjJmonte from './components/jmonte/profissionais/AdminProfJmonte';
 import AdminProfUsuarios from './components/jmonte/profissionais/AdminProfUsuarios';
 import AdminProfPremiosPedidos from './components/jmonte/profissionais/AdminProfPremiosPedidos';
 import AdminProfPremios from './components/jmonte/profissionais/AdminProfPremios';
+import GrupoComponente from './components/jmonte/grupo-subgrupo/GrupoComponente';
+import DashBoardPage from './pages/jmonte/DashboardPage';
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           <Route path="/adm-prof-premios" element={<AdminProfPremios />} />
           <Route path="/adm-prof-premios-pedidos" element={<AdminProfPremiosPedidos />} />
           <Route path="/entregas-pedidos" element={<EntregasPedidos />} />
+          <Route path="/grupo-subgrupo" element={<GrupoComponente />} />
+          <Route path="/dashboard" element={<DashBoardPage />} />
         </Route>
         <Route path="/login" element={<LoginPage2 />} />
         {/*<Route path="*" element={<ErrorPage />} />*/}
