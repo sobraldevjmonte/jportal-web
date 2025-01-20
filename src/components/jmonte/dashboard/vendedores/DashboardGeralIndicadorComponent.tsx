@@ -51,7 +51,7 @@ export default function DashboardGeralIndicadorComponent(props: any) {
             key: "indicador",
             align: "left",
             render: (text: any, record: any) => (
-                <Button type="link" onClick={() => showModalIndicador(record)}>
+                <Button type="link" onClick={() => showModalIndicador(record)} style={{ color: '#000', textDecoration: 'none' }}>
                     {record.indicador}
                 </Button>
             ),

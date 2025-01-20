@@ -87,7 +87,7 @@ export default class DashBoardVendedoresService {
     }
 
     //******************** vendedores x clientes  *************/
-    
+
     async listarDashBoardVendedorClienteLista(vendedor: number) {
         console.log("*********** listarDashBoardVendedorClienteLista *****************");
         let rs;
@@ -167,7 +167,7 @@ export default class DashBoardVendedoresService {
 
     //********************* gerentes  ********************/
     //********************* gerentes  ********************/
-   
+
     async listarDashBoardGerenteUmDia(loja: number) {
 
         console.log("*********** listarDashBoardGerenteUmDia *****************");
@@ -284,45 +284,65 @@ export default class DashBoardVendedoresService {
         }
         return rs;
     }
-//************ gerente x cliente ************/
-async listarDashBoardGerenteVendedoresLista(loja: number) {
-    console.log("*********** listarDashBoardVendedorClienteLista *****************");
-    let rs;
-    try {
-        const response = await api.get(`/dashboard/lista-dashboard-gerente-vendedor-lista/${loja}`);
-        rs = {
-            statusCode: 200,
-            data: response.data,
-        };
-    } catch (error) {
-        console.error("Error na requisição");
-        rs = {
-            statusCode: 401,
-            msg: "Erro na requisição",
-        };
+    //************ gerente x cliente ************/
+    async listarDashBoardGerenteVendedoresLista(loja: number) {
+        console.log("*********** listarDashBoardVendedorClienteLista *****************");
+        let rs;
+        try {
+            const response = await api.get(`/dashboard/lista-dashboard-gerente-vendedor-lista/${loja}`);
+            rs = {
+                statusCode: 200,
+                data: response.data,
+            };
+        } catch (error) {
+            console.error("Error na requisição");
+            rs = {
+                statusCode: 401,
+                msg: "Erro na requisição",
+            };
+        }
+        return rs;
     }
-    return rs;
-}
 
-async listarDashBoardGerenteVendedoresListaDetalhes(loja: number, id_vendedor: string) {
-    console.log("*********** listarDashBoardVendedorClienteListaDetalhes *****************");
-    let rs;
-    try {
-        const response = await api.get(`/dashboard/lista-dashboard-gerente-vendedor-lista-detalhes/${loja}/${id_vendedor}`);
-        rs = {
-            statusCode: 200,
-            data: response.data,
-        };
-    } catch (error) {
-        console.error("Error na requisição");
-        rs = {
-            statusCode: 401,
-            msg: "Erro na requisição",
-        };
+    async listarDashBoardGerenteVendedoresListaDetalhes(loja: number, id_vendedor: string) {
+        console.log("*********** listarDashBoardVendedorClienteListaDetalhes *****************");
+        let rs;
+        try {
+            const response = await api.get(`/dashboard/lista-dashboard-gerente-vendedor-lista-detalhes/${loja}/${id_vendedor}`);
+            rs = {
+                statusCode: 200,
+                data: response.data,
+            };
+        } catch (error) {
+            console.error("Error na requisição");
+            rs = {
+                statusCode: 401,
+                msg: "Erro na requisição",
+            };
+        }
+        return rs;
     }
-    return rs;
-}
+
+    //************ gerente x indicador ************/
+    async listarDashBoardIndicadorIndicadoresLista(loja: number) {
+        console.log("*********** listarDashBoardVendedorIndicadoresLista *****************");
+        let rs;
+        try {
+            const response = await api.get(`/dashboard/lista-dashboard-gerente-indicador-lista/${loja}`);
+            rs = {
+                statusCode: 200,
+                data: response.data,
+            };
+        } catch (error) {
+            console.error("Error na requisição");
+            rs = {
+                statusCode: 401,
+                msg: "Erro na requisição",
+            };
+        }
+        return rs;
+    }
 
 
-    
+
 }

@@ -52,7 +52,7 @@ export default function DashboardGeralVendedoresGerenteComponent(props: any) {
             key: "nome",
             align: "left",
             render: (text: any, record: any) => (
-                <Button type="link" onClick={() => showModal(record)}>
+                <Button type="link" onClick={() => showModal(record)} style={{ color: '#000', textDecoration: 'none' }}>
                     {record.nome}
                 </Button>
             ),

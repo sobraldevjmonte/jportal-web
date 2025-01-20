@@ -103,7 +103,7 @@ export default function DashboardGeralGerenteComponent() {
     return (
         <div style={{ maxWidth: '900px', paddingBottom: '10px' }}>
             <Card style={{ backgroundColor: '#F5F5F5', padding: '0px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', }}
-                title={<span style={{ fontSize: tamFonteTitulo }}>Pendências(Geral)</span>}
+                title={<span style={{ fontSize: tamFonteTitulo }}>Pendências(Loja)</span>}
                 tabProps={{
                     size: 'middle',
                 }}>

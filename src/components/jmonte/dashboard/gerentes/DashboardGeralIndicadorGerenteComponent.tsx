@@ -1,43 +1,37 @@
+
 import { UsuarioContext } from "../../../../context/useContext";
 
 import { Button, Card, Modal, Skeleton, Table, TableColumnsType } from "antd";
 import { useContext, useEffect, useState } from "react";
 import DashBoardVendedoresService from "../../../../service/DashBoardVendedores";
 
-import DashboardDetalhesVendedores from "./DashboardDetalhesVendedoresClientes";
+import DashboardDetalhesIndicadores from "./../vendedores/DashboardDetalhesIndicadores";
 
 const serviceDashBoardVendedor = new DashBoardVendedoresService()
 
-interface DataTypeClientes {
+interface DataTypeProfissionais {
     key: string;
-    cod_cliente_pre: string;
-    cliente: string;
-    valortotal: number;
+    cod_indica_pre: string;
+    indicador: string;
+    valorTotal: string;
 }
-
-
-export default function DashboardGeralClienteComponent(props: any) {
+export default function DashboardGeralIndicadorGerenteComponent(props: any) {
     const [loading, setLoading] = useState(false);
     const { nivelUsuario, setNivelUsuario } = useContext(UsuarioContext);
     const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
     const { icomp, setIcomp } = useContext(UsuarioContext);
     const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
 
-    const [dadosClientes, setDadosClientes] = useState<DataTypeClientes[]>([]);
 
-
+    const [dadosProfissionais, setDadosProfissionais] = useState<DataTypeProfissionais[]>([]);
     useEffect(() => {
         buscaDados()
     }, [])
-
-
     async function buscaDados() {
         try {
             setLoading(true);
-
-            //***************** vendedores x clientes inicio *************/
-            let rsClientes = await serviceDashBoardVendedor.listarDashBoardVendedorClienteLista(codigoUsuario)
-            setDadosClientes(rsClientes.data.lista_clientes_desc)
+            let rsIndica = await serviceDashBoardVendedor.listarDashBoardIndicadorIndicadoresLista(icomp)
+            setDadosProfissionais(rsIndica.data.lista_indicadores_desc)
 
         } catch (error) {
             console.error('Erro ao buscar dados um dia:', error);
@@ -45,15 +39,18 @@ export default function DashboardGeralClienteComponent(props: any) {
             setLoading(false);
         }
     }
-    const columnsClientes: TableColumnsType<DataTypeClientes> = [
+
+
+    ////******************** clientes ************************/
+    const columnsProfissionais: TableColumnsType<DataTypeProfissionais> = [
         {
-            title: "CLIENTE",
-            dataIndex: "cliente",
-            key: "cliente",
+            title: "INDICADOR",
+            dataIndex: "indicador",
+            key: "indicador",
             align: "left",
             render: (text: any, record: any) => (
-                <Button type="link" onClick={() => showModal(record)} style={{ color: '#000', textDecoration: 'none' }}> 
-                    {record.cliente}
+                <Button type="link" onClick={() => showModalIndicador(record)} style={{ color: '#000', textDecoration: 'none' }}>
+                    {record.indicador}
                 </Button>
             ),
             onHeaderCell: () => ({
@@ -63,11 +60,10 @@ export default function DashboardGeralClienteComponent(props: any) {
                 },
             }),
         },
-
         {
             title: "VL ACUM.",
-            dataIndex: "valortotal",
-            key: "valortotal",
+            dataIndex: "valorTotal",
+            key: "valorTotal",
             align: "right",
             render: (text: string) => <span>R$ {text}</span>,
             onHeaderCell: () => ({
@@ -80,32 +76,31 @@ export default function DashboardGeralClienteComponent(props: any) {
     ];
 
 
-    //************************** modal   dados cliente ***********************/
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [clienteSelecionado, setClienteSelecionado] = useState<any>(null);
+    //************************** modal   dados indicador ***********************/
+    const [isModalVisibleIndicador, setIsModalVisibleIndicador] = useState(false);
+    const [indicadorSelecionado, setIndicadorSelecionado] = useState<any>(null);
 
-    const showModal = (record: any) => {
-        setClienteSelecionado(record);
-        setIsModalVisible(true);
+    const showModalIndicador = (record: any) => {
+        setIndicadorSelecionado(record);
+        setIsModalVisibleIndicador(true);
     };
 
-    const handleCancel = () => {
-        setClienteSelecionado(null);
-        setIsModalVisible(false);
+    const handleCancelIndicador = () => {
+        setIndicadorSelecionado(null);
+        setIsModalVisibleIndicador(false);
     };
 
 
+    //************************** modal dados indicador ***********************/
 
-    const tamFonte = '0.9rem';
     const tamFonteTitulo = '1.2rem';
     const colorContatou = 'blue'
     const corDestaque = '#000'
-
-
     return (
-        <div style={{ maxWidth: '600px', paddingBottom: '10px' }}>
-            <Card style={{ backgroundColor: '#F5F5F5', padding: '0px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', }}
-                title={<span style={{ fontSize: tamFonteTitulo }}>Pendências Geral</span>}
+        <div style={{ maxWidth: '900px', paddingBottom: '10px' }}>
+            <Card
+                style={{ backgroundColor: '#F5F5F5', padding: '0px', margin: '0px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', }}
+                title={<span style={{ fontSize: tamFonteTitulo }}>Pendências Por Indicador</span>}
                 tabProps={{
                     size: 'middle',
                 }}>
@@ -117,27 +112,27 @@ export default function DashboardGeralClienteComponent(props: any) {
                     title={{ style: { backgroundColor: '#fff' } }} // Cor para o título
                 >
                     <Table
-                        columns={columnsClientes}
-                        dataSource={dadosClientes}
+                        columns={columnsProfissionais}
+                        dataSource={dadosProfissionais}
                         size="small"
-                        rowKey={(record) => record.cod_cliente_pre}
+                        rowKey={(record) => record.cod_indica_pre}
                         bordered
                         // title={() => (
-                        //     <Typography style={{ fontSize: "1.2rem" }}>Pendências (Por Cliente)</Typography>
+                        //     <Typography style={{ fontSize: "1.2rem" }}>Pendências (Por Indicador)</Typography>
                         // )}
                         pagination={false}
                     />
                     <Modal
-                        title={`Detalhes do Cliente: ${clienteSelecionado?.cliente || ""}`}
-                        visible={isModalVisible}
-                        onCancel={handleCancel}
+                        title={`Detalhes do Indicador: ${indicadorSelecionado?.indicador || ""}`}
+                        visible={isModalVisibleIndicador}
+                        onCancel={handleCancelIndicador}
                         footer={null}
                         width={800}
                     >
-                        {clienteSelecionado && (
-                            <DashboardDetalhesVendedores
-                                codigo={clienteSelecionado.cod_cliente_pre}
-                                nome={clienteSelecionado.cliente}
+                        {indicadorSelecionado && (
+                            <DashboardDetalhesIndicadores
+                                indicador={indicadorSelecionado.cod_indica_pre}
+                                nome={indicadorSelecionado.indicador}
                             />
                         )}
                     </Modal>

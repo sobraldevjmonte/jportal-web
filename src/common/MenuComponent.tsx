@@ -53,9 +53,7 @@ export default function HomePage() {
   };
 
   const menuDurafix = () => {
-
     return (
-
       <Layout>
         <Sider
           trigger={null}
@@ -93,11 +91,11 @@ export default function HomePage() {
             )}
           </div>
           <Menu theme="light" mode="inline" defaultSelectedKeys={["dashboard"]}>
-            <Menu.Item key="dashboard" icon={<BarChartOutlined />}>
+            {/* <Menu.Item key="dashboard" icon={<BarChartOutlined />}>
               <Link to="/dashboard" className="nav-text" accessKey="c">
                 DashBoard
               </Link>
-            </Menu.Item>
+            </Menu.Item> */}
             <SubMenu
               key="sub-menu-vendas"
               icon={<FolderAddOutlined />}
@@ -281,11 +279,11 @@ export default function HomePage() {
             )}
           </div>
           <Menu theme="light" mode="inline" defaultSelectedKeys={["1"]}>
-            <Menu.Item key="dashboard" icon={<BarChartOutlined />}>
+            {/* <Menu.Item key="dashboard" icon={<BarChartOutlined />}>
               <Link to="/dashboard" className="nav-text" accessKey="c">
                 DashBoard
               </Link>
-            </Menu.Item>
+            </Menu.Item> */}
             <SubMenu
               key="sub-menu-vendas"
               icon={<FolderAddOutlined />}
