@@ -112,24 +112,16 @@ export default function LoginPage2() {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
+        paddingTop: "20px",
+        transform: "translateY(-60px)", 
     };
-
-    const estiloCard = {
-        width: "300px",
-        height: "400px",
-        display: "flex",
-        alignItems: "center",
-        flexDirection: "column",
-        justifyContent: "center",
-    };
-
     return (
         <div id="login_page" style={estiloDiv}>
             <Card
                 title="Login do Sistema(Portal 2.0)"
                 bordered={true}
                 style={{
-                    width: "400px",
+                    maxWidth: "400px",
                     padding: "0px",
                     borderRadius: "5px",
                     backgroundColor: "#fff",

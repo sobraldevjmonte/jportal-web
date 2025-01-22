@@ -27,7 +27,7 @@ export default function DashboardGeralIndicadorComponent(props: any) {
 
     const [dadosProfissionais, setDadosProfissionais] = useState<DataTypeProfissionais[]>([]);
     useEffect(() => {
-        buscaDados()
+        // buscaDados()
     }, [])
     async function buscaDados() {
         try {

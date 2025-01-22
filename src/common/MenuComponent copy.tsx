@@ -5,11 +5,10 @@ import {
   HomeOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
-  MenuOutlined,
   MenuUnfoldOutlined,
   WhatsAppOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, Button, theme, Image, Row, Typography, Col, Drawer } from "antd";
+import { Layout, Menu, Button, theme, Image, Row, Typography, Col } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { Link, Outlet, redirect } from "react-router-dom";
 import { UsuarioContext } from "../context/useContext";
@@ -17,7 +16,7 @@ import { UsuarioContext } from "../context/useContext";
 const { SubMenu } = Menu;
 const { Header, Sider, Content } = Layout;
 
-export default function HomePage() {
+export default function HomePageCopy() {
   const { nomeUsuario, setNomeUsuario } = useContext(UsuarioContext);
   const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
   const { idUsuario, setIdUsuario } = useContext(UsuarioContext);
@@ -30,17 +29,10 @@ export default function HomePage() {
   const { icomp, setIcomp } = useContext(UsuarioContext);
 
 
-  const [isMobile, setIsMobile] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const [collapsed, setCollapsed] = useState(true);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const {
@@ -58,76 +50,6 @@ export default function HomePage() {
     setLogado(false);
 
     redirect('/login')
-  };
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const menuMobile = () => {
-    const handleMenuClick = () => {
-      setIsMenuOpen(false); // Fecha o menu ao clicar em qualquer item
-    };
-
-    return (
-      <div>
-        {/* Botão flutuante */}
-        <Button
-          type="primary"
-          icon={<MenuOutlined />}
-          onClick={toggleMenu}
-          style={{
-            position: "fixed",
-            top: 16,
-            right: 16,
-            zIndex: 1000,
-            width:'45px',
-            height:'40px',
-            backgroundColor:'#B22222',
-          }}
-        />
-        {/* Menu Drawer */}
-        <Drawer
-          title="Menu"
-          placement="left"
-          onClose={toggleMenu}
-          open={isMenuOpen}
-          width={230}
-        >
-          <Menu mode="vertical" onClick={handleMenuClick}>
-            <Menu.Item key="dashboard" icon={<BarChartOutlined />}>
-              <Link to="/dashboard" className="nav-text" accessKey="c">
-                DashBoard
-              </Link>
-            </Menu.Item>
-            <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logOut}>
-              <Link to="/login">
-                Sair
-              </Link>
-            </Menu.Item>
-          </Menu>
-        </Drawer>
-        <Layout>
-          <Row style={{height: '50px'}}>
-            <Header style={{ paddingLeft: 10, background: colorBgContainer, backgroundColor: '#fff', width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-              <div>
-                Usuário: {nomeUsuario}({codigoUsuario})
-              </div>
-            </Header>
-          </Row>
-          <Content
-            style={{
-              margin: "24px 10px",
-              padding: 0,
-              minHeight: 280,
-              background: colorBgContainer,
-            }}
-          >
-            <Outlet />
-          </Content>
-        </Layout>
-      </div>
-    );
   };
 
   const menuDurafix = () => {
@@ -514,13 +436,9 @@ export default function HomePage() {
     )
   }
 
-  const renderMenu = () => {
-    if (isMobile) {
-      return menuMobile();
-    } else {
-      return idLoja !== 9 ? menuJmonte() : menuDurafix();
-    }
-  };
-
-  return <div>{renderMenu()}</div>;
+  return (
+    <div>
+      {idLoja !== 9 ? menuJmonte() : menuDurafix()}
+    </div>
+  );
 }
