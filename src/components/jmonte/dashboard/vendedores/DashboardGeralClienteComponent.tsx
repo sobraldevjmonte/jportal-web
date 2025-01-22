@@ -105,7 +105,7 @@ export default function DashboardGeralClienteComponent(props: any) {
     return (
         <div style={{ maxWidth: '600px', paddingBottom: '10px' }}>
             <Card style={{ backgroundColor: '#F5F5F5', padding: '0px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', }}
-                title={<span style={{ fontSize: tamFonteTitulo }}>Pendências Geral</span>}
+                title={<span style={{ fontSize: tamFonteTitulo }}>Pendências Por Cliente</span>}
                 tabProps={{
                     size: 'middle',
                 }}>
