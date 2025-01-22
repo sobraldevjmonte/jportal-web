@@ -135,7 +135,7 @@ export default function DashboardDetalhesVendedoresClientes(props: any) {
         >
 
 
-            <div style={{ padding: "20px 30px" }}>
+            <div style={{ padding: "0px 0px" }}>
                 <Table
                     columns={columnsClientes}
                     dataSource={dadosClientes}
