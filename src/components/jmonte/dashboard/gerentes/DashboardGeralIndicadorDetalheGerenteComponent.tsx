@@ -55,7 +55,6 @@ export default function DashboardGeralIndicadorDetalheGerenteComponent(props: an
         }
     }
 
-
     const tamFonte = '0.9rem';
     const colorContatou = 'blue'
     const corDestaque = '#000'
