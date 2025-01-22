@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import DashBoardVendedoresService from "../../../../service/DashBoardVendedores";
 
 import DashboardDetalhesIndicadores from "./../vendedores/DashboardDetalhesIndicadores";
+import DashboardGeralIndicadorDetalheGerenteComponent from "./DashboardGeralIndicadorDetalheGerenteComponent";
 
 const serviceDashBoardVendedor = new DashBoardVendedoresService()
 
@@ -130,7 +131,7 @@ export default function DashboardGeralIndicadorGerenteComponent(props: any) {
                         width={800}
                     >
                         {indicadorSelecionado && (
-                            <DashboardDetalhesIndicadores
+                            <DashboardGeralIndicadorDetalheGerenteComponent
                                 indicador={indicadorSelecionado.cod_indica_pre}
                                 nome={indicadorSelecionado.indicador}
                             />

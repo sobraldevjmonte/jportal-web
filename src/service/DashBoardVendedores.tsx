@@ -344,5 +344,25 @@ export default class DashBoardVendedoresService {
     }
 
 
+    async listarDashBoardGerenteIndicadoresListaDetalhes(loja: number, indicador: string) {
+        console.log("*********** listarDashBoardVendedorIndicadoresListaDetalhes *****************");
+        let rs;
+        try {
+            const response = await api.get(`/dashboard/lista-dashboard-gerente-indicador-lista-detalhes/${loja}/${indicador}`);
+            rs = {
+                statusCode: 200,
+                data: response.data,
+            };
+        } catch (error) {
+            console.error("Error na requisição");
+            rs = {
+                statusCode: 401,
+                msg: "Erro na requisição",
+            };
+        }
+        return rs;
+    }
+
+
 
 }
