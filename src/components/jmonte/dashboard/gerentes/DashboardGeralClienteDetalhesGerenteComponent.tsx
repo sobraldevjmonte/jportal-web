@@ -62,7 +62,7 @@ export default function DashboardGeralClienteDetalhesGerenteComponent(props: any
 
     const columnsClientes: TableColumnsType<DataTypeClientes> = [
         {
-            title: "Dia Ant.",
+            title: "DIA ANT.",
             dataIndex: "umDia",
             key: "umDia",
             align: "left",
@@ -77,7 +77,7 @@ export default function DashboardGeralClienteDetalhesGerenteComponent(props: any
             }),
         },
         {
-            title: "Semana Ant.",
+            title: "SEMANA ANT.",
             dataIndex: "semanaAnterior",
             key: "semanaAnterior",
             align: "left",
@@ -92,7 +92,7 @@ export default function DashboardGeralClienteDetalhesGerenteComponent(props: any
             }),
         },
         {
-            title: "Mês Ant",
+            title: "MÊS ANT.",
             dataIndex: "mesAnterior",
             key: "mesAnterior",
             align: "left",
@@ -107,7 +107,7 @@ export default function DashboardGeralClienteDetalhesGerenteComponent(props: any
             }),
         },
         {
-            title: "180 Dias",
+            title: "180 DIAS",
             dataIndex: "centoOitentaDias",
             key: "centoOitentaDias",
             align: "left",
@@ -135,7 +135,7 @@ export default function DashboardGeralClienteDetalhesGerenteComponent(props: any
         >
 
 
-            <div style={{ padding: "20px 30px" }}>
+            <div style={{ padding: "0px 0px" }}>
                 <Table
                     columns={columnsClientes}
                     dataSource={dadosClientes}
