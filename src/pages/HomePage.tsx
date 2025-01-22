@@ -1,25 +1,25 @@
 import { useContext, useEffect, useState } from "react";
-import MenuComponent from '../common/MenuComponent';
+import MenuComponent from "../common/MenuComponent";
 import LoginPage2 from "./LoginPage2";
 
 import { UsuarioContext } from "../context/useContext";
 import { useNavigate } from "react-router-dom";
 
-
 export default function HomePage() {
-    const { logado, setLogado } = useContext(UsuarioContext);
+    const { logado } = useContext(UsuarioContext);
     const navigate = useNavigate();
+    const [redirected, setRedirected] = useState(false); // Novo estado para rastrear o redirecionamento
 
     useEffect(() => {
-        if (logado) {
-            navigate("/dashboard"); // Redireciona para a página inicial do sistema
+        if (logado && !redirected) {
+            navigate("/dashboard");
+            setRedirected(true); // Marca que o redirecionamento foi realizado
         }
-    }, [logado, navigate]); // Executa o efeito sempre que `logado` mudar
+    }, [logado, redirected, navigate]);
 
     return (
         <>
             {logado ? <MenuComponent /> : <LoginPage2 />}
-            { /*  <MenuComponent/><Rtadmin2/> */}
         </>
-    )
+    );
 }
