@@ -27,7 +27,7 @@ function App() {
           <Route path="/adm-prof-premios" element={<AdminProfPremios />} />
           <Route path="/adm-prof-premios-pedidos" element={<AdminProfPremiosPedidos />} />
           <Route path="/entregas-pedidos" element={<EntregasPedidos />} />
-          {/* <Route path="/grupo-subgrupo" element={<GrupoComponente />} /> */}
+          <Route path="/grupo-subgrupo" element={<GrupoComponente />} />
         </Route>
         <Route path="/login" element={<LoginPage2 />} />
         {/*<Route path="*" element={<ErrorPage />} />*/}

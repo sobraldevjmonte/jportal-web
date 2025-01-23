@@ -3,13 +3,15 @@ import { useContext, useEffect, useState } from "react";
 import { UsuarioContext } from "../../../../context/useContext";
 import DashBoardVendedoresService from "../../../../service/DashBoardVendedores";
 
+import { formatarSemDecimaisEmilhares } from "../../../../utils/formatarValores"
+
 
 const serviceDashBoardVendedor = new DashBoardVendedoresService()
 
 interface DataType {
     key: string;
     periodo: string;
-    acumulado: string;
+    acumulado: number;
 }
 
 export default function DashboardGeralGerenteComponent() {
@@ -19,6 +21,7 @@ export default function DashboardGeralGerenteComponent() {
     const { icomp, setIcomp } = useContext(UsuarioContext);
     const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
 
+    const [dadosHoje, setDadosHoje] = useState<number>(0);
     const [dadosUmDia, setDadosUmDia] = useState<number>(0);
     const [dadosSemana, setDadosSemana] = useState(0)
     const [dadosMesAnterior, setDadosMesAnterior] = useState(0)
@@ -35,22 +38,27 @@ export default function DashboardGeralGerenteComponent() {
 
             //***************** vendedores geral inicio ******************/
             const [
+                rsHoje,
                 rsUmDia,
                 rsUmaSemana,
                 rsMesAnterior,
                 rsSeisMeses,
             ] = await Promise.all([
+                serviceDashBoardVendedor.listarDashBoardGerenteHoje(icomp),
                 serviceDashBoardVendedor.listarDashBoardGerenteUmDia(icomp),
                 serviceDashBoardVendedor.listarDashBoardGerenteSemanaAnterior(icomp),
                 serviceDashBoardVendedor.listarDashBoardGerenteMesAnterior(icomp),
                 serviceDashBoardVendedor.listarDashBoardGerenteSeisMeses(icomp),
             ]);
 
+            setDadosHoje(rsHoje.data.lista_um_hoje[0].acumuladohoje);
             setDadosUmDia(rsUmDia.data.lista_um_dia_vendedor[0].acumuladoumdia);
             setDadosSemana(rsUmaSemana.data.lista_semana_anterior[0].acumuladosemananterior);
             setDadosMesAnterior(rsMesAnterior.data.lista_mes_ant_vendedor[0].acumuladomesanterior);
             setDadosSeisMeses(rsSeisMeses.data.lista_seis_meses[0].acumuladoseismeses);
             //***************** vendedores geral fim ****************/
+
+            console.log(rsSeisMeses)
 
         } catch (error) {
             console.error('Erro ao buscar dados um dia:', error);
@@ -67,14 +75,15 @@ export default function DashboardGeralGerenteComponent() {
     const corDestaque = '#000'
 
     const dadosGeral: DataType[] = [
-        { key: "1", periodo: "DIA ANT.", acumulado: `${dadosUmDia > 0 ? dadosUmDia : 'R$ 0.00'}` },
-        { key: "2", periodo: "SEMANA ANT.", acumulado: `${dadosSemana > 0 ? dadosSemana : 'R$ 0.00'}` },
-        { key: "3", periodo: "MÊS ANT.", acumulado: `${dadosMesAnterior > 0 ? dadosMesAnterior : 'R$ 0.00'}` },
-        { key: "4", periodo: "180 DIAS", acumulado: `${dadosSeisMeses > 0 ? dadosSeisMeses : 'R$ 0.00'}` },
+        { key: "1", periodo: "HOJE", acumulado: dadosHoje > 0 ? dadosHoje : 0 },
+        { key: "1", periodo: "DIA ANT.", acumulado: dadosUmDia > 0 ? dadosUmDia : 0 },
+        { key: "2", periodo: "SEMANA ANT.", acumulado: dadosSemana > 0 ? dadosSemana : 0 },
+        { key: "3", periodo: "MÊS ANT.", acumulado: dadosMesAnterior > 0 ? dadosMesAnterior : 0 },
+        { key: "4", periodo: "180 DIAS", acumulado: dadosSeisMeses > 0 ? dadosSeisMeses : 0 },
     ];
     const columnsGeral: TableColumnsType<DataType> = [
         {
-            title: "Código",
+            title: "PERÍODO",
             dataIndex: "periodo",
             key: "periodo",
             align: "left",
@@ -86,11 +95,11 @@ export default function DashboardGeralGerenteComponent() {
             }),
         },
         {
-            title: "Vl Acum.",
+            title: "ACUMULADO",
             dataIndex: "acumulado",
             key: "acumulado",
             align: "right",
-            render: (text: string) => <span>R$ {text}</span>,
+            render: (text: string) => <span>{formatarSemDecimaisEmilhares(text)}</span>,
             onHeaderCell: () => ({
                 style: {
                     backgroundColor: "#B22222",
@@ -103,7 +112,7 @@ export default function DashboardGeralGerenteComponent() {
     return (
         <div style={{ maxWidth: '900px', paddingBottom: '10px' }}>
             <Card style={{ backgroundColor: '#F5F5F5', padding: '0px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', }}
-                title={<span style={{ fontSize: tamFonteTitulo }}>Pendências(Loja)</span>}
+                title={<span style={{ fontSize: tamFonteTitulo }}>PENDÊNCIAS(Loja)</span>}
                 tabProps={{
                     size: 'middle',
                 }}>

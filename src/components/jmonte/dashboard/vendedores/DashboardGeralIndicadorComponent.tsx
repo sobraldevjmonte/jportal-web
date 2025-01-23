@@ -6,8 +6,9 @@ import { UsuarioContext } from "../../../../context/useContext";
 import { Button, Card, Modal, Skeleton, Table, TableColumnsType } from "antd";
 import { useContext, useEffect, useState } from "react";
 import DashBoardVendedoresService from "../../../../service/DashBoardVendedores";
-
 import DashboardDetalhesIndicadores from "./../vendedores/DashboardDetalhesIndicadores";
+import { formatarSemDecimaisEmilhares } from "../../../../utils/formatarValores";
+
 
 const serviceDashBoardVendedor = new DashBoardVendedoresService()
 
@@ -15,7 +16,7 @@ interface DataTypeProfissionais {
     key: string;
     cod_indica_pre: string;
     indicador: string;
-    valorTotal: string;
+    valorTotal: number;
 }
 export default function DashboardGeralIndicadorComponent(props: any) {
     const [loading, setLoading] = useState(false);
@@ -63,11 +64,11 @@ export default function DashboardGeralIndicadorComponent(props: any) {
             }),
         },
         {
-            title: "VL ACUM.",
+            title: "ACUMULADO",
             dataIndex: "valorTotal",
             key: "valorTotal",
             align: "right",
-            render: (text: string) => <span>R$ {text}</span>,
+            render: (text: string) => <span>{formatarSemDecimaisEmilhares(text)}</span>,
             onHeaderCell: () => ({
                 style: {
                     backgroundColor: "#B22222",
@@ -102,7 +103,7 @@ export default function DashboardGeralIndicadorComponent(props: any) {
         <div style={{ maxWidth: '600px', paddingBottom: '10px' }}>
             <Card
                 style={{ backgroundColor: '#F5F5F5', padding: '0px', margin: '0px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', }}
-                title={<span style={{ fontSize: tamFonteTitulo }}>Pendências Por Indicador</span>}
+                title={<span style={{ fontSize: tamFonteTitulo }}>PENDÊNCIAS POR INDICADOR</span>}
                 tabProps={{
                     size: 'middle',
                 }}>

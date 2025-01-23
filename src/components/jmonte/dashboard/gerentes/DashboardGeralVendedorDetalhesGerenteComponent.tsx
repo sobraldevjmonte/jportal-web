@@ -6,6 +6,8 @@ import { useContext, useEffect, useState } from "react";
 import { UsuarioContext } from "../../../../context/useContext";
 import DashBoardVendedoresService from "../../../../service/DashBoardVendedores";
 
+import { formatarSemDecimaisEmilhares } from "../../../../utils/formatarValores";
+
 const serviceDashBoardVendedor = new DashBoardVendedoresService()
 
 interface DataTypeClientes {
@@ -63,7 +65,7 @@ export default function DashboardGeralVendedorDetalhesGerenteComponent(props: an
             align: "left",
             render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
-                    {record.umDia > 0 ? parseFloat(record.umDia).toFixed(2) : '0.00'}
+                    {record.umDia > 0 ? formatarSemDecimaisEmilhares(record.umDia) : 0}
                 </span>,
             onHeaderCell: () => ({
                 style: {
@@ -78,7 +80,7 @@ export default function DashboardGeralVendedorDetalhesGerenteComponent(props: an
             align: "left",
             render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
-                    {record.semanaAnterior > 0 ? parseFloat(record.semanaAnterior).toFixed(2) : '0.00'}
+                    {record.semanaAnterior > 0 ? formatarSemDecimaisEmilhares(record.semanaAnterior) : 0}
                 </span>,
             onHeaderCell: () => ({
                 style: {
@@ -93,7 +95,7 @@ export default function DashboardGeralVendedorDetalhesGerenteComponent(props: an
             align: "left",
             render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
-                    {record.mesAnterior > 0 ? parseFloat(record.mesAnterior).toFixed(2) : '0.00'}
+                    {record.mesAnterior > 0 ? formatarSemDecimaisEmilhares(record.mesAnterior) : 0}
                 </span>,
             onHeaderCell: () => ({
                 style: {
@@ -108,7 +110,7 @@ export default function DashboardGeralVendedorDetalhesGerenteComponent(props: an
             align: "left",
             render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
-                    {record.centoOitentaDias > 0 ? parseFloat(record.centoOitentaDias).toFixed(2) : 'R$ 0.00'}
+                    {record.centoOitentaDias > 0 ? formatarSemDecimaisEmilhares(record.centoOitentaDias) : 0}
                 </span>,
             onHeaderCell: () => ({
                 style: {

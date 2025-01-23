@@ -22,5 +22,20 @@ function retornarDouble(numero){
   return parseFloat(valor);
 }
 
+function formatarSemDecimaisEmilhares(numero) {
+  // Remove casas decimais usando Math.floor
+  let valorInteiro = Math.floor(numero);
 
-export { formatarMoeda, formatarMoedaComSimbolo, retornarDouble };
+  // Formata com pontos de milhares
+  let valor = valorInteiro.toLocaleString("pt-BR", {
+    useGrouping: true, // Garante a formatação com pontos de milhares
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  });
+
+  return valor;
+}
+
+
+
+export { formatarMoeda, formatarMoedaComSimbolo, retornarDouble, formatarSemDecimaisEmilhares };

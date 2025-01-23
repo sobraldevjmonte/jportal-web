@@ -187,6 +187,25 @@ export default class DashBoardVendedoresService {
     //********************* gerentes  ********************/
     //********************* gerentes  ********************/
 
+    async listarDashBoardGerenteHoje(loja: number) {
+
+        console.log("*********** listarDashBoardGerenteHoje *****************");
+        let rs;
+        try {
+            const response = await api.get(`/dashboard/lista-dashboard-gerente-geral-hoje/${loja}`);
+            rs = {
+                statusCode: 200,
+                data: response.data,
+            };
+        } catch (error) {
+            console.error("Error na requisição");
+            rs = {
+                statusCode: 401,
+                msg: "Erro na requisição",
+            };
+        }
+        return rs;
+    }
     async listarDashBoardGerenteUmDia(loja: number) {
 
         console.log("*********** listarDashBoardGerenteUmDia *****************");

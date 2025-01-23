@@ -2,13 +2,16 @@ import { Card, Skeleton, Spin, Table, TableColumnsType, Typography } from "antd"
 import { useContext, useEffect, useState } from "react";
 import { UsuarioContext } from "../../../../context/useContext";
 import DashBoardVendedoresService from "../../../../service/DashBoardVendedores";
+import { formatarSemDecimaisEmilhares } from "../../../../utils/formatarValores";
 
 const serviceDashBoardVendedor = new DashBoardVendedoresService()
+
+
 
 interface DataType {
     key: string;
     periodo: string;
-    acumulado: string;
+    acumulado: number;
 }
 
 export default function DashboardGeralComponent() {
@@ -48,7 +51,6 @@ export default function DashboardGeralComponent() {
                 serviceDashBoardVendedor.listarDashBoardVendedorSeisMeses(codigoUsuario),
             ]);
 
-            console.log(rsHoje)
             setDadosHoje(rsHoje.data.lista_hoje_vendedor[0].acumuladohoje);
             setDadosUmDia(rsUmDia.data.lista_um_dia_vendedor[0].acumuladoumdia);
             setDadosSemana(rsUmaSemana.data.lista_semana_anterior[0].acumuladosemananterior);
@@ -71,11 +73,11 @@ export default function DashboardGeralComponent() {
     const corDestaque = '#000'
 
     const dadosGeral: DataType[] = [
-        { key: "1", periodo: "HOJE", acumulado: `${dadosHoje > 0 ? dadosHoje : '0'}` },
-        { key: "1", periodo: "DIA ANT.", acumulado: `${dadosUmDia > 0 ? dadosUmDia : '0'}` },
-        { key: "2", periodo: "SEMANA ANT.", acumulado: `${dadosSemana > 0 ? dadosSemana : '0'}` },
-        { key: "3", periodo: "MÊS ANT.", acumulado: `${dadosMesAnterior > 0 ? dadosMesAnterior : '0'}` },
-        { key: "4", periodo: "180 DIAS", acumulado: `${dadosSeisMeses > 0 ? dadosSeisMeses : '0'}` },
+        { key: "1", periodo: "HOJE", acumulado: dadosHoje > 0 ? dadosHoje : 0 },
+        { key: "1", periodo: "DIA ANT.", acumulado: dadosUmDia > 0 ? dadosUmDia : 0 },
+        { key: "2", periodo: "SEMANA ANT.", acumulado: dadosSemana > 0 ? dadosSemana : 0 },
+        { key: "3", periodo: "MÊS ANT.", acumulado: dadosMesAnterior > 0 ? dadosMesAnterior : 0 },
+        { key: "4", periodo: "180 DIAS", acumulado: dadosSeisMeses > 0 ? dadosSeisMeses : 0 },
     ];
     const columnsGeral: TableColumnsType<DataType> = [
         {
@@ -91,11 +93,11 @@ export default function DashboardGeralComponent() {
             }),
         },
         {
-            title: "VL ACUM.",
+            title: "ACUMULADO",
             dataIndex: "acumulado",
             key: "acumulado",
             align: "right",
-            render: (text: string) => <span>R$ {text}</span>,
+            render: (text: string) => <span>{formatarSemDecimaisEmilhares(text)}</span>,
             onHeaderCell: () => ({
                 style: {
                     backgroundColor: "#B22222",
@@ -110,7 +112,7 @@ export default function DashboardGeralComponent() {
         <div style={{ maxWidth: '600px', paddingBottom: '10px' }}>
             <Card style={{ backgroundColor: '#F5F5F5', padding: '0px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', }}
                 bordered
-                title={<span style={{ fontSize: tamFonteTitulo }}>Pendências Geral</span>}
+                title={<span style={{ fontSize: tamFonteTitulo }}>PENDÊNCIAS(GERAL)</span>}
                 tabProps={{
                     size: 'middle',
                 }}>

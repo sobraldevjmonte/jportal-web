@@ -5,8 +5,9 @@ import { Button, Card, Modal, Skeleton, Table, TableColumnsType } from "antd";
 import { useContext, useEffect, useState } from "react";
 import DashBoardVendedoresService from "../../../../service/DashBoardVendedores";
 
-import DashboardGeralClienteDetalhesGerenteComponent from "./DashboardGeralClienteDetalhesGerenteComponent";
 import DashboardGeralVendedorDetalhesGerenteComponent from "./DashboardGeralVendedorDetalhesGerenteComponent";
+
+import { formatarSemDecimaisEmilhares } from "../../../../utils/formatarValores";
 
 const serviceDashBoardVendedor = new DashBoardVendedoresService()
 
@@ -65,11 +66,11 @@ export default function DashboardGeralVendedoresGerenteComponent(props: any) {
         },
 
         {
-            title: "VL ACUM.",
+            title: "ACUMULADO",
             dataIndex: "acumulado",
             key: "acumulado",
             align: "right",
-            render: (text: string) => <span>R$ {text}</span>,
+            render: (text: string) => <span>{formatarSemDecimaisEmilhares(text)}</span>,
             onHeaderCell: () => ({
                 style: {
                     backgroundColor: "#B22222",
@@ -105,7 +106,7 @@ export default function DashboardGeralVendedoresGerenteComponent(props: any) {
     return (
         <div style={{ maxWidth: '900px', paddingBottom: '10px' }}>
             <Card style={{ backgroundColor: '#F5F5F5', padding: '0px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', }}
-                title={<span style={{ fontSize: tamFonteTitulo }}>Pendências Por Vendedor</span>}
+                title={<span style={{ fontSize: tamFonteTitulo }}>PENDÊNCIAS POR VENDEDOR</span>}
                 tabProps={{
                     size: 'middle',
                 }}>

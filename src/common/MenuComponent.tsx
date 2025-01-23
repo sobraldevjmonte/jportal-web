@@ -270,7 +270,7 @@ export default function HomePage() {
 
             </SubMenu>
 
-            <Menu.Item key="relatorios" icon={<FilePdfOutlined />}>
+            {/* <Menu.Item key="relatorios" icon={<FilePdfOutlined />}>
               <Link to="/relatorios" className="nav-text">
                 Relatórios
               </Link>
@@ -279,7 +279,8 @@ export default function HomePage() {
               <Link to="/chat" className="nav-text">
                 Chat
               </Link>
-            </Menu.Item>
+            </Menu.Item> */}
+
             <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logOut}>
               <Link to="/login">
                 Sair
@@ -457,7 +458,7 @@ export default function HomePage() {
                 : null}
 
             </SubMenu>
-
+{/* 
             <Menu.Item key="relatorios" icon={<FilePdfOutlined />}>
               <Link to="/relatorios" className="nav-text">
                 Relatórios
@@ -467,7 +468,8 @@ export default function HomePage() {
               <Link to="/chat" className="nav-text">
                 Chat
               </Link>
-            </Menu.Item>
+            </Menu.Item> */}
+
             <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logOut}>
               <Link to="/login">
                 Sair

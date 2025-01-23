@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import DashBoardVendedoresService from "../../../../service/DashBoardVendedores";
 
 import DashboardDetalhesVendedores from "./DashboardDetalhesVendedoresClientes";
+import { formatarSemDecimaisEmilhares } from "../../../../utils/formatarValores";
 
 const serviceDashBoardVendedor = new DashBoardVendedoresService()
 
@@ -65,11 +66,11 @@ export default function DashboardGeralClienteComponent(props: any) {
         },
 
         {
-            title: "VL ACUM.",
+            title: "ACUMULADO",
             dataIndex: "valortotal",
             key: "valortotal",
             align: "right",
-            render: (text: string) => <span>R$ {text}</span>,
+            render: (text: string) => <span>{formatarSemDecimaisEmilhares(text)}</span>,
             onHeaderCell: () => ({
                 style: {
                     backgroundColor: "#B22222",
@@ -105,7 +106,7 @@ export default function DashboardGeralClienteComponent(props: any) {
     return (
         <div style={{ maxWidth: '600px', paddingBottom: '10px' }}>
             <Card style={{ backgroundColor: '#F5F5F5', padding: '0px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', }}
-                title={<span style={{ fontSize: tamFonteTitulo }}>Pendências Por Cliente</span>}
+                title={<span style={{ fontSize: tamFonteTitulo }}>PENDÊNCIAS POR CLIENTE</span>}
                 tabProps={{
                     size: 'middle',
                 }}>

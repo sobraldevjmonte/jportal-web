@@ -2,7 +2,7 @@ import { Spin, Table, TableColumnsType, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 
 
-import { formatarMoedaComSimbolo } from "../../../../utils/formatarValores"
+import { formatarSemDecimaisEmilhares } from "../../../../utils/formatarValores";
 import DashBoardVendedoresService from "../../../../service/DashBoardVendedores";
 import { UsuarioContext } from "../../../../context/useContext";
 
@@ -68,7 +68,7 @@ export default function DashboardGeralClienteDetalhesGerenteComponent(props: any
             align: "left",
             render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
-                    {record.umDia > 0 ? parseFloat(record.umDia).toFixed(2) : '0.00'}
+                    {record.umDia > 0 ? formatarSemDecimaisEmilhares(record.umDia) : 0}
                 </span>,
             onHeaderCell: () => ({
                 style: {
@@ -83,7 +83,7 @@ export default function DashboardGeralClienteDetalhesGerenteComponent(props: any
             align: "left",
             render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
-                    {record.semanaAnterior > 0 ? parseFloat(record.semanaAnterior).toFixed(2) : '0.00'}
+                    {record.semanaAnterior > 0 ? formatarSemDecimaisEmilhares(record.semanaAnterior) : 0}
                 </span>,
             onHeaderCell: () => ({
                 style: {
@@ -98,7 +98,7 @@ export default function DashboardGeralClienteDetalhesGerenteComponent(props: any
             align: "left",
             render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
-                    {record.mesAnterior > 0 ? parseFloat(record.mesAnterior).toFixed(2) : '0.00'}
+                    {record.mesAnterior > 0 ? formatarSemDecimaisEmilhares(record.mesAnterior) : 0}
                 </span>,
             onHeaderCell: () => ({
                 style: {
@@ -113,7 +113,7 @@ export default function DashboardGeralClienteDetalhesGerenteComponent(props: any
             align: "left",
             render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
-                    {record.centoOitentaDias > 0 ? parseFloat(record.centoOitentaDias).toFixed(2) : 'R$ 0.00'}
+                    {record.centoOitentaDias > 0 ? formatarSemDecimaisEmilhares(record.centoOitentaDias) : 0}
                 </span>,
             onHeaderCell: () => ({
                 style: {
