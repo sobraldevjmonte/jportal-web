@@ -11,6 +11,7 @@ import DashBoardVendedoresService from "../../../../service/DashBoardVendedores"
 import DashboardGeralClienteDetalhesGerenteComponent from "./DashboardGeralClienteDetalhesGerenteComponent";
 
 import { formatarSemDecimaisEmilhares } from "../../../../utils/formatarValores";
+import { ReloadOutlined } from "@ant-design/icons";
 
 const serviceDashBoardVendedor = new DashBoardVendedoresService()
 
@@ -105,11 +106,22 @@ export default function DashboardGeralClienteGerenteComponent(props: any) {
     const colorContatou = 'blue'
     const corDestaque = '#000'
 
+    function refresh() {
+        buscaDados()
+    }
 
     return (
         <div style={{ maxWidth: '900px', paddingBottom: '10px' }}>
             <Card style={{ backgroundColor: '#F5F5F5', padding: '0px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', }}
                 title={<span style={{ fontSize: tamFonteTitulo }}>PENDÊNCIAS POR CLIENTE</span>}
+                extra={
+                    <Button
+                        type="primary"
+                        icon={<ReloadOutlined />}
+                        onClick={refresh}
+                        style={{ backgroundColor: "#4CAF50", borderColor: "#4CAF50", width: '40px', height: '40px' }}
+                    />
+                }
                 tabProps={{
                     size: 'middle',
                 }}>

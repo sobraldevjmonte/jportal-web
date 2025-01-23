@@ -1,8 +1,9 @@
-import { Card, Skeleton, Spin, Table, TableColumnsType, Typography } from "antd";
+import { Button, Card, Skeleton, Spin, Table, TableColumnsType, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { UsuarioContext } from "../../../../context/useContext";
 import DashBoardVendedoresService from "../../../../service/DashBoardVendedores";
 import { formatarSemDecimaisEmilhares } from "../../../../utils/formatarValores";
+import { ReloadOutlined } from "@ant-design/icons";
 
 const serviceDashBoardVendedor = new DashBoardVendedoresService()
 
@@ -107,12 +108,23 @@ export default function DashboardGeralComponent() {
         },
     ];
 
+    function refresh() {
+        buscaDados()
+    }
 
     return (
         <div style={{ maxWidth: '600px', paddingBottom: '10px' }}>
             <Card style={{ backgroundColor: '#F5F5F5', padding: '0px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', }}
                 bordered
                 title={<span style={{ fontSize: tamFonteTitulo }}>PENDÊNCIAS(GERAL)</span>}
+                extra={
+                    <Button
+                        type="primary"
+                        icon={<ReloadOutlined />}
+                        onClick={refresh}
+                        style={{ backgroundColor: "#4CAF50", borderColor: "#4CAF50", width: '40px', height: '40px' }}
+                    />
+                }
                 tabProps={{
                     size: 'middle',
                 }}>
