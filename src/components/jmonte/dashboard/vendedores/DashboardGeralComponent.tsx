@@ -18,6 +18,7 @@ export default function DashboardGeralComponent() {
     const { icomp, setIcomp } = useContext(UsuarioContext);
     const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
 
+    const [dadosHoje, setDadosHoje] = useState<number>(0);
     const [dadosUmDia, setDadosUmDia] = useState<number>(0);
     const [dadosSemana, setDadosSemana] = useState(0)
     const [dadosMesAnterior, setDadosMesAnterior] = useState(0)
@@ -34,17 +35,21 @@ export default function DashboardGeralComponent() {
 
             //***************** vendedores geral inicio ******************/
             const [
+                rsHoje,
                 rsUmDia,
                 rsUmaSemana,
                 rsMesAnterior,
                 rsSeisMeses,
             ] = await Promise.all([
+                serviceDashBoardVendedor.listarDashBoardVendedorHoje(codigoUsuario),
                 serviceDashBoardVendedor.listarDashBoardVendedorUmDia(codigoUsuario),
                 serviceDashBoardVendedor.listarDashBoardVendedorSemanaAnterior(codigoUsuario),
                 serviceDashBoardVendedor.listarDashBoardVendedorMesAnterior(codigoUsuario),
                 serviceDashBoardVendedor.listarDashBoardVendedorSeisMeses(codigoUsuario),
             ]);
 
+            console.log(rsHoje)
+            setDadosHoje(rsHoje.data.lista_hoje_vendedor[0].acumuladohoje);
             setDadosUmDia(rsUmDia.data.lista_um_dia_vendedor[0].acumuladoumdia);
             setDadosSemana(rsUmaSemana.data.lista_semana_anterior[0].acumuladosemananterior);
             setDadosMesAnterior(rsMesAnterior.data.lista_mes_ant_vendedor[0].acumuladomesanterior);
@@ -66,10 +71,11 @@ export default function DashboardGeralComponent() {
     const corDestaque = '#000'
 
     const dadosGeral: DataType[] = [
-        { key: "1", periodo: "DIA ANT.", acumulado: `${dadosUmDia > 0 ? dadosUmDia : 'R$ 0.00'}` },
-        { key: "2", periodo: "SEMANA ANT.", acumulado: `${dadosSemana > 0 ? dadosSemana : 'R$ 0.00'}` },
-        { key: "3", periodo: "MÊS ANT.", acumulado: `${dadosMesAnterior > 0 ? dadosMesAnterior : 'R$ 0.00'}` },
-        { key: "4", periodo: "180 DIAS", acumulado: `${dadosSeisMeses > 0 ? dadosSeisMeses : 'R$ 0.00'}` },
+        { key: "1", periodo: "HOJE", acumulado: `${dadosHoje > 0 ? dadosHoje : '0'}` },
+        { key: "1", periodo: "DIA ANT.", acumulado: `${dadosUmDia > 0 ? dadosUmDia : '0'}` },
+        { key: "2", periodo: "SEMANA ANT.", acumulado: `${dadosSemana > 0 ? dadosSemana : '0'}` },
+        { key: "3", periodo: "MÊS ANT.", acumulado: `${dadosMesAnterior > 0 ? dadosMesAnterior : '0'}` },
+        { key: "4", periodo: "180 DIAS", acumulado: `${dadosSeisMeses > 0 ? dadosSeisMeses : '0'}` },
     ];
     const columnsGeral: TableColumnsType<DataType> = [
         {
