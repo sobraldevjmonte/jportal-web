@@ -5,21 +5,16 @@ import DashBoardVendedoresService from "../../../../service/DashBoardVendedores"
 import { UsuarioContext } from "../../../../context/useContext";
 
 import { formatarSemDecimaisEmilhares } from "../../../../utils/formatarValores";
-import DashboardVendedoresClientesNps from "./DashboardVendedoresClientesNps";
 
 const serviceDashBoardVendedor = new DashBoardVendedoresService()
 
 interface DataTypeClientes {
     key: string;
-    cod_cliente_pre: string;
-    cliente: string;
-    umDia: number;
-    semanaAnterior: number;
-    mesAnterior: number;
-    centoOitentaDias: number;
+    acumulado: number;
+    np: number;
 }
 
-export default function DashboardDetalhesVendedoresClientes(props: any) {
+export default function DashboardVendedoresClientesNps(props: any) {
     const [loading, setLoading] = useState(false);
     const { nivelUsuario, setNivelUsuario } = useContext(UsuarioContext);
     const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
@@ -29,7 +24,6 @@ export default function DashboardDetalhesVendedoresClientes(props: any) {
 
 
     const [dadosClientes, setDadosClientes] = useState<DataTypeClientes[]>([]);
-    const [codClienteAtual, setCodClienteAtual] = useState<string | null>(null);
 
     useEffect(() => {
         buscaListaVendasDetalhe()
@@ -41,9 +35,8 @@ export default function DashboardDetalhesVendedoresClientes(props: any) {
 
             //***************** vendedores x clientes inicio *************/
 
-            let rsClientes = await serviceDashBoardVendedor.listarDashBoardVendedorClienteListaDetalhes(codigoUsuario, props.codigo)
-            setDadosClientes(rsClientes.data.lista_detalhes_cliente)
-            setCodClienteAtual(rsClientes.data.lista_detalhes_cliente[0].cliente)
+            let rsClientes = await serviceDashBoardVendedor.listaDadosVendedorClientesNps(icomp, props.codigo)
+            setDadosClientes(rsClientes.data.lista_nps_cliente)
 
             console.log(rsClientes)
 
@@ -61,62 +54,33 @@ export default function DashboardDetalhesVendedoresClientes(props: any) {
 
     const columnsClientes: TableColumnsType<DataTypeClientes> = [
         {
-            title: "DIA ANT.",
-            dataIndex: "umDia",
-            key: "umDia",
+            title: "NP",
+            dataIndex: "np",
+            key: "np",
             align: "left",
             render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
-                    {record.umDia > 0 ? formatarSemDecimaisEmilhares(record.umDia) : 0}
+                    {record.np}
                 </span>,
             onHeaderCell: () => ({
                 style: {
-                    backgroundColor: "#87CEEB",
+                    backgroundColor: "#B0C4DE",
                 },
             }),
         },
+       
         {
-            title: "SEMANA ANT.",
-            dataIndex: "semanaAnterior",
-            key: "semanaAnterior",
+            title: "TOTAL(R$)",
+            dataIndex: "acumulado",
+            key: "acumulado",
             align: "left",
             render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
-                    {record.semanaAnterior > 0 ? formatarSemDecimaisEmilhares(record.semanaAnterior) : 0}
+                    {record.acumulado > 0 ? formatarSemDecimaisEmilhares(record.acumulado) : 0}
                 </span>,
             onHeaderCell: () => ({
                 style: {
-                    backgroundColor: "#87CEEB",
-                },
-            }),
-        },
-        {
-            title: "MÊS ANT.",
-            dataIndex: "mesAnterior",
-            key: "mesAnterior",
-            align: "left",
-            render: (text: string, record: any) =>
-                <span style={{ fontSize: tamFonte }} >
-                    {record.mesAnterior > 0 ? formatarSemDecimaisEmilhares(record.mesAnterior) : 0}
-                </span>,
-            onHeaderCell: () => ({
-                style: {
-                    backgroundColor: "#87CEEB",
-                },
-            }),
-        },
-        {
-            title: "180 DIAS",
-            dataIndex: "centoOitentaDias",
-            key: "centoOitentaDias",
-            align: "left",
-            render: (text: string, record: any) =>
-                <span style={{ fontSize: tamFonte }} >
-                    {record.centoOitentaDias > 0 ? formatarSemDecimaisEmilhares(record.centoOitentaDias) : 0}
-                </span>,
-            onHeaderCell: () => ({
-                style: {
-                    backgroundColor: "#87CEEB",
+                    backgroundColor: "#B0C4DE",
                 },
             }),
         },
@@ -125,7 +89,7 @@ export default function DashboardDetalhesVendedoresClientes(props: any) {
     return (
         <Spin
             spinning={loading}
-            tip="Carregando..."
+            tip="Carregando NPs..."
             style={{
                 position: "absolute",
                 left: "50%",
@@ -140,17 +104,12 @@ export default function DashboardDetalhesVendedoresClientes(props: any) {
                     columns={columnsClientes}
                     dataSource={dadosClientes}
                     size="small"
-                    rowKey={(record) => record.cod_cliente_pre}
+                    rowKey={(record) => record.np}
                     bordered
                     title={() => (
-                        <Typography style={{ fontSize: "1.0rem" }}>Cód.: {codClienteAtual}</Typography>
+                        <Typography style={{ fontSize: "1.0rem" }}>NPs do cliente</Typography>
                     )}
-                    style={{ paddingBottom: '10px' }}
                     pagination={false}
-                />
-
-                <DashboardVendedoresClientesNps
-                    codigo={props.codigo}
                 />
             </div>
         </Spin>
