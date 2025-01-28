@@ -25,6 +25,7 @@ export default function DashboardGerenteClientesNps(props: any) {
 
 
     const [dadosClientes, setDadosClientes] = useState<DataTypeClientes[]>([]);
+    const [quant, setQuant] = useState(0)
 
     useEffect(() => {
         buscaListaVendasDetalhe()
@@ -38,6 +39,7 @@ export default function DashboardGerenteClientesNps(props: any) {
 
             let rsClientes = await serviceDashBoardVendedor.listaDadosGerenteClientesNps(icomp, props.codigo)
             setDadosClientes(rsClientes.data.lista_nps_cliente)
+            setQuant(rsClientes.data.lista_nps_cliente.length)
 
             console.log(rsClientes)
 
@@ -123,7 +125,7 @@ export default function DashboardGerenteClientesNps(props: any) {
                     rowKey={(record) => record.np}
                     bordered
                     title={() => (
-                        <Typography style={{ fontSize: "1.0rem" }}>NPs do cliente</Typography>
+                        <Typography style={{ fontSize: "1.0rem" }}>NPs do cliente(Total {quant})</Typography>
                     )}
                     pagination={{
                         //defaultPageSize: 5, // Define o tamanho padrão da página
