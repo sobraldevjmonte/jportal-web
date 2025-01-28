@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { formatarSemDecimaisEmilhares } from "../../../../utils/formatarValores";
 import DashBoardVendedoresService from "../../../../service/DashBoardVendedores";
 import { UsuarioContext } from "../../../../context/useContext";
+import DashboardGerenteClientesNps from "./DashboardGerenteClientesNps";
 
 const serviceDashBoardVendedor = new DashBoardVendedoresService()
 
@@ -121,7 +122,7 @@ export default function DashboardGeralClienteDetalhesGerenteComponent(props: any
                 },
             }),
         },
-        ];
+    ];
     return (
         <Spin
             spinning={loading}
@@ -146,6 +147,9 @@ export default function DashboardGeralClienteDetalhesGerenteComponent(props: any
                         <Typography style={{ fontSize: "1.0rem" }}>Cód.: {codClienteAtual}</Typography>
                     )}
                     pagination={false}
+                />
+                <DashboardGerenteClientesNps
+                    codigo={props.codigo}
                 />
             </div>
 

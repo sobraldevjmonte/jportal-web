@@ -35,7 +35,7 @@ export default function DashboardVendedoresClientesNps(props: any) {
 
             //***************** vendedores x clientes inicio *************/
 
-            let rsClientes = await serviceDashBoardVendedor.listaDadosVendedorClientesNps(icomp, props.codigo)
+            let rsClientes = await serviceDashBoardVendedor.listaDadosVendedorClientesNps(icomp, props.codigo, props.vendedor)
             setDadosClientes(rsClientes.data.lista_nps_cliente)
 
             console.log(rsClientes)

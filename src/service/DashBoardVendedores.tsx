@@ -401,11 +401,30 @@ export default class DashBoardVendedoresService {
         return rs;
     }
     //**************** vendedor x clientes x nps *********/
-    async listaDadosVendedorClientesNps(loja: number, cliente: string) {
+    async listaDadosVendedorClientesNps(loja: number, cliente: string, vendedor: string) {
         console.log("*********** listaDadosVendedorClientesNps *****************");
         let rs;
         try {
-            const response = await api.get(`/dashboard/lista-dashboard-nps-vendedor-cliente/${loja}/${cliente}`);
+            const response = await api.get(`/dashboard/lista-dashboard-nps-vendedor-cliente/${loja}/${cliente}/${vendedor}`);
+            rs = {
+                statusCode: 200,
+                data: response.data,
+            };
+        } catch (error) {
+            console.error("Error na requisição");
+            rs = {
+                statusCode: 401,
+                msg: "Erro na requisição",
+            };
+        }
+        return rs;
+    }
+    //**************** gerentes x clientes x nps *********/
+    async listaDadosGerenteClientesNps(loja: number, cliente: string) {
+        console.log("*********** listaDadosVendedorClientesNps *****************");
+        let rs;
+        try {
+            const response = await api.get(`/dashboard/lista-dashboard-nps-gerente-cliente/${loja}/${cliente}`);
             rs = {
                 statusCode: 200,
                 data: response.data,
