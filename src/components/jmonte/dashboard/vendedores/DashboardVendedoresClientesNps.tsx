@@ -109,7 +109,13 @@ export default function DashboardVendedoresClientesNps(props: any) {
                     title={() => (
                         <Typography style={{ fontSize: "1.0rem" }}>NPs do cliente</Typography>
                     )}
-                    pagination={false}
+                    pagination={{
+                        //defaultPageSize: 5, // Define o tamanho padrão da página
+                        showSizeChanger: true, // Exibe o seletor de tamanho da página
+                        pageSizeOptions: ['10', '20', '30'], // Opções de tamanho de página disponíveis
+                        showQuickJumper: true, // Exibe o campo de navegação rápida
+                        showTotal: (total, range) => `Mostrando ${range[0]}-${range[1]} de ${total} NPs`, // Exibe informações sobre o total de registros
+                    }}
                 />
             </div>
         </Spin>
