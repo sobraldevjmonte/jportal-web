@@ -1,12 +1,27 @@
 import axios from "axios";
 
+import { getBaseUrl } from "../utils/redirec";
+
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL,
+  baseURL:  getBaseUrl(),
   headers: {
     "Content-type": "application/json",
     'Access-Control-Allow-Origin': '*',
   },
 });
+
+
+
+// const api = axios.create({
+//   baseURL: process.env.REACT_APP_BASE_URL,
+//   headers: {
+//     "Content-type": "application/json",
+//     'Access-Control-Allow-Origin': '*',
+//   },
+// });
+
+
 class EntregasContatosService {
   async alterarObsVendedor(dados: any) {
     console.log("*********** listaEntregasContatosDoVendedor *****************");
