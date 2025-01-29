@@ -1,10 +1,11 @@
 import { Button, Spin, Table } from 'antd';
 import RtService from '../../service/RtService';
 import Typography from 'antd/es/typography/Typography';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
 import { EditOutlined, FullscreenOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import ModalPreVendasComponent from '../../components/jmonte/ModalPreVendasComponent';
+import { UsuarioContext } from '../../context/useContext';
 
 const service = new RtService()
 
@@ -18,8 +19,8 @@ const divCenter = {
 };
 
 export default function Rtadmin() {
-  const [mes, setMes] = useState('01');
-  const [ano, setano] = useState('2023');
+  const { idLoja, setIdLoja } = useContext(UsuarioContext);
+  
   const [limit, setlimit] = useState(20)
   const [page, setpage] = useState(1)
   const [indicador, setindicador] = useState('')
@@ -28,6 +29,11 @@ export default function Rtadmin() {
   const [dados, setDados] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [mes, setMes] = useState(0)
+  const [ano, setAno] = useState(0)
+
+  const [lojaSelecionada, setLojaSelecionada] = useState(idLoja)
+
   const date = new Date();
 
   const mesConsulta = date.getMonth() + 12
@@ -35,12 +41,27 @@ export default function Rtadmin() {
   const anoConsulta = date.getFullYear() - 1
 
   useEffect(() => {
-    listaIndicadores()
+    const dataAtual = new Date();
+    const mesAtual: number = dataAtual.getMonth() + 1; // getMonth() retorna de 0 a 11, então somamos 1
+    const anoAtual: number = dataAtual.getFullYear();
+
+    console.log(`Mês Atual: ${mesAtual}, Ano Atual: ${anoAtual}`);
+
+
+    if (mesAtual == 1) {
+      setMes(11)
+      setAno(anoAtual - 1)
+      listaIndicadores(11, anoAtual - 1, lojaSelecionada)
+    } else {
+      setMes(mesAtual - 1)
+      setAno(anoAtual)
+      listaIndicadores(mesAtual - 1, anoAtual, lojaSelecionada)
+    }
   }, [])
-  async function listaIndicadores() {
+  async function listaIndicadores(mes: number, ano: number, loja: string) {
     try {
       setLoading(true);
-      let rs = await service.listarIndicadores(1,2023, '0');
+      let rs = await service.listarIndicadores(mes, ano, loja);
       setDados(rs.data.indicadores)
     } catch (error) {
       console.error('Erro ao buscar dados:', error);
@@ -48,12 +69,7 @@ export default function Rtadmin() {
       setLoading(false);
     }
   }
-    // async function carregarPreVendas(idIndicador: number) {
-    //   console.log(idIndicador)
-    //   setTimeout(function () {
-    //   }, 5000);
-    // }
-
+  
   interface IndicadoresType {
     key: number;
     cod_indica_pre: number;

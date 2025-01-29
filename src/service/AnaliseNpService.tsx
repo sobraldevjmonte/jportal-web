@@ -12,13 +12,6 @@ const api = axios.create({
 });
 
 
-// const api = axios.create({
-//   baseURL: process.env.REACT_APP_BASE_URL,
-//   headers: {
-//     "Content-type": "application/json",
-//     'Access-Control-Allow-Origin': '*',
-//   },
-// });
 class AnaliseNpService {
     async listarProdutosNp(np: number){
       console.log("*********** listarProdutosNp(AnaliseNpService) *****************");
@@ -44,8 +37,6 @@ class AnaliseNpService {
         let rs;
         try {
           const response = await api.get(`/analisenp/listar-nps/${mes}/${ano}/${idLoja}`);
-          // const response = await api.get(`/analisenp/listar-nps/${mes}/${ano}/${lojaSelecionada}`);
-          //console.log(rs)
           rs = {
             statusCode: 200,
             data: response.data,

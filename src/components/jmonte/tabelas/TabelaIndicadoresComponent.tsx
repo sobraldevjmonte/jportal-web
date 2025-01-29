@@ -54,14 +54,12 @@ export default function TabelaIndicadoresComponent() {
 
     //******************************** DATAS PERÍODO FIM ******************************************/
     //******************** mes/ano  *************************/
-    const dataAtual = new Date();
-    let mesAtual: number;
-    let anoAtual: number;
     //****************************************************/
 
     useEffect(() => {
-        mesAtual = dataAtual.getMonth();
-        anoAtual = dataAtual.getFullYear();
+        const dataAtual = new Date();
+        const mesAtual: number = dataAtual.getMonth() + 1; // getMonth() retorna de 0 a 11, então somamos 1
+        const anoAtual: number = dataAtual.getFullYear();
 
 
         if (mesAtual == 1) {

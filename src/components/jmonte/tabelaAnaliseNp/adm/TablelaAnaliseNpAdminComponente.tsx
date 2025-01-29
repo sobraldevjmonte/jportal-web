@@ -78,16 +78,22 @@ export default function TablelaAnaliseNpAdminComponente() {
 
     const [valor, setValor] = useState(0)
     useEffect(() => {
-        mesAtual = dataAtual.getMonth();
-        anoAtual = dataAtual.getFullYear();
+        const dataAtual = new Date();
+        const mesAtual: number = dataAtual.getMonth() + 1; // getMonth() retorna de 0 a 11, então somamos 1
+        const anoAtual: number = dataAtual.getFullYear();
+
+        console.log(`Mês Atual: ${mesAtual}, Ano Atual: ${anoAtual}`);
+
 
 
         if (mesAtual == 1) {
+            console.log('mesAtual == 1')
             setMes(11)
             setAno(anoAtual - 1)
             listaNps(11, anoAtual - 1, lojaSelecionada)
             setLojaSelecionada(idLoja)
         } else {
+            console.log('mesAtual != 1')
             setMes(mesAtual - 1)
             setAno(anoAtual)
             listaNps(mesAtual - 1, anoAtual, lojaSelecionada)
@@ -127,7 +133,7 @@ export default function TablelaAnaliseNpAdminComponente() {
         }));
     };
 
-    
+
 
     const handleFilter = useCallback(debounce(() => {
         setFilterLoading(true);
@@ -150,15 +156,15 @@ export default function TablelaAnaliseNpAdminComponente() {
     const applyFilter = (value: string) => {
         setFilterLoading(true);
         try {
-            const filteredData = dados.filter(item => 
-                value.length > 0 
+            const filteredData = dados.filter(item =>
+                value.length > 0
                     ? item.np.includes(value)
                     : true // Se o valor do filtro estiver vazio, exibe todos os dados
             );
-    
+
             // Verifica se o valor digitado corresponde exatamente a algum registro
             const exactMatch = filteredData.some(item => item.np === value);
-    
+
             // Se houver uma correspondência exata, filtra apenas ela
             if (exactMatch) {
                 const exactFilteredData = filteredData.filter(item => item.np === value);
@@ -166,7 +172,7 @@ export default function TablelaAnaliseNpAdminComponente() {
             } else {
                 setDados(filteredData);
             }
-    
+
             setFilters(generateFilters(filteredData));
         } catch (error) {
             console.error('Erro ao aplicar filtro:', error);
@@ -193,7 +199,7 @@ export default function TablelaAnaliseNpAdminComponente() {
             setFilterLoading(false);
         }
     };
-    
+
     const tamFonte = '0.9rem';
     const colorContatou = 'blue'
     const corDestaque = '#000'
