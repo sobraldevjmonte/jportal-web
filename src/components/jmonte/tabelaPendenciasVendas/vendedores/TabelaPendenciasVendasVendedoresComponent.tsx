@@ -61,19 +61,28 @@ export default function TabelaPendeciasVendasVendedoresComponent() {
     }, [ordem])
 
     async function listaPendenciasVendas() {
-
         setLoading(true);
         try {
-            let rs = await service.listaPendenciasVendas(codigoUsuario, ordem);
-            console.log(rs.data)
-            setDados(rs.data.pendenciasVendas)
-            setQuantidade(rs.data.quantidade)
+            const rs = await service.listaPendenciasVendas(codigoUsuario, ordem);
+            console.log(rs?.data);
+    
+            // Adiciona um `key` sequencial aos itens da lista
+            const dadosComKey = rs?.data?.pendenciasVendas?.map((item: any, index: any) => ({
+                ...item,
+                key: `pendencia-${index}`, // Gera um identificador único sequencial
+            })) || [];
+    
+            setDados(dadosComKey);
+            setQuantidade(rs?.data?.quantidade || 0);
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
+            setDados([]); // Evita exibir dados inconsistentes
+            setQuantidade(0);
         } finally {
             setLoading(false);
         }
     }
+    
 
     const tamFonte = '0.9rem';
     const colorContatou = 'blue'
