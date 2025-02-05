@@ -12,10 +12,10 @@ interface DataTypeClientes {
     key: string;
     acumulado: number;
     np: number;
-    vendedor: string
+    cliente: string;
 }
 
-export default function DashboardGerenteClientesNps(props: any) {
+export default function DashboardVendedoresGeralNps(props: any) {
     const [loading, setLoading] = useState(false);
     const { nivelUsuario, setNivelUsuario } = useContext(UsuarioContext);
     const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
@@ -37,7 +37,7 @@ export default function DashboardGerenteClientesNps(props: any) {
 
             //***************** vendedores x clientes inicio *************/
 
-            let rsClientes = await serviceDashBoardVendedor.listaDadosGerenteClientesNps(icomp, props.codigo)
+            let rsClientes = await serviceDashBoardVendedor.listaDadosVendedorGeralNps(icomp, props.periodo, codigoUsuario)
             setDadosClientes(rsClientes.data.lista_nps_cliente)
             setQuant(rsClientes.data.lista_nps_cliente.length)
 
@@ -72,13 +72,13 @@ export default function DashboardGerenteClientesNps(props: any) {
             }),
         },
         {
-            title: "VENDEDOR",
-            dataIndex: "vendedor",
-            key: "vendedor",
+            title: "CLIENTE",
+            dataIndex: "cliente",
+            key: "cliente",
             align: "left",
             render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
-                    {record.vendedor}
+                    {record.cliente}
                 </span>,
             onHeaderCell: () => ({
                 style: {
@@ -129,7 +129,8 @@ export default function DashboardGerenteClientesNps(props: any) {
                     )}
                     pagination={{
                         defaultPageSize: 5, // Define o tamanho padrão da página
-                        pageSizeOptions: ['5', '10', '10'], // Opções de tamanho de página disponíveis
+                        showSizeChanger: true, // Exibe o seletor de tamanho da página
+                        pageSizeOptions: ['5', '10', '20'], // Opções de tamanho de página disponíveis
                     }}
                 />
             </div>

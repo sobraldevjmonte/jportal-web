@@ -1,10 +1,11 @@
-import { Button, Card, Skeleton, Table, TableColumnsType, Typography } from "antd";
+import { Button, Card, Modal, Skeleton, Table, TableColumnsType, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { UsuarioContext } from "../../../../context/useContext";
 import DashBoardVendedoresService from "../../../../service/DashBoardVendedores";
 
 import { formatarSemDecimaisEmilhares } from "../../../../utils/formatarValores"
 import { ReloadOutlined } from "@ant-design/icons";
+import DashboardGerenteGeralNps from "./DashboardGerenteGeralNps";
 
 
 const serviceDashBoardVendedor = new DashBoardVendedoresService()
@@ -88,6 +89,15 @@ export default function DashboardGeralGerenteComponent() {
             dataIndex: "periodo",
             key: "periodo",
             align: "left",
+            render: (value: string, record: DataType) => (
+                <Button
+                    type="link"
+                    onClick={() => showModal(value)}  // Agora passamos apenas o período!
+                    style={{ color: '#000', textDecoration: 'none' }}
+                >
+                    {value} {/* O botão exibe o período corretamente */}
+                </Button>
+            ),
             onHeaderCell: () => ({
                 style: {
                     backgroundColor: "#B22222",
@@ -100,7 +110,9 @@ export default function DashboardGeralGerenteComponent() {
             dataIndex: "acumulado",
             key: "acumulado",
             align: "right",
-            render: (text: string) => <span>{formatarSemDecimaisEmilhares(text)}</span>,
+            render: (value: number) => (
+                <span>{formatarSemDecimaisEmilhares(value)}</span>
+            ),
             onHeaderCell: () => ({
                 style: {
                     backgroundColor: "#B22222",
@@ -110,7 +122,25 @@ export default function DashboardGeralGerenteComponent() {
         },
     ];
 
-    function refresh(){
+
+
+    //************************** modal   dados cliente ***********************/
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [periodoSelecionado, setPeriodoSelecionado] = useState<any>(null);
+
+    const showModal = (periodo: any) => {
+        setPeriodoSelecionado(periodo);
+        setIsModalVisible(true);
+    };
+
+    const handleCancel = () => {
+        setPeriodoSelecionado(null);
+        setIsModalVisible(false);
+    };
+    //************************** modal   dados cliente ***********************/
+
+
+    function refresh() {
         buscaDados()
     }
 
@@ -120,12 +150,12 @@ export default function DashboardGeralGerenteComponent() {
                 title={<span style={{ fontSize: tamFonteTitulo }}>PENDÊNCIAS(Loja)</span>}
                 extra={
                     <Button
-                      type="primary"
-                      icon={<ReloadOutlined />}
-                      onClick={refresh}
-                      style={{ backgroundColor: "#4CAF50", borderColor: "#4CAF50", width: '40px', height: '40px' }}
+                        type="primary"
+                        icon={<ReloadOutlined />}
+                        onClick={refresh}
+                        style={{ backgroundColor: "#4CAF50", borderColor: "#4CAF50", width: '40px', height: '40px' }}
                     />
-                  }
+                }
                 tabProps={{
                     size: 'middle',
                 }}>
@@ -148,6 +178,21 @@ export default function DashboardGeralGerenteComponent() {
                             // )}
                             pagination={false}
                         />
+
+                        <Modal
+                            title={`Detalhes do Cliente: ${periodoSelecionado || ""}`}
+                            visible={isModalVisible}
+                            onCancel={handleCancel}
+                            footer={null}
+                            width={800}
+                        >
+                            {periodoSelecionado && (
+                                <DashboardGerenteGeralNps
+                                    periodo={periodoSelecionado}
+                                    nome={periodoSelecionado}
+                                />
+                            )}
+                        </Modal>
                     </div>
                 </Skeleton>
             </Card>

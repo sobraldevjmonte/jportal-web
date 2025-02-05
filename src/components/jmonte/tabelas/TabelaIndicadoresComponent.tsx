@@ -171,9 +171,24 @@ export default function TabelaIndicadoresComponent() {
             render: (text, record) => (
                 <>
                     <Row>
-                        <Button size="middle" style={{ marginLeft: '2px', marginRight: '2px', backgroundColor: '#fff', color: '#0000CD' }} icon={<SaveOutlined />} title='Salvar' />
-                        <Button size="middle" title='Pagar' style={{ backgroundColor: '#fff', color: '#D2691E' }} icon={<DollarCircleOutlined />} />
+                        {(nivelUsuario === 1 || nivelUsuario === 11) && (
+                            <>
+                                <Button
+                                    size="middle"
+                                    style={{ marginLeft: '2px', marginRight: '2px', backgroundColor: '#fff', color: '#0000CD' }}
+                                    icon={<SaveOutlined />}
+                                    title="Salvar"
+                                />
+                                <Button
+                                    size="middle"
+                                    title="Pagar"
+                                    style={{ backgroundColor: '#fff', color: '#D2691E' }}
+                                    icon={<DollarCircleOutlined />}
+                                />
+                            </>
+                        )}
                     </Row>
+
                 </>
             ),
         },

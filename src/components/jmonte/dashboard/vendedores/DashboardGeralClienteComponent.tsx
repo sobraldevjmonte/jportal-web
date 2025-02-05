@@ -95,6 +95,7 @@ export default function DashboardGeralClienteComponent(props: any) {
         setClienteSelecionado(null);
         setIsModalVisible(false);
     };
+    //************************** modal   dados cliente ***********************/
 
 
 
@@ -138,7 +139,10 @@ export default function DashboardGeralClienteComponent(props: any) {
                         // title={() => (
                         //     <Typography style={{ fontSize: "1.2rem" }}>Pendências (Por Cliente)</Typography>
                         // )}
-                        pagination={false}
+                        pagination={{
+                            defaultPageSize: 5, // Define o tamanho padrão da página
+                            pageSizeOptions: ['5', '10', '20'], // Opções de tamanho de página disponíveis
+                        }}
                     />
                     <Modal
                         title={`Detalhes do Cliente: ${clienteSelecionado?.cliente || ""}`}

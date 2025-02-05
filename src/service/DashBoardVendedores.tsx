@@ -451,6 +451,42 @@ export default class DashBoardVendedoresService {
         return rs;
     }
 
-
+    async listaDadosVendedorGeralNps(loja: number, perido: string, vendedor: string ) {
+        console.log("*********** listaDadosVendedorGeralNps *****************");
+        let rs;
+        try {
+            const response = await api.get(`/dashboard/lista-dashboard-nps-vendedor-nps-geral-hoje/${loja}/${perido}/${vendedor}`);
+            rs = {
+                statusCode: 200,
+                data: response.data,
+            };
+        } catch (error) {
+            console.error("Error na requisição");
+            rs = {
+                statusCode: 401,
+                msg: "Erro na requisição",
+            };
+        }
+        return rs;
+    }
+    
+    async listaDadosGerenteGeralNps(loja: number, perido: string ) {
+        console.log("*********** listaDadosGerenteGeralNps *****************");
+        let rs;
+        try {
+            const response = await api.get(`/dashboard/lista-dashboard-nps-gerente-nps-geral-hoje/${loja}/${perido}`);
+            rs = {
+                statusCode: 200,
+                data: response.data,
+            };
+        } catch (error) {
+            console.error("Error na requisição");
+            rs = {
+                statusCode: 401,
+                msg: "Erro na requisição",
+            };
+        }
+        return rs;
+    }
 
 }

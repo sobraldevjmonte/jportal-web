@@ -1,3 +1,5 @@
+
+
 import { Modal, Spin, Table, TableColumnsType, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 
@@ -12,10 +14,10 @@ interface DataTypeClientes {
     key: string;
     acumulado: number;
     np: number;
-    vendedor: string
+    cliente: string;
 }
 
-export default function DashboardGerenteClientesNps(props: any) {
+export default function DashboardGerenteGeralNps(props: any) {
     const [loading, setLoading] = useState(false);
     const { nivelUsuario, setNivelUsuario } = useContext(UsuarioContext);
     const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
@@ -37,7 +39,7 @@ export default function DashboardGerenteClientesNps(props: any) {
 
             //***************** vendedores x clientes inicio *************/
 
-            let rsClientes = await serviceDashBoardVendedor.listaDadosGerenteClientesNps(icomp, props.codigo)
+            let rsClientes = await serviceDashBoardVendedor.listaDadosGerenteGeralNps(icomp, props.periodo)
             setDadosClientes(rsClientes.data.lista_nps_cliente)
             setQuant(rsClientes.data.lista_nps_cliente.length)
 
@@ -72,13 +74,13 @@ export default function DashboardGerenteClientesNps(props: any) {
             }),
         },
         {
-            title: "VENDEDOR",
-            dataIndex: "vendedor",
-            key: "vendedor",
+            title: "CLIENTE",
+            dataIndex: "cliente",
+            key: "cliente",
             align: "left",
             render: (text: string, record: any) =>
                 <span style={{ fontSize: tamFonte }} >
-                    {record.vendedor}
+                    {record.cliente}
                 </span>,
             onHeaderCell: () => ({
                 style: {
@@ -129,7 +131,7 @@ export default function DashboardGerenteClientesNps(props: any) {
                     )}
                     pagination={{
                         defaultPageSize: 5, // Define o tamanho padrão da página
-                        pageSizeOptions: ['5', '10', '10'], // Opções de tamanho de página disponíveis
+                        pageSizeOptions: ['5', '10', '20'], // Opções de tamanho de página disponíveis
                     }}
                 />
             </div>
