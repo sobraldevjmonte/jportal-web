@@ -129,7 +129,6 @@ export default function DashboardVendedoresGeralNps(props: any) {
                     )}
                     pagination={{
                         defaultPageSize: 5, // Define o tamanho padrão da página
-                        showSizeChanger: true, // Exibe o seletor de tamanho da página
                         pageSizeOptions: ['5', '10', '20'], // Opções de tamanho de página disponíveis
                     }}
                 />

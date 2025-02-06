@@ -137,7 +137,10 @@ export default function DashboardGeralIndicadorGerenteComponent(props: any) {
                         // title={() => (
                         //     <Typography style={{ fontSize: "1.2rem" }}>Pendências (Por Indicador)</Typography>
                         // )}
-                        pagination={false}
+                        pagination={{
+                            defaultPageSize: 5, // Define o tamanho padrão da página
+                            pageSizeOptions: ['5', '10', '20'], // Opções de tamanho de página disponíveis
+                        }}
                     />
                     <Modal
                         title={`Detalhes do Indicador: ${indicadorSelecionado?.indicador || ""}`}

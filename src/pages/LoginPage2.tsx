@@ -1,15 +1,16 @@
-import { Button, Card, Col, Input, Row, Form } from "antd";
+import { Button, Card, Col, Input, Row, Form, notification } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginService from "../service/LoginService";
 import { LoginOutlined } from "@ant-design/icons";
-
 import { UsuarioContext } from "../context/useContext";
+
+import { Modal } from "antd";
 
 const service = new LoginService();
 
 export default function LoginPage2() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const { nomeUsuario, setNomeUsuario } = useContext(UsuarioContext);
     const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
@@ -17,41 +18,31 @@ export default function LoginPage2() {
     const { nivelUsuario, setNivelUsuario } = useContext(UsuarioContext);
     const { loja, setLoja } = useContext(UsuarioContext);
     const { idLoja, setIdLoja } = useContext(UsuarioContext);
-    const { icomp, setIcomp} = useContext(UsuarioContext);
+    const { icomp, setIcomp } = useContext(UsuarioContext);
     const { logado, setLogado } = useContext(UsuarioContext);
     const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
     const { subNivel1, setSubNivel1 } = useContext(UsuarioContext);
 
-    const [msg, setMsg] = useState('')
     const [senha, setSenha] = useState("");
-    const [usuario, setUsuario] = useState('')
-
+    const [usuario, setUsuario] = useState("");
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        //resetCampos()
+        // resetCampos();
     }, []);
 
-    function salvarUsuario(e: any) {
-        setUsuario(e.target.value);
-    }
-    function salvarSenha(e: any) {
-        setSenha(e.target.value);
-    }
-
     function resetCampos() {
-        setNomeUsuario('')
-        setSenha('')
-        setIdUsuario('')
-        setCodigoUsuario('')
-        setLoja('999')
-        setIdLoja(999999)
-        setNivelUsuario('999')
-        setIdNivelUsuario(999)
-        setSubNivel1(999)
-        setLogado(false)
-        setMsg('')
-        setIcomp('')
+        setNomeUsuario("");
+        setSenha("");
+        setIdUsuario("");
+        setCodigoUsuario("");
+        setLoja("999");
+        setIdLoja(999999);
+        setNivelUsuario("999");
+        setIdNivelUsuario(999);
+        setSubNivel1(999);
+        setLogado(false);
+        setIcomp("");
 
         localStorage.removeItem("nomeUsuario");
         localStorage.removeItem("idUsuario");
@@ -66,59 +57,60 @@ export default function LoginPage2() {
     };
 
     async function onFinish() {
-        console.log("************ onfinish ************");
+        console.log("************ onFinish ************");
         setLoading(true);
         let resp = await service.login(usuario, senha);
-        console.log(resp)
+        console.log(resp);
 
         if (resp.data == null) {
             setLoading(false);
-            setMsg('Falha de autenticação!')
-            setLogado(false)
+            setLogado(false);
+
+            showErrorNotification("Falha ao autenticar. Verifique suas credenciais!");
         } else {
-
-            
-
             setLogado(true);
 
-            setNomeUsuario(resp.data.nomeusuario)
-            setIdUsuario(resp.data.idusuario)
-            setCodigoUsuario(resp.data.codigousuario)
-            setLoja(resp.data.loja)
-            // setIdLoja(0)
-            setIdLoja(resp.data.idLoja)
-            setIcomp(resp.data.icomp)
-            setNivelUsuario(resp.data.nivelusuario)
-            setIdNivelUsuario(resp.data.idNivelUsuario)
-            setSubNivel1(resp.data.subNivel1)
-            setMsg('Redirecionando...')
+            setNomeUsuario(resp.data.nomeusuario);
+            setIdUsuario(resp.data.idusuario);
+            setCodigoUsuario(resp.data.codigousuario);
+            setLoja(resp.data.loja);
+            setIdLoja(resp.data.idLoja);
+            setIcomp(resp.data.icomp);
+            setNivelUsuario(resp.data.nivelusuario);
+            setIdNivelUsuario(resp.data.idNivelUsuario);
+            setSubNivel1(resp.data.subNivel1);
 
-            setTimeout(function () {
-                setLogado(true);
-
+            setTimeout(() => {
                 setLoading(false);
-                setLogado(true);
-
-                return navigate('/')
-            }, 3000);
-
-            
+                navigate("/");
+            }, 2000);
         }
     }
 
-    const estiloDiv = {
+    const estiloDiv: React.CSSProperties = {
         display: "flex",
-        flexdirection: 'column',
+        flexDirection: "column", // Corrigido o nome da propriedade
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
         paddingTop: "20px",
-        transform: "translateY(-60px)", 
+        transform: "translateY(-60px)",
     };
+
+    const showErrorNotification = (message: string) => {
+        Modal.error({
+            title: "Erro de Autenticação",
+            content: message,
+            centered: true, // Garante que o modal apareça no centro da tela
+        });
+    };
+
+
+
     return (
         <div id="login_page" style={estiloDiv}>
             <Card
-                title="Login do Sistema(Portal 2.0)"
+                title="Login do Sistema (Portal 2.0)"
                 bordered={true}
                 style={{
                     maxWidth: "400px",
@@ -142,25 +134,26 @@ export default function LoginPage2() {
                     >
                         <Row>
                             <Col span={24} style={{ width: "100%" }}>
-                                {/*<label htmlFor="usuario">Username:</label>*/}
-                                <Input onChange={salvarUsuario} autoFocus />
+                                <Input onChange={(e) => setUsuario(e.target.value)} autoFocus />
                             </Col>
                         </Row>
                     </Form.Item>
+
                     <Form.Item
-                        label="Senha..."
+                        label="Senha"
                         name="senha"
                         rules={[{ required: true, message: "Digite sua senha!" }]}
                     >
                         <Row>
                             <Col span={24} style={{ width: "100%" }}>
-                                <Input.Password onChange={salvarSenha} />
+                                <Input.Password onChange={(e) => setSenha(e.target.value)} />
                             </Col>
                         </Row>
                     </Form.Item>
+
                     <Form.Item>
                         <Row>
-                            <Col span={48} style={{ width: "100%" }}>
+                            <Col span={24} style={{ width: "100%" }}>
                                 <Button
                                     loading={loading}
                                     style={{
@@ -178,8 +171,9 @@ export default function LoginPage2() {
                             </Col>
                         </Row>
                     </Form.Item>
+
                     <Row>
-                        <Col span={48} style={{ width: "100%" }}>
+                        <Col span={24} style={{ width: "100%" }}>
                             <Button
                                 style={{
                                     width: "100%",
@@ -196,7 +190,6 @@ export default function LoginPage2() {
                         </Col>
                     </Row>
                 </Form>
-                <div style={{ alignContent: 'center', justifyContent: 'center', display: 'flex', marginTop: 10, color: 'blue' }}>{msg}</div>
             </Card>
         </div>
     );
