@@ -10,13 +10,12 @@ import DashboardVendedoresGeralNps from "./DashboardVendedoresGeralNps";
 const serviceDashBoardVendedor = new DashBoardVendedoresService()
 
 
-
 interface DataType {
     key: string;
     periodo: string;
     acumulado: number;
+    nps?: string; // Novo campo opcional
 }
-
 export default function DashboardGeralComponent() {
     const [loading, setLoading] = useState(false);
     const { nivelUsuario, setNivelUsuario } = useContext(UsuarioContext);
@@ -29,6 +28,14 @@ export default function DashboardGeralComponent() {
     const [dadosSemana, setDadosSemana] = useState(0)
     const [dadosMesAnterior, setDadosMesAnterior] = useState(0)
     const [dadosSeisMeses, setDadosSeisMeses] = useState(0)
+
+    const [registrosdadosHoje, setRegistrosDadosHoje] = useState<number>(0);
+    const [registrosdadosUmDia, setRegistrosDadosUmDia] = useState<number>(0);
+    const [registrosdadosUmaSemana, setRegistrosDadosUmaSemana] = useState<number>(0);
+    const [registrosdadosMesAnterior, setRegistrosDadosMesAnterior] = useState<number>(0);
+    const [registrosdadosSeisMeses, setRegistrosDadosSeisMeses] = useState<number>(0);
+
+
 
     useEffect(() => {
         buscaDados()
@@ -54,6 +61,14 @@ export default function DashboardGeralComponent() {
                 serviceDashBoardVendedor.listarDashBoardVendedorSeisMeses(codigoUsuario),
             ]);
 
+            console.log(rsSeisMeses)
+            setRegistrosDadosHoje(rsHoje.data.lista_hoje_vendedor[0].total_pedidos)
+            setRegistrosDadosUmDia(rsUmDia.data.lista_um_dia_vendedor[0].total_pedidos)
+            setRegistrosDadosUmaSemana(rsUmaSemana.data.lista_semana_anterior[0].total_pedidos)
+            setRegistrosDadosMesAnterior(rsMesAnterior.data.lista_mes_ant_vendedor[0].total_pedidos)
+            setRegistrosDadosSeisMeses(rsSeisMeses.data.lista_seis_meses[0].total_pedidos)
+
+
             setDadosHoje(rsHoje.data.lista_hoje_vendedor[0].acumuladohoje);
             setDadosUmDia(rsUmDia.data.lista_um_dia_vendedor[0].acumuladoumdia);
             setDadosSemana(rsUmaSemana.data.lista_semana_anterior[0].acumuladosemananterior);
@@ -76,11 +91,15 @@ export default function DashboardGeralComponent() {
     const corDestaque = '#000'
 
     const dadosGeral: DataType[] = [
-        { key: "1", periodo: "HOJE", acumulado: dadosHoje > 0 ? dadosHoje : 0 },
-        { key: "2", periodo: "DIA ANT.", acumulado: dadosUmDia > 0 ? dadosUmDia : 0 },
-        { key: "3", periodo: "SEMANA ANT.", acumulado: dadosSemana > 0 ? dadosSemana : 0 },
-        { key: "4", periodo: "MÊS ANT.", acumulado: dadosMesAnterior > 0 ? dadosMesAnterior : 0 },
-        { key: "5", periodo: "180 DIAS", acumulado: dadosSeisMeses > 0 ? dadosSeisMeses : 0 },
+        {
+            key: "1",
+            periodo: `HOJE(${registrosdadosHoje})`,
+            acumulado: dadosHoje > 0 ? dadosHoje : 0
+        },
+        { key: "2", periodo: `DIA ANT(${registrosdadosUmDia})`, acumulado: dadosUmDia > 0 ? dadosUmDia : 0 },
+        { key: "3", periodo: `SEMANA ANT(${registrosdadosUmaSemana})`, acumulado: dadosSemana > 0 ? dadosSemana : 0 },
+        { key: "4", periodo: `MÊS ANT(${registrosdadosMesAnterior})`, acumulado: dadosMesAnterior > 0 ? dadosMesAnterior : 0 },
+        { key: "5", periodo: `180 DIAS(${registrosdadosSeisMeses})`, acumulado: dadosSeisMeses > 0 ? dadosSeisMeses : 0 },
     ];
 
     const columnsGeral: TableColumnsType<DataType> = [
@@ -90,13 +109,13 @@ export default function DashboardGeralComponent() {
             key: "periodo",
             align: "left",
             render: (value: string, record: DataType) => (
-                <Button 
-                type="link" 
-                onClick={() => showModal(value)}  // Agora passamos apenas o período!
-                style={{ color: '#000', textDecoration: 'none' }}
-            >
-                {value} {/* O botão exibe o período corretamente */}
-            </Button>
+                <Button
+                    type="link"
+                    onClick={() => showModal(value)}  // Agora passamos apenas o período!
+                    style={{ color: '#000', textDecoration: 'none' }}
+                >
+                    {value} {/* O botão exibe o período corretamente */}
+                </Button>
             ),
             onHeaderCell: () => ({
                 style: {
@@ -121,7 +140,7 @@ export default function DashboardGeralComponent() {
             }),
         },
     ];
-    
+
 
     //************************** modal   dados cliente ***********************/
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -181,7 +200,7 @@ export default function DashboardGeralComponent() {
                             pageSizeOptions: ['5', '10', '20'], // Opções de tamanho de página disponíveis
                         }}
                     />
-                 <Modal
+                    <Modal
                         title={`Detalhes do Cliente: ${periodoSelecionado || ""}`}
                         visible={isModalVisible}
                         onCancel={handleCancel}

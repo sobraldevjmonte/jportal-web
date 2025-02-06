@@ -66,7 +66,7 @@ export default function LoginPage2() {
             setLoading(false);
             setLogado(false);
 
-            showErrorNotification("Falha ao autenticar. Verifique suas credenciais!");
+            showErrorNotification("Verifique suas credenciais!");
         } else {
             setLogado(true);
 
@@ -99,11 +99,13 @@ export default function LoginPage2() {
 
     const showErrorNotification = (message: string) => {
         Modal.error({
-            title: "Erro de Autenticação",
-            content: message,
-            centered: true, // Garante que o modal apareça no centro da tela
+            title: <div style={{ fontSize: "18px",  }}>Erro de Autenticação</div>,
+            content: <div style={{ fontSize: "18px",}}>{message}</div>,
+            centered: true,
         });
     };
+    
+
 
 
 
