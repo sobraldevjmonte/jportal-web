@@ -61,19 +61,29 @@ export default function DashboardGeralComponent() {
                 serviceDashBoardVendedor.listarDashBoardVendedorSeisMeses(codigoUsuario),
             ]);
 
-            console.log(rsSeisMeses)
-            setRegistrosDadosHoje(rsHoje.data.lista_hoje_vendedor[0].total_pedidos)
-            setRegistrosDadosUmDia(rsUmDia.data.lista_um_dia_vendedor[0].total_pedidos)
-            setRegistrosDadosUmaSemana(rsUmaSemana.data.lista_semana_anterior[0].total_pedidos)
-            setRegistrosDadosMesAnterior(rsMesAnterior.data.lista_mes_ant_vendedor[0].total_pedidos)
-            setRegistrosDadosSeisMeses(rsSeisMeses.data.lista_seis_meses[0].total_pedidos)
+            // setRegistrosDadosHoje(rsHoje.data.lista_hoje_vendedor[0].total_pedidos)
+            // setRegistrosDadosUmDia(rsUmDia.data.lista_um_dia_vendedor[0].total_pedidos)
+            // setRegistrosDadosUmaSemana(rsUmaSemana.data.lista_semana_anterior[0].total_pedidos)
+            // setRegistrosDadosMesAnterior(rsMesAnterior.data.lista_mes_ant_vendedor[0].total_pedidos)
+            // setRegistrosDadosSeisMeses(rsSeisMeses.data.lista_seis_meses[0].total_pedidos)
 
 
-            setDadosHoje(rsHoje.data.lista_hoje_vendedor[0].acumuladohoje);
-            setDadosUmDia(rsUmDia.data.lista_um_dia_vendedor[0].acumuladoumdia);
-            setDadosSemana(rsUmaSemana.data.lista_semana_anterior[0].acumuladosemananterior);
-            setDadosMesAnterior(rsMesAnterior.data.lista_mes_ant_vendedor[0].acumuladomesanterior);
-            setDadosSeisMeses(rsSeisMeses.data.lista_seis_meses[0].acumuladoseismeses);
+            
+            console.log(rsSeisMeses);
+
+            const hoje = rsHoje.data.lista_hoje_vendedor[0]?.acumuladohoje || 0;
+            const umDia = rsUmDia.data.lista_um_dia_vendedor[0]?.acumuladoumdia || 0;
+            const semana = rsUmaSemana.data.lista_semana_anterior[0]?.acumuladosemananterior || 0;
+            const mesAnterior = rsMesAnterior.data.lista_mes_ant_vendedor[0]?.acumuladomesanterior || 0;
+            const seisMeses = rsSeisMeses.data.lista_seis_meses[0]?.acumuladoseismeses || 0;
+    
+            setDadosHoje(hoje);
+            setDadosUmDia(umDia);
+            setDadosSemana(semana);
+            setDadosMesAnterior(mesAnterior);
+            setDadosSeisMeses(seisMeses);
+            
+            
             //***************** vendedores geral fim ****************/
 
         } catch (error) {
@@ -93,13 +103,13 @@ export default function DashboardGeralComponent() {
     const dadosGeral: DataType[] = [
         {
             key: "1",
-            periodo: `HOJE(${registrosdadosHoje})`,
+            periodo: `HOJE`,
             acumulado: dadosHoje > 0 ? dadosHoje : 0
         },
-        { key: "2", periodo: `DIA ANT(${registrosdadosUmDia})`, acumulado: dadosUmDia > 0 ? dadosUmDia : 0 },
-        { key: "3", periodo: `SEMANA ANT(${registrosdadosUmaSemana})`, acumulado: dadosSemana > 0 ? dadosSemana : 0 },
-        { key: "4", periodo: `MÊS ANT(${registrosdadosMesAnterior})`, acumulado: dadosMesAnterior > 0 ? dadosMesAnterior : 0 },
-        { key: "5", periodo: `180 DIAS(${registrosdadosSeisMeses})`, acumulado: dadosSeisMeses > 0 ? dadosSeisMeses : 0 },
+        { key: "2", periodo: `DIA ANT.`, acumulado: dadosUmDia > 0 ? dadosUmDia : 0 },
+        { key: "3", periodo: `SEMANA ANT.`, acumulado: dadosSemana > 0 ? dadosSemana : 0 },
+        { key: "4", periodo: `MÊS ANT.`, acumulado: dadosMesAnterior > 0 ? dadosMesAnterior : 0 },
+        { key: "5", periodo: `180 DIAS`, acumulado: dadosSeisMeses > 0 ? dadosSeisMeses : 0 },
     ];
 
     const columnsGeral: TableColumnsType<DataType> = [
