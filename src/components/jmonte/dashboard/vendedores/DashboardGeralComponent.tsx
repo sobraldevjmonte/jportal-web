@@ -14,7 +14,7 @@ interface DataType {
     key: string;
     periodo: string;
     acumulado: number;
-    nps?: string; // Novo campo opcional
+    nps?: number; // Novo campo opcional
 }
 export default function DashboardGeralComponent() {
     const [loading, setLoading] = useState(false);
@@ -61,29 +61,31 @@ export default function DashboardGeralComponent() {
                 serviceDashBoardVendedor.listarDashBoardVendedorSeisMeses(codigoUsuario),
             ]);
 
-            // setRegistrosDadosHoje(rsHoje.data.lista_hoje_vendedor[0].total_pedidos)
-            // setRegistrosDadosUmDia(rsUmDia.data.lista_um_dia_vendedor[0].total_pedidos)
-            // setRegistrosDadosUmaSemana(rsUmaSemana.data.lista_semana_anterior[0].total_pedidos)
-            // setRegistrosDadosMesAnterior(rsMesAnterior.data.lista_mes_ant_vendedor[0].total_pedidos)
-            // setRegistrosDadosSeisMeses(rsSeisMeses.data.lista_seis_meses[0].total_pedidos)
+            const registrosHoje = rsHoje.data.lista_hoje_vendedor[0]?.total_pedidos || 0;
+            const registrosDiaAnt = rsUmDia.data.lista_um_dia_vendedor[0]?.total_pedidos || 0;
+            const registrosSemanaAnt = rsUmaSemana.data.lista_semana_anterior[0]?.total_pedidos || 0;
+            const registrosMesAnt = rsMesAnterior.data.lista_mes_ant_vendedor[0]?.total_pedidos || 0;
+            const registros180 = rsSeisMeses.data.lista_seis_meses[0]?.total_pedidos || 0;
 
-
-            
-            console.log(rsSeisMeses);
+            setRegistrosDadosHoje(registrosHoje)
+            setRegistrosDadosUmDia(registrosDiaAnt)
+            setRegistrosDadosUmaSemana(registrosSemanaAnt)
+            setRegistrosDadosMesAnterior(registrosMesAnt)
+            setRegistrosDadosSeisMeses(registros180)
 
             const hoje = rsHoje.data.lista_hoje_vendedor[0]?.acumuladohoje || 0;
             const umDia = rsUmDia.data.lista_um_dia_vendedor[0]?.acumuladoumdia || 0;
             const semana = rsUmaSemana.data.lista_semana_anterior[0]?.acumuladosemananterior || 0;
             const mesAnterior = rsMesAnterior.data.lista_mes_ant_vendedor[0]?.acumuladomesanterior || 0;
             const seisMeses = rsSeisMeses.data.lista_seis_meses[0]?.acumuladoseismeses || 0;
-    
+
             setDadosHoje(hoje);
             setDadosUmDia(umDia);
             setDadosSemana(semana);
             setDadosMesAnterior(mesAnterior);
             setDadosSeisMeses(seisMeses);
-            
-            
+
+
             //***************** vendedores geral fim ****************/
 
         } catch (error) {
@@ -104,12 +106,12 @@ export default function DashboardGeralComponent() {
         {
             key: "1",
             periodo: `HOJE`,
-            acumulado: dadosHoje > 0 ? dadosHoje : 0
+            acumulado: dadosHoje > 0 ? dadosHoje : 0, nps: registrosdadosHoje
         },
-        { key: "2", periodo: `DIA ANT.`, acumulado: dadosUmDia > 0 ? dadosUmDia : 0 },
-        { key: "3", periodo: `SEMANA ANT.`, acumulado: dadosSemana > 0 ? dadosSemana : 0 },
-        { key: "4", periodo: `MÊS ANT.`, acumulado: dadosMesAnterior > 0 ? dadosMesAnterior : 0 },
-        { key: "5", periodo: `180 DIAS`, acumulado: dadosSeisMeses > 0 ? dadosSeisMeses : 0 },
+        { key: "2", periodo: `DIA ANT.`, acumulado: dadosUmDia > 0 ? dadosUmDia : 0, nps: registrosdadosUmDia },
+        { key: "3", periodo: `SEMANA ANT.`, acumulado: dadosSemana > 0 ? dadosSemana : 0, nps: registrosdadosUmaSemana },
+        { key: "4", periodo: `MÊS ANT.`, acumulado: dadosMesAnterior > 0 ? dadosMesAnterior : 0, nps: registrosdadosMesAnterior },
+        { key: "5", periodo: `180 DIAS`, acumulado: dadosSeisMeses > 0 ? dadosSeisMeses : 0, nps: registrosdadosSeisMeses },
     ];
 
     const columnsGeral: TableColumnsType<DataType> = [
@@ -135,6 +137,21 @@ export default function DashboardGeralComponent() {
             }),
         },
         {
+            title: "NPs",
+            dataIndex: "nps",
+            key: "nps",
+            align: "right",
+            render: (value: number) => (
+                <span>{formatarSemDecimaisEmilhares(value)}</span>
+            ),
+            onHeaderCell: () => ({
+                style: {
+                    backgroundColor: "#B22222",
+                    color: "#FFFFFF",
+                },
+            }),
+        },
+        {
             title: "ACUMULADO",
             dataIndex: "acumulado",
             key: "acumulado",
@@ -149,6 +166,7 @@ export default function DashboardGeralComponent() {
                 },
             }),
         },
+
     ];
 
 

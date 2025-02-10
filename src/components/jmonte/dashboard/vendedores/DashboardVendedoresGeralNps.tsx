@@ -29,9 +29,6 @@ export default function DashboardVendedoresGeralNps(props: any) {
 
     useEffect(() => {
         buscaListaVendasDetalhe()
-        console.log('********** modal hoje **********')
-        console.log(props)
-        console.log('********** modal hoje **********')
     }, [props])
 
     async function buscaListaVendasDetalhe() {
