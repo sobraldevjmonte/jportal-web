@@ -11,10 +11,11 @@ export default function HomePage() {
     const [redirected, setRedirected] = useState(false); // Novo estado para rastrear o redirecionamento
 
     useEffect(() => {
-        if (logado && !redirected) {
+        if (logado) {
             navigate("/dashboard");
             setRedirected(true); // Marca que o redirecionamento foi realizado
         }
+        
     }, [logado, redirected, navigate]);
 
     return (
