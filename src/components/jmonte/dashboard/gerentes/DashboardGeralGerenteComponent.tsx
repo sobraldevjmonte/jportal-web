@@ -82,13 +82,12 @@ export default function DashboardGeralGerenteComponent() {
             setRegistrosDadosMesAnterior(registrosMesAnt)
             setRegistrosDadosSeisMeses(registros180)
 
-            setDadosHoje(rsHoje.data.lista_um_hoje.acumuladohoje);
-            setDadosUmDia(rsUmDia.data.lista_um_dia_vendedor.acumuladoumdia);
-            setDadosSemana(rsUmaSemana.data.lista_semana_anterior);
-            setDadosMesAnterior(rsMesAnterior.data.lista_mes_anterior);
-            setDadosSeisMeses(rsSeisMeses.data.lista_seis_meses);
+            setDadosHoje(rsHoje.data.lista_um_hoje);
+            setDadosUmDia(rsUmDia.data.acumuladoumdia);
+            setDadosSemana(rsUmaSemana.data.acumuladosemananterior);
+            setDadosMesAnterior(rsMesAnterior.data.acumuladomesanterior);
+            setDadosSeisMeses(rsSeisMeses.data.acumuladoseismeses);
             //***************** vendedores geral fim ****************/
-
 
 
         } catch (error) {
