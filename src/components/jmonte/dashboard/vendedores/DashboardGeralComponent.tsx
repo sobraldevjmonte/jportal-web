@@ -163,7 +163,7 @@ export default function DashboardGeralComponent() {
             }),
         },
         {
-            title: `R$ TTL.:(${totalGeralValor})`,
+            title: `R$ ${totalGeralValor}`,
             dataIndex: "acumulado",
             key: "acumulado",
             align: "right",
