@@ -35,6 +35,9 @@ export default function DashboardGeralComponent() {
     const [registrosdadosMesAnterior, setRegistrosDadosMesAnterior] = useState<number>(0);
     const [registrosdadosSeisMeses, setRegistrosDadosSeisMeses] = useState<number>(0);
 
+    const [totalGeralRegistros, setTotalGeralRegistros] = useState<number>(0);
+    const [totalGeralValor, setTotalGeralValor] = useState<number>(0);
+
 
 
     useEffect(() => {
@@ -53,12 +56,16 @@ export default function DashboardGeralComponent() {
                 rsUmaSemana,
                 rsMesAnterior,
                 rsSeisMeses,
+                rsCountRegistros,
+                rsSomaValores
             ] = await Promise.all([
                 serviceDashBoardVendedor.listarDashBoardVendedorHoje(codigoUsuario),
                 serviceDashBoardVendedor.listarDashBoardVendedorUmDia(codigoUsuario),
                 serviceDashBoardVendedor.listarDashBoardVendedorSemanaAnterior(codigoUsuario),
                 serviceDashBoardVendedor.listarDashBoardVendedorMesAnterior(codigoUsuario),
                 serviceDashBoardVendedor.listarDashBoardVendedorSeisMeses(codigoUsuario),
+                serviceDashBoardVendedor.somaGeralPedidos(codigoUsuario),
+                serviceDashBoardVendedor.somaGeralValores(codigoUsuario),
             ]);
 
             const registrosHoje = rsHoje.data.lista_hoje_vendedor[0]?.total_pedidos || 0;
@@ -66,6 +73,9 @@ export default function DashboardGeralComponent() {
             const registrosSemanaAnt = rsUmaSemana.data.lista_semana_anterior[0]?.total_pedidos || 0;
             const registrosMesAnt = rsMesAnterior.data.lista_mes_ant_vendedor[0]?.total_pedidos || 0;
             const registros180 = rsSeisMeses.data.lista_seis_meses[0]?.total_pedidos || 0;
+
+            setTotalGeralRegistros(rsCountRegistros.data.soma_geral_pedidos);
+            setTotalGeralValor(rsSomaValores.data.soma_geral_valores);
 
             setRegistrosDadosHoje(registrosHoje)
             setRegistrosDadosUmDia(registrosDiaAnt)
@@ -78,6 +88,7 @@ export default function DashboardGeralComponent() {
             const semana = rsUmaSemana.data.lista_semana_anterior[0]?.acumuladosemananterior || 0;
             const mesAnterior = rsMesAnterior.data.lista_mes_ant_vendedor[0]?.acumuladomesanterior || 0;
             const seisMeses = rsSeisMeses.data.lista_seis_meses[0]?.acumuladoseismeses || 0;
+
 
             setDadosHoje(hoje);
             setDadosUmDia(umDia);
@@ -116,7 +127,7 @@ export default function DashboardGeralComponent() {
 
     const columnsGeral: TableColumnsType<DataType> = [
         {
-            title: "PERÍODO",
+            title:`PERÍODO`,
             dataIndex: "periodo",
             key: "periodo",
             align: "left",
@@ -137,7 +148,7 @@ export default function DashboardGeralComponent() {
             }),
         },
         {
-            title: "NPs",
+            title: `NPs(${totalGeralRegistros})`,
             dataIndex: "nps",
             key: "nps",
             align: "right",
@@ -152,7 +163,7 @@ export default function DashboardGeralComponent() {
             }),
         },
         {
-            title: "ACUMULADO",
+            title: `R$ TTL.:(${totalGeralValor})`,
             dataIndex: "acumulado",
             key: "acumulado",
             align: "right",

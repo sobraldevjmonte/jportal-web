@@ -22,8 +22,6 @@ const api = axios.create({
 
 export default class DashBoardVendedoresService {
     async listarDashBoardVendedorSeisMeses(vendedor: number) {
-
-        console.log("*********** listarDashBoardVendedorSeisMeses *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-vendedor-geral-seis-meses/${vendedor}`);
@@ -41,8 +39,6 @@ export default class DashBoardVendedoresService {
         return rs;
     }
     async listarDashBoardVendedorHoje(vendedor: number) {
-
-        console.log("*********** listarDashBoardVendedorUmDia *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-vendedor-geral-hoje/${vendedor}`);
@@ -60,8 +56,6 @@ export default class DashBoardVendedoresService {
         return rs;
     }
     async listarDashBoardVendedorUmDia(vendedor: number) {
-
-        console.log("*********** listarDashBoardVendedorUmDia *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-vendedor-geral-um-dia/${vendedor}`);
@@ -79,8 +73,6 @@ export default class DashBoardVendedoresService {
         return rs;
     }
     async listarDashBoardVendedorMesAnterior(vendedor: number) {
-
-        console.log("*********** listarDashBoardVendedorMesAnterior *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-vendedor-geral-mes-anterior/${vendedor}`);
@@ -98,8 +90,6 @@ export default class DashBoardVendedoresService {
         return rs;
     }
     async listarDashBoardVendedorSemanaAnterior(vendedor: number) {
-
-        console.log("*********** listarDashBoardVendedorSemanaAnterior *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-vendedor-geral-semana-anterior/${vendedor}`);
@@ -120,7 +110,6 @@ export default class DashBoardVendedoresService {
     //******************** vendedores x clientes  *************/
 
     async listarDashBoardVendedorClienteLista(vendedor: number) {
-        console.log("*********** listarDashBoardVendedorClienteLista *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-vendedor-cliente-lista/${vendedor}`);
@@ -138,7 +127,6 @@ export default class DashBoardVendedoresService {
         return rs;
     }
     async listarDashBoardVendedorClienteListaDetalhes(vendedor: number, cliente: string) {
-        console.log("*********** listarDashBoardVendedorClienteListaDetalhes *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-vendedor-cliente-lista-detalhes/${vendedor}/${cliente}`);
@@ -159,7 +147,6 @@ export default class DashBoardVendedoresService {
 
     //********************** vendedors x indica */
     async listarDashBoardVendedorIndicadoresLista(vendedor: number) {
-        console.log("*********** listarDashBoardVendedorIndicadoresLista *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-vendedor-indicador-lista/${vendedor}`);
@@ -177,7 +164,6 @@ export default class DashBoardVendedoresService {
         return rs;
     }
     async listarDashBoardVendedorIndicadoresListaDetalhes(vendedor: number, indicador: string) {
-        console.log("*********** listarDashBoardVendedorIndicadoresListaDetalhes *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-vendedor-indicador-lista-detalhes/${vendedor}/${indicador}`);
@@ -201,7 +187,6 @@ export default class DashBoardVendedoresService {
 
     async listarDashBoardGerenteHoje(loja: number) {
 
-        console.log("*********** listarDashBoardGerenteHoje *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-gerente-geral-hoje/${loja}`);
@@ -220,7 +205,6 @@ export default class DashBoardVendedoresService {
     }
     async listarDashBoardGerenteUmDia(loja: number) {
 
-        console.log("*********** listarDashBoardGerenteUmDia *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-gerente-geral-um-dia/${loja}`);
@@ -238,8 +222,6 @@ export default class DashBoardVendedoresService {
         return rs;
     }
     async listarDashBoardGerenteMesAnterior(loja: number) {
-
-        console.log("*********** listarDashBoardGerenteMesAnterior *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-gerente-geral-mes-anterior/${loja}`);
@@ -257,8 +239,6 @@ export default class DashBoardVendedoresService {
         return rs;
     }
     async listarDashBoardGerenteSemanaAnterior(loja: number) {
-
-        console.log("*********** listarDashBoardGerenteSemanaAnterior *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-gerente-geral-semana-anterior/${loja}`);
@@ -277,8 +257,6 @@ export default class DashBoardVendedoresService {
     }
 
     async listarDashBoardGerenteSeisMeses(loja: number) {
-
-        console.log("*********** listarDashBoardGerenteSeisMeses *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-gerente-geral-seis-meses/${loja}`);
@@ -298,7 +276,6 @@ export default class DashBoardVendedoresService {
 
     //************ gerente x cliente ************/
     async listarDashBoardGerenteClienteLista(loja: number) {
-        console.log("*********** listarDashBoardVendedorClienteLista *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-gerente-cliente-lista/${loja}`);
@@ -317,7 +294,6 @@ export default class DashBoardVendedoresService {
     }
 
     async listarDashBoardGerenteClienteListaDetalhes(loja: number, cliente: string) {
-        console.log("*********** listarDashBoardVendedorClienteListaDetalhes *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-gerente-cliente-lista-detalhes/${loja}/${cliente}`);
@@ -336,7 +312,6 @@ export default class DashBoardVendedoresService {
     }
     //************ gerente x cliente ************/
     async listarDashBoardGerenteVendedoresLista(loja: number) {
-        console.log("*********** listarDashBoardVendedorClienteLista *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-gerente-vendedor-lista/${loja}`);
@@ -355,7 +330,6 @@ export default class DashBoardVendedoresService {
     }
 
     async listarDashBoardGerenteVendedoresListaDetalhes(loja: number, id_vendedor: string) {
-        console.log("*********** listarDashBoardVendedorClienteListaDetalhes *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-gerente-vendedor-lista-detalhes/${loja}/${id_vendedor}`);
@@ -375,7 +349,6 @@ export default class DashBoardVendedoresService {
 
     //************ gerente x indicador ************/
     async listarDashBoardIndicadorIndicadoresLista(loja: number) {
-        console.log("*********** listarDashBoardVendedorIndicadoresLista *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-gerente-indicador-lista/${loja}`);
@@ -395,7 +368,6 @@ export default class DashBoardVendedoresService {
 
 
     async listarDashBoardGerenteIndicadoresListaDetalhes(loja: number, indicador: string) {
-        console.log("*********** listarDashBoardVendedorIndicadoresListaDetalhes *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-gerente-indicador-lista-detalhes/${loja}/${indicador}`);
@@ -414,7 +386,6 @@ export default class DashBoardVendedoresService {
     }
     //**************** vendedor x clientes x nps *********/
     async listaDadosVendedorClientesNps(loja: number, cliente: string, vendedor: string) {
-        console.log("*********** listaDadosVendedorClientesNps *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-nps-vendedor-cliente/${loja}/${cliente}/${vendedor}`);
@@ -433,7 +404,6 @@ export default class DashBoardVendedoresService {
     }
     //**************** gerentes x clientes x nps *********/
     async listaDadosGerenteClientesNps(loja: number, cliente: string) {
-        console.log("*********** listaDadosVendedorClientesNps *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-nps-gerente-cliente/${loja}/${cliente}`);
@@ -452,7 +422,6 @@ export default class DashBoardVendedoresService {
     }
 
     async listaDadosVendedorGeralNps(loja: number, perido: string, vendedor: string ) {
-        console.log("*********** listaDadosVendedorGeralNps *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-nps-vendedor-nps-geral-hoje/${loja}/${perido}/${vendedor}`);
@@ -471,10 +440,81 @@ export default class DashBoardVendedoresService {
     }
     
     async listaDadosGerenteGeralNps(loja: number, perido: string ) {
-        console.log("*********** listaDadosGerenteGeralNps *****************");
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-nps-gerente-nps-geral-hoje/${loja}/${perido}`);
+            rs = {
+                statusCode: 200,
+                data: response.data,
+            };
+        } catch (error) {
+            console.error("Error na requisição");
+            rs = {
+                statusCode: 401,
+                msg: "Erro na requisição",
+            };
+        }
+        return rs;
+    }
+
+    //******* contagem geral pedidos quantidade vendedor */
+    async somaGeralPedidos(vendedor: number) {
+        let rs;
+        try {
+            const response = await api.get(`/dashboard/soma-geral-registros/${vendedor}`);
+            rs = {
+                statusCode: 200,
+                data: response.data,
+            };
+        } catch (error) {
+            console.error("Error na requisição");
+            rs = {
+                statusCode: 401,
+                msg: "Erro na requisição",
+            };
+        }
+        return rs;
+    }
+    async somaGeralValores(vendedor: number) {
+        let rs;
+        try {
+            const response = await api.get(`/dashboard/soma-geral-valores/${vendedor}`);
+            rs = {
+                statusCode: 200,
+                data: response.data,
+            };
+        } catch (error) {
+            console.error("Error na requisição");
+            rs = {
+                statusCode: 401,
+                msg: "Erro na requisição",
+            };
+        }
+        return rs;
+    }
+
+     //******* contagem geral pedidos quantidade gerente */
+     async somaGeralPedidosGerente(loja: number) {
+        let rs;
+        try {
+            const response = await api.get(`/dashboard/soma-geral-registros-gerente/${loja}`);
+            rs = {
+                statusCode: 200,
+                data: response.data,
+            };
+        } catch (error) {
+            console.error("Error na requisição");
+            rs = {
+                statusCode: 401,
+                msg: "Erro na requisição",
+            };
+        }
+        return rs;
+    }
+    async somaGeralValoresGerente(loja: number) {
+        let rs;
+        try {
+            const response = await api.get(`/dashboard/soma-geral-valores-gerente/${loja}`);
             rs = {
                 statusCode: 200,
                 data: response.data,

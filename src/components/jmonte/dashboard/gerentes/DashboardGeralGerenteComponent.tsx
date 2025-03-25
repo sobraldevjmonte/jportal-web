@@ -14,6 +14,7 @@ interface DataType {
     key: string;
     periodo: string;
     acumulado: number;
+    nps?: number; // Novo campo opcional
 }
 
 export default function DashboardGeralGerenteComponent() {
@@ -28,6 +29,15 @@ export default function DashboardGeralGerenteComponent() {
     const [dadosSemana, setDadosSemana] = useState(0)
     const [dadosMesAnterior, setDadosMesAnterior] = useState(0)
     const [dadosSeisMeses, setDadosSeisMeses] = useState(0)
+
+    const [registrosdadosHoje, setRegistrosDadosHoje] = useState<number>(0);
+    const [registrosdadosUmDia, setRegistrosDadosUmDia] = useState<number>(0);
+    const [registrosdadosUmaSemana, setRegistrosDadosUmaSemana] = useState<number>(0);
+    const [registrosdadosMesAnterior, setRegistrosDadosMesAnterior] = useState<number>(0);
+    const [registrosdadosSeisMeses, setRegistrosDadosSeisMeses] = useState<number>(0);
+
+    const [totalGeralRegistros, setTotalGeralRegistros] = useState<number>(0);
+    const [totalGeralValor, setTotalGeralValor] = useState<number>(0);
 
     useEffect(() => {
         buscaDados()
@@ -45,22 +55,41 @@ export default function DashboardGeralGerenteComponent() {
                 rsUmaSemana,
                 rsMesAnterior,
                 rsSeisMeses,
+                rsCountRegistros,
+                rsSomaValores
             ] = await Promise.all([
                 serviceDashBoardVendedor.listarDashBoardGerenteHoje(icomp),
                 serviceDashBoardVendedor.listarDashBoardGerenteUmDia(icomp),
                 serviceDashBoardVendedor.listarDashBoardGerenteSemanaAnterior(icomp),
                 serviceDashBoardVendedor.listarDashBoardGerenteMesAnterior(icomp),
                 serviceDashBoardVendedor.listarDashBoardGerenteSeisMeses(icomp),
+                serviceDashBoardVendedor.somaGeralPedidosGerente(icomp),
+                serviceDashBoardVendedor.somaGeralValoresGerente(icomp),
             ]);
 
-            setDadosHoje(rsHoje.data.lista_um_hoje[0].acumuladohoje);
-            setDadosUmDia(rsUmDia.data.lista_um_dia_vendedor[0].acumuladoumdia);
-            setDadosSemana(rsUmaSemana.data.lista_semana_anterior[0].acumuladosemananterior);
-            setDadosMesAnterior(rsMesAnterior.data.lista_mes_ant_vendedor[0].acumuladomesanterior);
-            setDadosSeisMeses(rsSeisMeses.data.lista_seis_meses[0].acumuladoseismeses);
+            const registrosHoje = rsHoje.data.total_pedidos || 0;
+            const registrosDiaAnt = rsUmDia.data.total_pedidos || 0;
+            const registrosSemanaAnt = rsUmaSemana.data.total_pedidos || 0;
+            const registrosMesAnt = rsMesAnterior.data.total_pedidos || 0;
+            const registros180 = rsSeisMeses.data.total_pedidos || 0;
+
+            setTotalGeralRegistros(rsCountRegistros.data.soma_geral_pedidos);
+            setTotalGeralValor(rsSomaValores.data.soma_geral_valores);
+
+            setRegistrosDadosHoje(registrosHoje)
+            setRegistrosDadosUmDia(registrosDiaAnt)
+            setRegistrosDadosUmaSemana(registrosSemanaAnt)
+            setRegistrosDadosMesAnterior(registrosMesAnt)
+            setRegistrosDadosSeisMeses(registros180)
+
+            setDadosHoje(rsHoje.data.lista_um_hoje.acumuladohoje);
+            setDadosUmDia(rsUmDia.data.lista_um_dia_vendedor.acumuladoumdia);
+            setDadosSemana(rsUmaSemana.data.lista_semana_anterior);
+            setDadosMesAnterior(rsMesAnterior.data.lista_mes_anterior);
+            setDadosSeisMeses(rsSeisMeses.data.lista_seis_meses);
             //***************** vendedores geral fim ****************/
 
-            console.log(rsSeisMeses)
+
 
         } catch (error) {
             console.error('Erro ao buscar dados um dia:', error);
@@ -77,15 +106,15 @@ export default function DashboardGeralGerenteComponent() {
     const corDestaque = '#000'
 
     const dadosGeral: DataType[] = [
-        { key: "1", periodo: "HOJE", acumulado: dadosHoje > 0 ? dadosHoje : 0 },
-        { key: "2", periodo: "DIA ANT.", acumulado: dadosUmDia > 0 ? dadosUmDia : 0 },
-        { key: "3", periodo: "SEMANA ANT.", acumulado: dadosSemana > 0 ? dadosSemana : 0 },
-        { key: "4", periodo: "MÊS ANT.", acumulado: dadosMesAnterior > 0 ? dadosMesAnterior : 0 },
-        { key: "5", periodo: "180 DIAS", acumulado: dadosSeisMeses > 0 ? dadosSeisMeses : 0 },
+        { key: "1", periodo: "HOJE", acumulado: dadosHoje > 0 ? dadosHoje : 0, nps: registrosdadosHoje },
+        { key: "2", periodo: "DIA ANT.", acumulado: dadosUmDia > 0 ? dadosUmDia : 0, nps: registrosdadosUmDia },
+        { key: "3", periodo: "SEMANA ANT.", acumulado: dadosSemana > 0 ? dadosSemana : 0, nps: registrosdadosUmaSemana },
+        { key: "4", periodo: "MÊS ANT.", acumulado: dadosMesAnterior > 0 ? dadosMesAnterior : 0, nps: registrosdadosMesAnterior },
+        { key: "5", periodo: "180 DIAS", acumulado: dadosSeisMeses > 0 ? dadosSeisMeses : 0, nps: registrosdadosSeisMeses },
     ];
     const columnsGeral: TableColumnsType<DataType> = [
         {
-            title: "PERÍODO",
+            title: `PERÍODO`,
             dataIndex: "periodo",
             key: "periodo",
             align: "left",
@@ -106,7 +135,22 @@ export default function DashboardGeralGerenteComponent() {
             }),
         },
         {
-            title: "ACUMULADO",
+            title: `NPs(${totalGeralRegistros})`,
+            dataIndex: "nps",
+            key: "nps",
+            align: "right",
+            render: (value: number) => (
+                <span>{formatarSemDecimaisEmilhares(value)}</span>
+            ),
+            onHeaderCell: () => ({
+                style: {
+                    backgroundColor: "#B22222",
+                    color: "#FFFFFF",
+                },
+            }),
+        },
+        {
+            title: `R$ ${totalGeralValor}`,
             dataIndex: "acumulado",
             key: "acumulado",
             align: "right",
