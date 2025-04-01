@@ -16,7 +16,6 @@ export default function HomePage() {
             navigate("/dashboard");
         }
     }, [logado, navigate]);
-
     return (
         <>
             {logado ? <MenuComponent /> : <LoginPage2 />}
