@@ -1,29 +1,18 @@
-import axios from "axios";
+import AuditoriaService from "./AuditoriaService";
 
-import { getBaseUrl } from "../utils/redirec";
-
-
-const api = axios.create({
-  baseURL:  getBaseUrl(),
-  headers: {
-    "Content-type": "application/json",
-    'Access-Control-Allow-Origin': '*',
-  },
-});
-
-
-// const api = axios.create({
-//   baseURL: process.env.REACT_APP_BASE_URL,
-//   headers: {
-//     "Content-type": "application/json",
-//     'Access-Control-Allow-Origin': '*',
-//   },
-// });
+import api from './api';
 
 class ProfissionaisService {
   async inativarPremio(id_brinde: number) {
     let rs;
     let response;
+
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo inativarPremio",
+      `id_brinde: ${id_brinde}`
+    );
+
     try {
       response = await api.put(`/profissionais/inativar-brinde/${id_brinde}`);
       rs = {
@@ -42,6 +31,13 @@ class ProfissionaisService {
   async excluirPremio(id_brinde: number) {
     console.log("*********** upLoadImage(ProfissionaisService) *****************");
     let rs;
+
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo excluirPremio",
+      `id_brinde: ${id_brinde}`
+    );
+
     let response;
     try {
       response = await api.delete(`/profissionais/excluir-brinde/${id_brinde}`);
@@ -61,6 +57,12 @@ class ProfissionaisService {
     console.log("*********** upLoadImage(ProfissionaisService) *****************");
     let rs;
     let response;
+
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo atualizarRegistro",
+      `objeto: '***`
+    );
 
     const dados = {
       id_brinde: objeto.id_brinde,
@@ -90,6 +92,12 @@ class ProfissionaisService {
     console.log("*********** upLoadImage(ProfissionaisService) *****************");
     let rs;
 
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo salvarRegistro",
+      `objeto: '***`
+    );
+
     const dados = {
       descricao: objeto.descricao,
       pontos: objeto.pontos,
@@ -111,6 +119,12 @@ class ProfissionaisService {
   async upLoadImage(image: any) {
     let rs;
     let response;
+
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo upLoadImage",
+      `image: '***`
+    );
 
     try {
       response = await api.post(`/profissionais/anexar-arquivo`,
@@ -138,6 +152,12 @@ class ProfissionaisService {
     console.log("*********** salvarNp(ProfissionaisService) *****************");
     let rs;
 
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo salvarNp",
+      `id_np: ${id_np} numero_np: ${numero_np} idLoja: ${idLoja}`
+    );
+
     const dados = {
       data_np: dataEncontrada,
       valor_np: valorEncontrado,
@@ -164,6 +184,13 @@ class ProfissionaisService {
   async rejeitarPedido(obj: any) {
     console.log("*********** listarPedidos(ProfissionaisService) *****************");
     let rs;
+
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo rejeitarPedido",
+      `obj:'***`
+    );
+
     try {
       const response = await api.put(`/profissionais/rejeitar-np`, { obj });
       if (response.status) {
@@ -190,6 +217,13 @@ class ProfissionaisService {
   async aprovarPedido(id_vendas: number, id_usuario: number, total_pontos: number) {
     console.log("*********** listarPedidos(ProfissionaisService) *****************");
     let rs;
+
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo aprovarPedido",
+      `id_vendas: ${id_vendas} id_usuario: ${id_usuario} total_pontos: ${total_pontos}`
+    );
+
     try {
       const response = await api.put(`/profissionais/aprovar-np/${id_vendas}/${id_usuario}/${total_pontos}`);
       console.log(response)
@@ -217,6 +251,13 @@ class ProfissionaisService {
   async buscarNp(id_np: number) {
     console.log("*********** listarPedidos(ProfissionaisService) *****************");
     let rs;
+
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo buscarNp",
+      `id_np: ${id_np}`
+    );
+
     try {
       const response = await api.get(`/profissionais/buscar-np/${id_np}`);
       if (response.status) {
@@ -243,6 +284,13 @@ class ProfissionaisService {
   async listarPedidos(mes: number, ano: number, idLoja: number) {
     console.log("*********** listarPedidos(ProfissionaisService) *****************");
     let rs;
+
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo listarPedidos",
+      `mes: ${mes}/${ano} idLoja: ${idLoja}`
+    );
+
     try {
       const response = await api.get(`/profissionais/listar-pedidos/${mes}/${ano}/${idLoja}`);
       rs = {
@@ -262,6 +310,13 @@ class ProfissionaisService {
 
 
   async imprimirPedidos(mes: number, ano: number, idLoja: number) {
+
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo imprimirPedidos",
+      `mes: ${mes}/${ano} idLoja: ${idLoja}`
+    );
+
     const response = await api.get(`/profissionais/imprimir-pedidos/${mes}/${ano}/${idLoja}`, {
       responseType: 'blob',  // Importante para garantir que o PDF seja tratado como um arquivo
     });
@@ -270,6 +325,12 @@ class ProfissionaisService {
   }
 
   async imprimirTodosPedidos() {
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo imprimirTodosPedidos",
+      ``
+    );
+
     const response = await api.get(`/profissionais/imprimir-todos-pedidos`, {
       responseType: 'blob',  // Importante para garantir que o PDF seja tratado como um arquivo
     });
@@ -283,6 +344,13 @@ class ProfissionaisService {
   async listarPremios() {
     console.log("*********** listarPremios(ProfissionaisService) *****************");
     let rs;
+
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo listarPremios",
+      ``
+    );
+
     try {
       const response = await api.get(`/profissionais/premios-listar`);
 
@@ -300,6 +368,12 @@ class ProfissionaisService {
     return rs;
   }
   async listarUsuarios() {
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo listarUsuarios",
+      ``
+    );
+
     console.log("*********** listarPedidos(ProfissionaisService) *****************");
     let rs;
     try {
@@ -319,6 +393,12 @@ class ProfissionaisService {
     return rs;
   }
   async ativarUsuario(id: number, ativo: string) {
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo ativarUsuario",
+      `idusuario: ${id} ativo: ${ativo}`
+    );
+
     console.log("*********** ativar/inativar usuario(ProfissionaisService) *****************");
     let rs;
     let response;
@@ -343,6 +423,12 @@ class ProfissionaisService {
     return rs;
   }
   async excluirUsuario(id: number) {
+    await AuditoriaService.registrar(
+      "/profissionais-service",
+      "metodo excluirUsuario",
+      `idusuario: ${id}`
+    );
+
     console.log("*********** excluir usuario(ProfissionaisService) *****************");
     let rs;
     let response;

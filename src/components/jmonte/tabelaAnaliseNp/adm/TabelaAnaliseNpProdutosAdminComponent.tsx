@@ -1,10 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import AnaliseNpService from "../../../../service/AnaliseNpService";
-import { Spin, Table, TableColumnsType, Typography } from "antd";
+import { Button, Spin, Table, TableColumnsType, Typography } from "antd";
 import { UsuarioContext } from "../../../../context/useContext";
-// import { AlignType } from 'antd/es/table/interface';
+import { PrinterOutlined } from "@ant-design/icons";
+import { useReactToPrint } from "react-to-print";
 
-const service = new AnaliseNpService()
+const service = new AnaliseNpService();
 
 interface AnaliseNpProdutosType {
     key: string;
@@ -25,124 +26,194 @@ interface AnaliseNpProdutosType {
     taxaentrega: number;
 }
 
-interface PropsAnaliseNpProdutos {
-    idNp: number;
-}
-
-
 export default function TabelaAnaliseNpProdutosAdminComponent(props: any) {
-    const [dados, setDados] = useState([]);
+    // Inicializar sempre como array vazio para evitar erros de renderização
+    const [dados, setDados] = useState<AnaliseNpProdutosType[]>([]);
     const [registros, setQuantidade] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
 
-    const { nivelUsuario, setNivelUsuario } = useContext(UsuarioContext);
-    const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
-    const { subNivel1, setSubNivel1 } = useContext(UsuarioContext);
+    const { idNivelUsuario, subNivel1 } = useContext(UsuarioContext);
 
-    useEffect(() => {
-        listaProdutosNp()
-    }, [])
+    const componentRef = useRef(null);
 
     async function listaProdutosNp() {
-
         setLoading(true);
         try {
             let rs = await service.listarProdutosNp(props.np);
-            console.log(rs);
-            setDados(rs.data.lista_produtos_np)
-            setQuantidade(rs.data.registros)
+            console.log(rs)
+            
+            // PROTEÇÃO: Verifica se rs, data e a lista existem
+            if (rs && rs.data && rs.data.lista_produtos_np) {
+                // Filtra qualquer item nulo que possa vir do array antes de setar o estado
+                const listaValida = rs.data.lista_produtos_np.filter((item: any) => 
+                    item !== null && 
+                    typeof item === 'object' && 
+                    Object.keys(item).length > 0 // Remove objetos vazios {}
+                );
+                setDados(listaValida);
+                setQuantidade(rs.data.registros || 0);
+            } else {
+                setDados([]);
+            }
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
+            setDados([]); // Em caso de erro (como 401), limpa a tabela
         } finally {
             setLoading(false);
         }
     }
 
+    useEffect(() => {
+        if (props.np) {
+            listaProdutosNp();
+        }
+    }, [props.np]);
+
+    const handleDownloadPdf = async () => {
+        setIsDownloading(true);
+        try {
+            const response = await service.gerarPdfProdutosNp(props.np);
+            const blob = new Blob([response.data], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `Produtos_NP_${props.np}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Erro ao baixar o PDF:", error);
+        } finally {
+            setIsDownloading(false);
+        }
+    };
+
     const tamFonte = '0.9rem';
-    const colorContatou = 'blue'
-    const corDestaque = '#000'
 
     const columns: TableColumnsType<AnaliseNpProdutosType> = [
-        { title: 'PRODUTO', dataIndex: 'produto', key: 'produto', },
-        { title: 'COMPRADOR', dataIndex: 'comprador', key: 'comprador', },
+        { title: 'Cód.', dataIndex: 'codproduto', key: 'codproduto' },
+        { title: 'PRODUTO', dataIndex: 'produto', key: 'produto' },
+        { title: 'COMPRADOR', dataIndex: 'comprador', key: 'comprador' },
         {
             title: 'QTDE.VND', dataIndex: 'quantidade', key: 'quantidade', align: 'right',
-            render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.quantidade)).toFixed(2)} </span>
+            render: (_, record) => {
+                if (!record) return null;
+                const valor = parseFloat(record.quantidade?.toString() || "0");
+                return <span style={{ fontSize: tamFonte }}>{isNaN(valor) ? "0.00" : valor.toFixed(2)}</span>
+            }
         },
         {
             title: 'VLR UNIT', dataIndex: 'valor_und', key: 'valor_und', align: 'right',
-            render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.valor_und)).toFixed(2)} </span>
+            render: (_, record) => {
+                if (!record) return null;
+                const valor = parseFloat(record.valor_und?.toString() || "0");
+                return <span style={{ fontSize: tamFonte }}>{isNaN(valor) ? "0.00" : valor.toFixed(2)}</span>
+            }
         },
         {
             title: 'VLR VENDA', dataIndex: 'vlr_vendido', key: 'vlr_vendido', align: 'right',
-            render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.vlr_vendido)).toFixed(2)} </span>
+            render: (_, record) => {
+                if (!record) return null;
+                const valor = parseFloat(record.vlr_vendido?.toString() || "0");
+                return <span style={{ fontSize: tamFonte }}>{isNaN(valor) ? "0.00" : valor.toFixed(2)}</span>
+            }
         },
         {
             title: 'VLR TABELA', dataIndex: 'vlr_tabela', key: 'vlr_tabela', align: 'right',
-            render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.vlr_tabela)).toFixed(2)} </span>
+            render: (_, record) => {
+                if (!record) return null;
+                const valor = parseFloat(record.vlr_tabela?.toString() || "0");
+                return <span style={{ fontSize: tamFonte }}>{isNaN(valor) ? "0.00" : valor.toFixed(2)}</span>
+            }
         },
         {
             title: 'DIFF.TAB', dataIndex: 'desconto', key: 'desconto', align: 'right',
-            render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.desconto)).toFixed(2)} </span>
+            render: (_, record) => {
+                if (!record) return null;
+                const valor = parseFloat(record.desconto?.toString() || "0");
+                return <span style={{ fontSize: tamFonte }}>{isNaN(valor) ? "0.00" : valor.toFixed(2)}</span>
+            }
         },
         {
             title: 'IMPOSTO', dataIndex: 'imposto', key: 'imposto', align: 'right',
-            render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.imposto)).toFixed(2)} </span>
+            render: (_, record) => {
+                if (!record) return null;
+                const valor = parseFloat(record.imposto?.toString() || "0");
+                return <span style={{ fontSize: tamFonte }}>{isNaN(valor) ? "0.00" : valor.toFixed(2)}</span>
+            }
         },
         {
             title: 'DESP.ADM', dataIndex: 'desp_adm', key: 'desp_adm', align: 'right',
-            render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.desp_adm)).toFixed(2)} </span>
+            render: (_, record) => {
+                if (!record) return null;
+                const valor = parseFloat(record.desp_adm?.toString() || "0");
+                return <span style={{ fontSize: tamFonte }}>{isNaN(valor) ? "0.00" : valor.toFixed(2)}</span>
+            }
         },
         {
             title: 'FF%', dataIndex: 'fator_financeiro', key: 'fator_financeiro', align: 'right',
-            render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.fator_financeiro)).toFixed(2)} </span>
+            render: (_, record) => {
+                if (!record) return null;
+                const valor = parseFloat(record.fator_financeiro?.toString() || "0");
+                return <span style={{ fontSize: tamFonte }}>{isNaN(valor) ? "0.00" : valor.toFixed(2)}</span>
+            }
         },
-        ...(idNivelUsuario === 1 && subNivel1 === 1 || idNivelUsuario === 11 && subNivel1 === 1 || idNivelUsuario === 9 && subNivel1 === 1
+        ...((idNivelUsuario === 1 || idNivelUsuario === 11 || idNivelUsuario === 9) && subNivel1 === 1
             ? [{
-                title: 'LUCRO', 
-                dataIndex: 'lucro', 
-                key: 'lucro', 
-                align: 'right' as 'right', // Define o alinhamento com casting explícito
-                render: (text: string, record: any) => (
-                    <span style={{ fontSize: tamFonte }}>{parseFloat(record.lucro).toFixed(2)}</span>
-                ),
+                title: 'LUCRO',
+                dataIndex: 'lucro',
+                key: 'lucro',
+                align: 'right' as const,
+                render: (_: any, record: any) => {
+                    if (!record) return null;
+                    const valor = parseFloat(record.lucro?.toString() || "0");
+                    return <span style={{ fontSize: tamFonte }}>{isNaN(valor) ? "0.00" : valor.toFixed(2)}</span>
+                },
             }]
             : []
         ),
-        // {
-        //     title: 'LUCRO', dataIndex: 'lucro', key: 'lucro', align: 'right',
-        //     render: (text: string, record: any) => (idNivelUsuario === 1 && subNivel1 === 1)|| (idNivelUsuario === 11 && subNivel1 === 1) ?  <span style={{ fontSize: tamFonte }} >{(parseFloat(record.lucro)).toFixed(2)} </span> : null 
-        // },
         {
             title: 'TAXA ENTREGA', dataIndex: 'taxaentrega', key: 'taxaentrega', align: 'right',
-            render: (text: string, record: any) => <span style={{ fontSize: tamFonte }} >{(parseFloat(record.taxaentrega)).toFixed(2)} </span>
+            render: (_, record) => {
+                if (!record) return null;
+                const valor = parseFloat(record.taxaentrega?.toString() || "0");
+                return <span style={{ fontSize: tamFonte }}>{isNaN(valor) ? "0.00" : valor.toFixed(2)}</span>
+            }
         },
     ];
-
     return (
-        <>
-            <div style={{ backgroundColor: '#FFFAF0' }}>
-                <Spin spinning={loading} tip="Carregando..." style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
-                    <div style={{ padding: '', position: 'relative', paddingTop: '20px', paddingRight: '30px' }}>
-                        <Table
-                            columns={columns}
-                            dataSource={dados}
-                            //dataSource={[...dados, totalRow]}
-                            size="small"
-                            rowKey={(record) => record.key}
-                            bordered
-                            title={() => <Typography style={{ fontSize: '1.2rem', padding: '0px' }}>Produtos da NP {props.idNp}({registros})</Typography>}
-                            pagination={{
-                                //defaultPageSize: 5, // Define o tamanho padrão da página
-                                showSizeChanger: true, // Exibe o seletor de tamanho da página
-                                pageSizeOptions: ['10', '20', '30'], // Opções de tamanho de página disponíveis
-                                showQuickJumper: true, // Exibe o campo de navegação rápida
-                                showTotal: (total, range) => `Mostrando ${range[0]}-${range[1]} de ${total} produtos`, // Exibe informações sobre o total de registros
-                            }}
-                        />
-                    </div>
-                </Spin>
-            </div>
-        </>
-    )
+        <div style={{ backgroundColor: '#FFFAF0', padding: '10px' }}>
+            <Spin spinning={loading} tip="Carregando produtos...">
+                <Table
+                    columns={columns}
+                    dataSource={dados}
+                    size="small"
+                    bordered
+                    // CORREÇÃO CRÍTICA: Uso de Optional Chaining (?.) para evitar o erro de "record is null"
+                    rowKey={(record) => record?.key || record?.codproduto || Math.random().toString()}
+                    title={() => (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Typography.Text strong style={{ fontSize: '1.1rem' }}>
+                                Produtos da NP {props.np} ({registros})
+                            </Typography.Text>
+                            <Button
+                                icon={<PrinterOutlined />}
+                                onClick={handleDownloadPdf}
+                                loading={isDownloading}
+                            >
+                                {isDownloading ? 'Gerando...' : 'Baixar PDF'}
+                            </Button>
+                        </div>
+                    )}
+                    pagination={{
+                        showSizeChanger: true,
+                        pageSizeOptions: ['10', '20', '30'],
+                        showTotal: (total, range) => `Mostrando ${range[0]}-${range[1]} de ${total} produtos`,
+                    }}
+                />
+            </Spin>
+        </div>
+    );
 }

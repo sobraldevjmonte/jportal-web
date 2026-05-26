@@ -1,30 +1,14 @@
-import axios from "axios";
 
-import { getBaseUrl } from "../utils/redirec";
+import AuditoriaService from "./AuditoriaService";
 
-
-const api = axios.create({
-  baseURL:  getBaseUrl(),
-  headers: {
-    "Content-type": "application/json",
-    'Access-Control-Allow-Origin': '*',
-  },
-});
-
-
-// const api = axios.create({
-//     baseURL: process.env.REACT_APP_BASE_URL,
-//     headers: {
-//         "Content-type": "application/json",
-//         'Access-Control-Allow-Origin': '*',
-//     },
-// });
+import api from './api'; 
 
 export default class DashBoardVendedoresService {
     async listarDashBoardVendedorSeisMeses(vendedor: number) {
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-vendedor-geral-seis-meses/${vendedor}`);
+
             rs = {
                 statusCode: 200,
                 data: response.data,
@@ -421,7 +405,7 @@ export default class DashBoardVendedoresService {
         return rs;
     }
 
-    async listaDadosVendedorGeralNps(loja: number, perido: string, vendedor: string ) {
+    async listaDadosVendedorGeralNps(loja: number, perido: string, vendedor: string) {
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-nps-vendedor-nps-geral-hoje/${loja}/${perido}/${vendedor}`);
@@ -438,8 +422,8 @@ export default class DashBoardVendedoresService {
         }
         return rs;
     }
-    
-    async listaDadosGerenteGeralNps(loja: number, perido: string ) {
+
+    async listaDadosGerenteGeralNps(loja: number, perido: string) {
         let rs;
         try {
             const response = await api.get(`/dashboard/lista-dashboard-nps-gerente-nps-geral-hoje/${loja}/${perido}`);
@@ -460,6 +444,11 @@ export default class DashBoardVendedoresService {
     //******* contagem geral pedidos quantidade vendedor */
     async somaGeralPedidos(vendedor: number) {
         let rs;
+        await AuditoriaService.registrar(
+            "/dashboard/vendedor",
+            `Acesso ao dashboard Pendências`,
+            `vendedor: ${vendedor}`
+        );
         try {
             const response = await api.get(`/dashboard/soma-geral-registros/${vendedor}`);
             rs = {
@@ -493,9 +482,14 @@ export default class DashBoardVendedoresService {
         return rs;
     }
 
-     //******* contagem geral pedidos quantidade gerente */
-     async somaGeralPedidosGerente(loja: number) {
+    //******* contagem geral pedidos quantidade gerente */
+    async somaGeralPedidosGerente(loja: number) {
         let rs;
+        await AuditoriaService.registrar(
+            "/dashboard/gerente",
+            `Acesso ao dashboard Pendências`,
+            `loja: ${loja}`
+        );
         try {
             const response = await api.get(`/dashboard/soma-geral-registros-gerente/${loja}`);
             rs = {

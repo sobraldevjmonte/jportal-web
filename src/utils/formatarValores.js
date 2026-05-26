@@ -1,41 +1,47 @@
-const numero = 4676679.33;
+// /src/utils/formatarValores.js
 
-function formatarMoedaComSimbolo(numero) {
-  let valor = numero.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  });
-  return valor;
-}
+/**
+ * Formata números para o padrão brasileiro de milhares SEM casas decimais.
+ * Exemplo: 99999.00 -> 99.999
+ */
+function formatarSemDecimaisEmilhares(numero) {
+  if (numero === null || numero === undefined || isNaN(numero)) return "0";
 
-function formatarMoeda(numero) {
-  let valor = numero.toLocaleString("pt-BR", {
+  // Usamos Math.round para arredondar para o inteiro mais próximo antes de formatar
+  let valorInteiro = Math.round(numero);
+
+  return valorInteiro.toLocaleString("pt-BR", {
+    useGrouping: true,
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
   });
-  return valor;
 }
 
+function formatarMoedaComSimbolo(numero) {
+  return numero.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  });
+}
 
-function retornarDouble(numero){
+function formatarMoeda(numero) {
+  return numero.toLocaleString("pt-BR", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  });
+}
+
+function retornarDouble(numero) {
+  if (typeof numero !== 'string') return numero;
   let valor = numero.replace(/[^0-9,]/g, '').replace(",", ".");
   return parseFloat(valor);
 }
 
-function formatarSemDecimaisEmilhares(numero) {
-  // Remove casas decimais usando Math.floor
-  let valorInteiro = Math.floor(numero);
-
-  // Formata com pontos de milhares
-  let valor = valorInteiro.toLocaleString("pt-BR", {
-    useGrouping: true, // Garante a formatação com pontos de milhares
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  });
-
-  return valor;
-}
-
-
-
-export { formatarMoeda, formatarMoedaComSimbolo, retornarDouble, formatarSemDecimaisEmilhares };
+export { 
+    formatarMoeda, 
+    formatarMoedaComSimbolo, 
+    retornarDouble, 
+    formatarSemDecimaisEmilhares 
+};

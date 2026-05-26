@@ -1,24 +1,35 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect } from "react";
+import { UsuarioContext } from "../context/useContext";
+import { useNavigate, Outlet } from "react-router-dom";
 import MenuComponent from "../common/MenuComponent";
 import LoginPage2 from "./LoginPage2";
-
-import { UsuarioContext } from "../context/useContext";
-import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
     const { logado } = useContext(UsuarioContext);
     const navigate = useNavigate();
-    const jaRedirecionou = useRef(false); // Referência para evitar múltiplos redirecionamentos
 
     useEffect(() => {
-        if (logado && !jaRedirecionou.current) {
-            jaRedirecionou.current = true; // Marca que o redirecionamento já ocorreu
-            navigate("/dashboard");
+        // Se não estiver logado, manda para o login
+        if (!logado) {
+            navigate("/login");
         }
     }, [logado, navigate]);
+
+    if (!logado) {
+        return <LoginPage2 />;
+    }
+
     return (
-        <>
-            {logado ? <MenuComponent /> : <LoginPage2 />}
-        </>
+        <div className="layout-container">
+            {/* O MenuComponent fica fixo na tela */}
+            <MenuComponent />
+            
+            {/* O Outlet é OBRIGATÓRIO aqui. 
+               É ele quem decide onde o DashboardPage ou AnaliseNpPage serão desenhados.
+            */}
+            <div className="content">
+                <Outlet />
+            </div>
+        </div>
     );
 }

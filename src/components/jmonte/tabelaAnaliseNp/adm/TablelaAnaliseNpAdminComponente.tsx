@@ -34,9 +34,6 @@ interface AnaliseNpType {
     f10: string;
 }
 
-interface PropsAnaliseProdutos {
-    idNp: number;
-}
 export default function TablelaAnaliseNpAdminComponente() {
 
     const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
@@ -108,7 +105,7 @@ export default function TablelaAnaliseNpAdminComponente() {
         value: string;
     }
 
-    const listaNps = async (mes: number, ano: number, loja: string) => {
+    const listaNpsOld = async (mes: number, ano: number, loja: string) => {
         setLoading(true);
         try {
             const rs = await service.listarNps(mes, ano, lojaSelecionada);
@@ -119,6 +116,26 @@ export default function TablelaAnaliseNpAdminComponente() {
             const generatedFilters = generateFilters(rs.data.lista_nps);
             setFilters(generatedFilters);
         } catch (error) {
+            console.error('Erro ao buscar dados:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const listaNps = async (mes: number, ano: number, loja: string) => {
+        setLoading(true);
+        try {
+            const rs = await service.listarNps(mes, ano, lojaSelecionada);
+            // Garante que se rs.data.lista_nps for null, ele assume []
+            const listaValida = rs.data?.lista_nps || []; 
+            setDados(listaValida);
+            setDadosOriginais(listaValida);
+            setRegistros(rs.data?.registros || 0);
+    
+            const generatedFilters = generateFilters(listaValida);
+            setFilters(generatedFilters);
+        } catch (error) {
+            setDados([]); // Reset em caso de erro
             console.error('Erro ao buscar dados:', error);
         } finally {
             setLoading(false);
@@ -153,7 +170,7 @@ export default function TablelaAnaliseNpAdminComponente() {
     //     handleFilter();
     // };
 
-    const applyFilter = (value: string) => {
+    const applyFilterOld = (value: string) => {
         setFilterLoading(true);
         try {
             const filteredData = dados.filter(item =>
@@ -174,6 +191,31 @@ export default function TablelaAnaliseNpAdminComponente() {
             }
 
             setFilters(generateFilters(filteredData));
+        } catch (error) {
+            console.error('Erro ao aplicar filtro:', error);
+        } finally {
+            setFilterLoading(false);
+        }
+    };
+
+    const applyFilter = (value: string) => {
+        setFilterLoading(true);
+        try {
+            // SEMPRE filtre a partir dos dadosOriginais
+            const filteredData = dadosOriginais.filter(item => {
+                // Proteção extra: verifica se o item e a propriedade np existem
+                if (!item || !item.np) return false;
+                return value.length > 0 ? item.np.includes(value) : true;
+            });
+    
+            const exactMatch = filteredData.some(item => item.np === value);
+    
+            if (exactMatch) {
+                const exactFilteredData = filteredData.filter(item => item.np === value);
+                setDados(exactFilteredData);
+            } else {
+                setDados(filteredData);
+            }
         } catch (error) {
             console.error('Erro ao aplicar filtro:', error);
         } finally {
@@ -387,7 +429,7 @@ export default function TablelaAnaliseNpAdminComponente() {
                             columns={columns}
                             dataSource={dados}
                             size="small"
-                            rowKey={(record) => record.np}
+                            rowKey={(record) => record?.np || Math.random().toString()}
                             bordered
                             title={() => <Typography style={{ fontSize: '1.2rem', padding: '0px' }}>NPs 01/{mes}/{ano}({registros}) </Typography>}
                             expandedRowRender={expandedRowRender}

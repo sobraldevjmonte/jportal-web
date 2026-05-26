@@ -1,33 +1,29 @@
-import { Button, Card, Modal, Skeleton, Spin, Table, TableColumnsType, Typography } from "antd";
+import { Button, Card, Modal, Skeleton, Table, TableColumnsType, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { UsuarioContext } from "../../../../context/useContext";
 import DashBoardVendedoresService from "../../../../service/DashBoardVendedores";
 import { formatarSemDecimaisEmilhares } from "../../../../utils/formatarValores";
-import { ReloadOutlined } from "@ant-design/icons";
-import DashboardDetalhesVendedoresClientes from "./DashboardDetalhesVendedoresClientes";
+import { ReloadOutlined, CalendarOutlined } from "@ant-design/icons";
 import DashboardVendedoresGeralNps from "./DashboardVendedoresGeralNps";
 
-const serviceDashBoardVendedor = new DashBoardVendedoresService()
-
+const serviceDashBoardVendedor = new DashBoardVendedoresService();
 
 interface DataType {
     key: string;
     periodo: string;
     acumulado: number;
-    nps?: number; // Novo campo opcional
+    nps?: number;
 }
+
 export default function DashboardGeralComponent() {
     const [loading, setLoading] = useState(false);
-    const { nivelUsuario, setNivelUsuario } = useContext(UsuarioContext);
-    const { idNivelUsuario, setIdNivelUsuario } = useContext(UsuarioContext);
-    const { icomp, setIcomp } = useContext(UsuarioContext);
-    const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
+    const { codigoUsuario } = useContext(UsuarioContext);
 
     const [dadosHoje, setDadosHoje] = useState<number>(0);
     const [dadosUmDia, setDadosUmDia] = useState<number>(0);
-    const [dadosSemana, setDadosSemana] = useState(0)
-    const [dadosMesAnterior, setDadosMesAnterior] = useState(0)
-    const [dadosSeisMeses, setDadosSeisMeses] = useState(0)
+    const [dadosSemana, setDadosSemana] = useState(0);
+    const [dadosMesAnterior, setDadosMesAnterior] = useState(0);
+    const [dadosSeisMeses, setDadosSeisMeses] = useState(0);
 
     const [registrosdadosHoje, setRegistrosDadosHoje] = useState<number>(0);
     const [registrosdadosUmDia, setRegistrosDadosUmDia] = useState<number>(0);
@@ -38,18 +34,13 @@ export default function DashboardGeralComponent() {
     const [totalGeralRegistros, setTotalGeralRegistros] = useState<number>(0);
     const [totalGeralValor, setTotalGeralValor] = useState<number>(0);
 
-
-
     useEffect(() => {
-        buscaDados()
-    }, [])
-
+        buscaDados();
+    }, []);
 
     async function buscaDados() {
         try {
             setLoading(true);
-
-            //***************** vendedores geral inicio ******************/
             const [
                 rsHoje,
                 rsUmDia,
@@ -68,120 +59,142 @@ export default function DashboardGeralComponent() {
                 serviceDashBoardVendedor.somaGeralValores(codigoUsuario),
             ]);
 
-            const registrosHoje = rsHoje.data.lista_hoje_vendedor[0]?.total_pedidos || 0;
-            const registrosDiaAnt = rsUmDia.data.lista_um_dia_vendedor[0]?.total_pedidos || 0;
-            const registrosSemanaAnt = rsUmaSemana.data.lista_semana_anterior[0]?.total_pedidos || 0;
-            const registrosMesAnt = rsMesAnterior.data.lista_mes_ant_vendedor[0]?.total_pedidos || 0;
-            const registros180 = rsSeisMeses.data.lista_seis_meses[0]?.total_pedidos || 0;
-
             setTotalGeralRegistros(rsCountRegistros.data.soma_geral_pedidos);
             setTotalGeralValor(rsSomaValores.data.soma_geral_valores);
 
-            setRegistrosDadosHoje(registrosHoje)
-            setRegistrosDadosUmDia(registrosDiaAnt)
-            setRegistrosDadosUmaSemana(registrosSemanaAnt)
-            setRegistrosDadosMesAnterior(registrosMesAnt)
-            setRegistrosDadosSeisMeses(registros180)
+            setRegistrosDadosHoje(rsHoje.data.lista_hoje_vendedor[0]?.total_pedidos || 0);
+            setRegistrosDadosUmDia(rsUmDia.data.lista_um_dia_vendedor[0]?.total_pedidos || 0);
+            setRegistrosDadosUmaSemana(rsUmaSemana.data.lista_semana_anterior[0]?.total_pedidos || 0);
+            setRegistrosDadosMesAnterior(rsMesAnterior.data.lista_mes_ant_vendedor[0]?.total_pedidos || 0);
+            setRegistrosDadosSeisMeses(rsSeisMeses.data.lista_seis_meses[0]?.total_pedidos || 0);
 
-            const hoje = rsHoje.data.lista_hoje_vendedor[0]?.acumuladohoje || 0;
-            const umDia = rsUmDia.data.lista_um_dia_vendedor[0]?.acumuladoumdia || 0;
-            const semana = rsUmaSemana.data.lista_semana_anterior[0]?.acumuladosemananterior || 0;
-            const mesAnterior = rsMesAnterior.data.lista_mes_ant_vendedor[0]?.acumuladomesanterior || 0;
-            const seisMeses = rsSeisMeses.data.lista_seis_meses[0]?.acumuladoseismeses || 0;
-
-
-            setDadosHoje(hoje);
-            setDadosUmDia(umDia);
-            setDadosSemana(semana);
-            setDadosMesAnterior(mesAnterior);
-            setDadosSeisMeses(seisMeses);
-
-
-            //***************** vendedores geral fim ****************/
+            setDadosHoje(rsHoje.data.lista_hoje_vendedor[0]?.acumuladohoje || 0);
+            setDadosUmDia(rsUmDia.data.lista_um_dia_vendedor[0]?.acumloduamdia || 0);
+            setDadosSemana(rsUmaSemana.data.lista_semana_anterior[0]?.acumuladosemananterior || 0);
+            setDadosMesAnterior(rsMesAnterior.data.lista_mes_ant_vendedor[0]?.acumuladomesanterior || 0);
+            setDadosSeisMeses(rsSeisMeses.data.lista_seis_meses[0]?.acumuladoseismeses || 0);
 
         } catch (error) {
-            console.error('Erro ao buscar dados um dia:', error);
+            console.error('Erro ao buscar dados:', error);
         } finally {
             setLoading(false);
         }
     }
 
-
-
-    const tamFonte = '0.9rem';
-    const tamFonteTitulo = '1.2rem';
-    const colorContatou = 'blue'
-    const corDestaque = '#000'
-
     const dadosGeral: DataType[] = [
-        {
-            key: "1",
-            periodo: `HOJE`,
-            acumulado: dadosHoje > 0 ? dadosHoje : 0, nps: registrosdadosHoje
-        },
-        { key: "2", periodo: `DIA ANT.`, acumulado: dadosUmDia > 0 ? dadosUmDia : 0, nps: registrosdadosUmDia },
-        { key: "3", periodo: `SEMANA ANT.`, acumulado: dadosSemana > 0 ? dadosSemana : 0, nps: registrosdadosUmaSemana },
-        { key: "4", periodo: `MÊS ANT.`, acumulado: dadosMesAnterior > 0 ? dadosMesAnterior : 0, nps: registrosdadosMesAnterior },
-        { key: "5", periodo: `180 DIAS`, acumulado: dadosSeisMeses > 0 ? dadosSeisMeses : 0, nps: registrosdadosSeisMeses },
+        { key: "1", periodo: `HOJE`, acumulado: dadosHoje, nps: registrosdadosHoje },
+        { key: "2", periodo: `DIA ANT.`, acumulado: dadosUmDia, nps: registrosdadosUmDia },
+        { key: "3", periodo: `SEMANA ANT.`, acumulado: dadosSemana, nps: registrosdadosUmaSemana },
+        { key: "4", periodo: `MÊS ANT.`, acumulado: dadosMesAnterior, nps: registrosdadosMesAnterior },
+        { key: "5", periodo: `180 DIAS`, acumulado: dadosSeisMeses, nps: registrosdadosSeisMeses },
     ];
 
     const columnsGeral: TableColumnsType<DataType> = [
         {
-            title:`PERÍODO`,
+            title: (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <CalendarOutlined style={{ fontSize: '0.9rem', opacity: 0.85 }} />
+                    PERÍODO
+                </span>
+            ),
             dataIndex: "periodo",
             key: "periodo",
             align: "left",
-            render: (value: string, record: DataType) => (
+            render: (value: string) => (
                 <Button
                     type="link"
-                    onClick={() => showModal(value)}  // Agora passamos apenas o período!
-                    style={{ color: '#000', textDecoration: 'none' }}
+                    onClick={() => showModal(value)}
+                    className="periodo-btn"
+                    style={{
+                        color: '#1a1a2e',
+                        textDecoration: 'none',
+                        fontWeight: 600,
+                        fontSize: '0.82rem',
+                        letterSpacing: '0.02em',
+                        padding: '0 4px',
+                        height: 'auto',
+                    }}
                 >
-                    {value} {/* O botão exibe o período corretamente */}
+                    {value}
                 </Button>
             ),
             onHeaderCell: () => ({
                 style: {
-                    backgroundColor: "#B22222",
-                    color: "#FFFFFF",
+                    background: 'linear-gradient(135deg, #9B1C1C 0%, #B22222 60%, #C0392B 100%)',
+                    color: '#FFFFFF',
+                    fontWeight: 700,
+                    fontSize: '0.78rem',
+                    letterSpacing: '0.08em',
+                    borderBottom: '2px solid rgba(255,255,255,0.15)',
                 },
             }),
         },
         {
-            title: `NPs(${totalGeralRegistros})`,
+            title: (
+                <span style={{ fontWeight: 700, fontSize: '0.78rem', letterSpacing: '0.06em' }}>
+                    NPs({formatarSemDecimaisEmilhares(totalGeralRegistros)})
+                </span>
+            ),
             dataIndex: "nps",
             key: "nps",
             align: "right",
+            width: 110,
             render: (value: number) => (
-                <span>{formatarSemDecimaisEmilhares(value)}</span>
+                <span style={{
+                    fontWeight: 600,
+                    fontSize: '0.82rem',
+                    color: '#7f1d1d',
+                    fontVariantNumeric: 'tabular-nums',
+                    letterSpacing: '0.02em',
+                }}>
+                    {formatarSemDecimaisEmilhares(value)}
+                </span>
             ),
             onHeaderCell: () => ({
                 style: {
-                    backgroundColor: "#B22222",
-                    color: "#FFFFFF",
+                    background: 'linear-gradient(135deg, #9B1C1C 0%, #B22222 60%, #C0392B 100%)',
+                    color: '#FFFFFF',
+                    fontWeight: 700,
+                    fontSize: '0.78rem',
+                    letterSpacing: '0.06em',
+                    borderBottom: '2px solid rgba(255,255,255,0.15)',
                 },
             }),
         },
         {
-            title: `R$ ${totalGeralValor}`,
+            title: (
+                <span style={{ fontWeight: 700, fontSize: '0.85rem', letterSpacing: '0.03em' }}>
+                    {formatarSemDecimaisEmilhares(totalGeralValor)}
+                </span>
+            ),
             dataIndex: "acumulado",
             key: "acumulado",
             align: "right",
+            width: 130,
             render: (value: number) => (
-                <span>{formatarSemDecimaisEmilhares(value)}</span>
+                <span style={{
+                    fontWeight: 700,
+                    fontSize: '0.82rem',
+                    color: '#7f1d1d',
+                    fontVariantNumeric: 'tabular-nums',
+                    letterSpacing: '0.02em',
+                }}>
+                    {formatarSemDecimaisEmilhares(value)}
+                </span>
             ),
             onHeaderCell: () => ({
                 style: {
-                    backgroundColor: "#B22222",
-                    color: "#FFFFFF",
+                    background: 'linear-gradient(135deg, #9B1C1C 0%, #B22222 60%, #C0392B 100%)',
+                    color: '#FFFFFF',
+                    fontWeight: 700,
+                    fontSize: '0.78rem',
+                    letterSpacing: '0.06em',
+                    borderBottom: '2px solid rgba(255,255,255,0.15)',
                 },
             }),
         },
-
     ];
 
-
-    //************************** modal   dados cliente ***********************/
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [periodoSelecionado, setPeriodoSelecionado] = useState<any>(null);
 
@@ -194,67 +207,161 @@ export default function DashboardGeralComponent() {
         setPeriodoSelecionado(null);
         setIsModalVisible(false);
     };
-    //************************** modal   dados cliente ***********************/
-
-
-
-    function refresh() {
-        buscaDados()
-    }
 
     return (
-        <div style={{ maxWidth: '600px', paddingBottom: '10px' }}>
-            <Card style={{ backgroundColor: '#F5F5F5', padding: '0px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', }}
-                bordered
-                title={<span style={{ fontSize: tamFonteTitulo }}>PENDÊNCIAS(GERAL)</span>}
-                extra={
-                    <Button
-                        type="primary"
-                        icon={<ReloadOutlined />}
-                        onClick={refresh}
-                        style={{ backgroundColor: "#4CAF50", borderColor: "#4CAF50", width: '40px', height: '40px' }}
-                    />
+        <>
+            <style>{`
+                .dashboard-geral-card .ant-card-head {
+                    border-bottom: 1px solid #f0e8e8;
+                    padding: 14px 18px 10px;
+                    min-height: unset;
+                    background: #fff;
+                    border-radius: 14px 14px 0 0;
                 }
-                tabProps={{
-                    size: 'middle',
-                }}>
-                <Skeleton
-                    active
-                    loading={loading}
-                    style={{ backgroundColor: '#fff' }} // Cor de fundo para todo o Skeleton
-                    paragraph={{ rows: 4, style: { backgroundColor: '#fff' } }} // Cor para as linhas
-                    title={{ style: { backgroundColor: '#fff' } }} // Cor para o título
+                .dashboard-geral-card .ant-card-body {
+                    padding: 0;
+                }
+                .dashboard-geral-card .ant-table-thead > tr > th {
+                    padding: 10px 12px;
+                }
+                .dashboard-geral-card .ant-table-tbody > tr > td {
+                    padding: 8px 12px;
+                    border-bottom: 1px solid #fdf0f0;
+                    transition: background 0.15s;
+                }
+                .dashboard-geral-card .ant-table-tbody > tr:hover > td {
+                    background: #fff5f5 !important;
+                }
+                .dashboard-geral-card .ant-table-tbody > tr:last-child > td {
+                    border-bottom: none;
+                }
+                .dashboard-geral-card .ant-table-bordered .ant-table-container {
+                    border: none !important;
+                }
+                .dashboard-geral-card .ant-table-bordered .ant-table-cell {
+                    border-inline-end: none !important;
+                }
+                .periodo-btn:hover {
+                    color: #B22222 !important;
+                }
+                .reload-btn-geral {
+                    transition: transform 0.3s, box-shadow 0.2s !important;
+                }
+                .reload-btn-geral:hover {
+                    transform: rotate(90deg) scale(1.08) !important;
+                    box-shadow: 0 4px 12px rgba(46,125,50,0.4) !important;
+                }
+            `}</style>
+
+            <div style={{ maxWidth: '520px', paddingBottom: '10px' }}>
+                <Card
+                    className="dashboard-geral-card"
+                    bordered={false}
+                    style={{
+                        backgroundColor: '#FFFFFF',
+                        padding: '0px',
+                        borderRadius: '14px',
+                        border: '1px solid #f3e6e6',
+                        boxShadow: '0 2px 8px rgba(178,34,34,0.08), 0 8px 24px rgba(0,0,0,0.07)',
+                        overflow: 'hidden',
+                    }}
+                    title={
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                            <Typography.Text strong style={{
+                                fontSize: '0.95rem',
+                                lineHeight: '1.3',
+                                color: '#1a1a2e',
+                                letterSpacing: '0.06em',
+                                textTransform: 'uppercase',
+                            }}>
+                                Pendências (Geral)
+                            </Typography.Text>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                                <span style={{
+                                    display: 'inline-block',
+                                    width: 6,
+                                    height: 6,
+                                    borderRadius: '50%',
+                                    backgroundColor: '#B22222',
+                                    opacity: 0.7,
+                                }} />
+                                <Typography.Text style={{
+                                    fontSize: '0.73rem',
+                                    color: '#999',
+                                    fontWeight: 500,
+                                    letterSpacing: '0.04em',
+                                }}>
+                                    Últimos 180 dias
+                                </Typography.Text>
+                            </div>
+                        </div>
+                    }
+                    extra={
+                        <Button
+                            className="reload-btn-geral"
+                            type="primary"
+                            icon={<ReloadOutlined style={{ fontSize: '0.9rem' }} />}
+                            onClick={buscaDados}
+                            loading={loading}
+                            style={{
+                                background: 'linear-gradient(135deg, #43A047, #2E7D32)',
+                                borderColor: 'transparent',
+                                width: '36px',
+                                height: '36px',
+                                borderRadius: '10px',
+                                boxShadow: '0 3px 8px rgba(46,125,50,0.35)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        />
+                    }
                 >
-                    <Table
-                        columns={columnsGeral}
-                        dataSource={dadosGeral}
-                        size="small"
-                        rowKey={(record) => record.key}
-                        bordered
-                        // title={() => (
-                        //     <Typography style={{ fontSize: "1.2rem" }}>Pendências(Geral)</Typography>
-                        // )}
-                        pagination={{
-                            defaultPageSize: 5, // Define o tamanho padrão da página
-                            pageSizeOptions: ['5', '10', '20'], // Opções de tamanho de página disponíveis
-                        }}
-                    />
-                    <Modal
-                        title={`Detalhes do Cliente: ${periodoSelecionado || ""}`}
-                        visible={isModalVisible}
-                        onCancel={handleCancel}
-                        footer={null}
-                        width={800}
-                    >
-                        {periodoSelecionado && (
-                            <DashboardVendedoresGeralNps
-                                periodo={periodoSelecionado}
-                                nome={periodoSelecionado}
-                            />
-                        )}
-                    </Modal>
-                </Skeleton>
-            </Card>
-        </div>
-    )
+                    <Skeleton active loading={loading} style={{ padding: '16px' }}>
+                        <Table
+                            columns={columnsGeral}
+                            dataSource={dadosGeral}
+                            size="small"
+                            rowKey="key"
+                            bordered={false}
+                            pagination={false}
+                            style={{ borderRadius: 0 }}
+                        />
+
+                        <Modal
+                            title={
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                    <span style={{
+                                        display: 'inline-block',
+                                        width: 4,
+                                        height: 20,
+                                        borderRadius: 4,
+                                        backgroundColor: '#B22222',
+                                        marginRight: 4,
+                                    }} />
+                                    <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#1a1a2e' }}>
+                                        Detalhes do Período: {periodoSelecionado || ""}
+                                    </span>
+                                </div>
+                            }
+                            open={isModalVisible}
+                            onCancel={handleCancel}
+                            footer={null}
+                            width={900}
+                            destroyOnClose
+                            styles={{
+                                header: { borderBottom: '1px solid #f3e6e6', paddingBottom: 12 },
+                            }}
+                        >
+                            {periodoSelecionado && (
+                                <DashboardVendedoresGeralNps
+                                    periodo={periodoSelecionado}
+                                />
+                            )}
+                        </Modal>
+                    </Skeleton>
+                </Card>
+            </div>
+        </>
+    );
 }

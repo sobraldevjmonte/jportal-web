@@ -1,31 +1,18 @@
-import axios from "axios";
+import AuditoriaService from "./AuditoriaService";
 
-import { getBaseUrl } from "../utils/redirec";
-
-
-const api = axios.create({
-  baseURL:  getBaseUrl(),
-  headers: {
-    "Content-type": "application/json",
-    'Access-Control-Allow-Origin': '*',
-  },
-});
-
-
-
-// const api = axios.create({
-//   baseURL: process.env.REACT_APP_BASE_URL,
-//   headers: {
-//     "Content-type": "application/json",
-//     'Access-Control-Allow-Origin': '*',
-//   },
-// });
-
+import api from './api'; 
 
 class EntregasContatosService {
   async alterarObsVendedor(dados: any) {
     console.log("*********** listaEntregasContatosDoVendedor *****************");
     let rs;
+
+    await AuditoriaService.registrar(
+      "/entregas-pedidos-service",
+      "Listar alterarObsVendedor",
+      ``
+    );
+
     try {
       const response = await api.put(`/entregas-contatos/alterar-obs-vendedor`, dados, {
         headers: { "Content-Type": "application/json" },
@@ -48,6 +35,13 @@ class EntregasContatosService {
   async salvarObsVendedor(dados: any) {
     console.log("*********** listaEntregasContatosDoVendedor *****************");
     let rs;
+
+    await AuditoriaService.registrar(
+      "/entregas-pedidos-service",
+      "Listar salvarObsVendedor",
+      ``
+    );
+
     try {
       const response = await api.post(`/entregas-contatos/salvar-obs-vendedor`, dados, {
         headers: { "Content-Type": "application/json" },
@@ -71,6 +65,13 @@ class EntregasContatosService {
   async listaLojasDoAdmin() {
     console.log("*********** listaVendedoresDoGerente *****************");
     let rs;
+
+    await AuditoriaService.registrar(
+      "/entregas-pedidos-service",
+      "Listar listaLojasDoAdmin",
+      ``
+    );
+
     try {
       const response = await api.get(`/entregas-contatos/lista-lojas-do-admin`);
       var q = response.data.quantidade
@@ -93,6 +94,13 @@ class EntregasContatosService {
     console.log("*********** listaVendedoresDoGerente *****************");
     console.log(codigoLoja);
     let rs;
+
+    await AuditoriaService.registrar(
+      "/entregas-pedidos-service",
+      "Listar listaVendedoresDoGerente",
+      `codigoLoja: ${codigoLoja}`
+    );
+
     try {
       const response = await api.get(`/entregas-contatos/lista-vendedores-do-gerente/${codigoLoja}`);
       var q = response.data.quantidade
@@ -113,6 +121,13 @@ class EntregasContatosService {
   async listaEntregasContatosDoGerente(codigoLoja: string) {
     console.log("*********** listaEntregasContatosDoGerente *****************");
     let rs;
+
+    await AuditoriaService.registrar(
+      "/entregas-pedidos-service",
+      "Listar listaEntregasContatosDoGerente",
+      `codigoLoja: ${codigoLoja}`
+    );
+
     try {
       const response = await api.get(`/entregas-contatos/lista-entregas-contatos-gerente/${codigoLoja}`);
       var q = response.data.quantidade
@@ -131,10 +146,17 @@ class EntregasContatosService {
     return rs;
   }
 
-  async listaEntregasContatosDoVendedor(codigoLoja: string,codigoVendedor: string)  {
+  async listaEntregasContatosDoVendedor(codigoLoja: string, codigoVendedor: string) {
     console.log("*********** listaEntregasContatosDoVendedor *****************");
-    console.log(codigoLoja,codigoVendedor)
+    console.log(codigoLoja, codigoVendedor)
     let rs;
+
+    await AuditoriaService.registrar(
+      "/entregas-pedidos-service",
+      "Listar listaEntregasContatosDoVendedor",
+      `codigoLoja: ${codigoLoja} codigoVendedor ${codigoVendedor}`
+    );
+
     try {
       const response = await api.get(`/entregas-contatos/lista-entregas-contatos-vendedor/${codigoLoja}/${codigoVendedor}`);
       var q = response.data.quantidade

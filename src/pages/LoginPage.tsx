@@ -6,14 +6,14 @@ import { Link } from 'react-router-dom';
 
 
 export default function LoginPage() {
-    const[usuario, setUsuario] = useState('')
-    const[codigoUsuario, setCodigoUsuario] = useState('')
-    const[idUsuario, setIdUsuario] = useState('')
-    const[logado, setLogado] = useState(false)
+    const [usuario, setUsuario] = useState('')
+    const [codigoUsuario, setCodigoUsuario] = useState('')
+    const [idUsuario, setIdUsuario] = useState('')
+    const [logado, setLogado] = useState(false)
 
     function salvarUsuario(e: any) {
         setUsuario(e.target.value);
-      }
+    }
 
     return (
         <>
@@ -23,7 +23,7 @@ export default function LoginPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} >
                         Usuário deve estar logado no Portal JMonte 3343
 
-                        <Button type='primary' style={{ width: '100px', margin: '10px', color: 'fff'}}>
+                        <Button type='primary' style={{ width: '100px', margin: '10px', color: 'fff' }}>
                             <Link to='http://localhost/j-portal/' target="_blank" style={{ color: '#fff' }} >Login</Link>
                         </Button>
                     </div>

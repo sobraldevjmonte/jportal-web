@@ -1,29 +1,10 @@
-import axios from "axios";
+import AuditoriaService from "./AuditoriaService";
 
-import { getBaseUrl } from "../utils/redirec";
-
-
-const api = axios.create({
-  baseURL:  getBaseUrl(),
-  headers: {
-    "Content-type": "application/json",
-    'Access-Control-Allow-Origin': '*',
-  },
-});
-
-
-// const api = axios.create({
-//   baseURL: process.env.REACT_APP_BASE_URL,
-//   headers: {
-//     "Content-type": "application/json",
-//     'Access-Control-Allow-Origin': '*',
-//   },
-// });
+import api from './api';
 
 class RtService {
-
-  async listarIndicadores(mes: number , ano: number, loja: string ){
-    console.log(mes + '/'+ano)
+  async listarIndicadores(mes: number, ano: number, loja: string) {
+    console.log(mes + '/' + ano)
     console.log('loja: ' + loja)
 
     let page = 1
@@ -31,6 +12,13 @@ class RtService {
     let rs;
     try {
       const response = await api.get(`/indicadores/${mes}/${ano}/${loja}`);
+
+      await AuditoriaService.registrar(
+        "/rt-service",
+        "metodo listarIndicadores",
+        `Período: ${mes}/${ano}`
+      );
+
       rs = {
         statusCode: 200,
         data: response.data,
@@ -44,9 +32,15 @@ class RtService {
     }
     return rs;
   }
-  async listaPreVendas(indicador: string, mes: number, ano: number, loja:string){
+  async listaPreVendas(indicador: string, mes: number, ano: number, loja: string) {
     console.log("*********** listaPreVendas *****************");
     let rs;
+    
+    await AuditoriaService.registrar(
+      "/rt-service",
+      "metodo listaPreVendas",
+      `Período: ${mes}/${ano}`
+    );
 
     try {
       const response = await api.get(`prevendas/${indicador}/${mes}/${ano}/${loja}`, {
@@ -66,9 +60,15 @@ class RtService {
     }
     return rs;
   }
-  async listaPreVendasDoCliente(idCliente: number ){
+  async listaPreVendasDoCliente(idCliente: number) {
     console.log("*********** listaPreVendas *****************");
     let rs;
+
+    await AuditoriaService.registrar(
+      "/rt-service",
+      "metodometodo listaPreVendasDoCliente",
+      `Cliente: ${idCliente}`
+    );
 
     try {
       const response = await api.get(`prevendas-do-cliente/${idCliente}`, {
@@ -92,6 +92,12 @@ class RtService {
     console.log("*********** listaProdutos *****************");
     let rs;
 
+    await AuditoriaService.registrar(
+      "/rt-service",
+      "metodo listaProdutos",
+      `prevenda: ${prevenda}`
+    );
+
     try {
       const response = await api.get(`produtos/${prevenda}`, {
         headers: { "Content-Type": "application/json" },
@@ -113,6 +119,13 @@ class RtService {
 
   async buscarPreVendas(codigoIndicador: number) {
     let rs
+
+    await AuditoriaService.registrar(
+      "/rt-service",
+      "metodo buscarPreVendas",
+      `codigoIndicador: ${codigoIndicador}`
+    );
+
     try {
       const response = await api.get(`/prevendas/${codigoIndicador}/11/2023`);
       rs = {
@@ -129,12 +142,17 @@ class RtService {
     }
     return rs;
   }
-  async listarLojas(){
+  async listarLojas() {
     console.log("*********** listarLojas *****************");
     let rs;
+
+    await AuditoriaService.registrar(
+      "/rt-service",
+      "metodo listarLojas",
+      ``
+    );
     try {
       const response = await api.get(`/prevendas/listarlojas`);
-      console.log(response)
       rs = {
         statusCode: 200,
         data: response.data,

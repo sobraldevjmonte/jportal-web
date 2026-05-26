@@ -1,111 +1,81 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { UsuarioContext } from "../../../../context/useContext";
 import EtapasService from "../../../../service/EtapasService";
-import { TableColumnsType, Spin, Row, Col, Typography, Table, Button } from "antd";
+import { TableColumnsType, Spin, Row, Col, Typography, Table } from "antd";
+import { formatarMoeda, formatarMoedaComSimbolo } from "../../../../utils/formatarValores";
 
-import { formatarMoeda, formatarMoedaComSimbolo } from "../../../../utils/formatarValores"
-
-const service = new EtapasService()
-
+const service = new EtapasService();
 
 interface PropsSomaPendencias {
     seq: string;
     total_reais_pendencias: number;
-    etapa1: number;
-    etapa2: number;
-    etapa3: number;
-    etapa4: number;
-    etapa5: number;
-    etapa6: number;
-    etapa7: number;
-    etapa8: number;
-    etapa9: number;
-    etapa10: number;
-    count_etapa1: number;
-    count_etapa2: number;
-    count_etapa3: number;
-    count_etapa4: number;
-    count_etapa5: number;
-    count_etapa6: number;
-    count_etapa7: number;
-    count_etapa8: number;
-    count_etapa9: number;
-    count_etapa10: number;
-    etapafat1: number;
-    etapafat2: number;
-    etapafat3: number;
-    etapafat4: number;
-    etapafat5: number;
-    etapafat6: number;
-    etapafat7: number;
-    etapafat8: number;
-    etapafat9: number;
-    etapafat10: number;
-    count_etapafinal1: number;
-    count_etapafinal2: number;
-    count_etapafinal3: number;
-    count_etapafinal4: number;
-    count_etapafinal5: number;
-    count_etapafinal6: number;
-    count_etapafinal7: number;
-    count_etapafinal8: number;
-    count_etapafinal9: number;
-    count_etapafinal10: number;
+    total_reais_faturadas: number;
+    etapa1: number; etapa2: number; etapa3: number; etapa4: number; etapa5: number;
+    etapa6: number; etapa7: number; etapa8: number; etapa9: number; etapa10: number;
+    count_etapa1: number; count_etapa2: number; count_etapa3: number; count_etapa4: number; count_etapa5: number;
+    count_etapa6: number; count_etapa7: number; count_etapa8: number; count_etapa9: number; count_etapa10: number;
+    etapafat1: number; etapafat2: number; etapafat3: number; etapafat4: number; etapafat5: number;
+    etapafat6: number; etapafat7: number; etapafat8: number; etapafat9: number; etapafat10: number;
+    count_etapafinal1: number; count_etapafinal2: number; count_etapafinal3: number; count_etapafinal4: number; count_etapafinal5: number;
+    count_etapafinal6: number; count_etapafinal7: number; count_etapafinal8: number; count_etapafinal9: number; count_etapafinal10: number;
 }
-export default function TabelaPendenciasSomaEtapasAdminComponent() {
-    const { codigoUsuario, setCodigoUsuario } = useContext(UsuarioContext);
-    const { idUsuario, setIdUsuario } = useContext(UsuarioContext);
-    const { nivelUsuario, setNivelUsuario } = useContext(UsuarioContext);
-    const { idLoja, setIdLoja } = useContext(UsuarioContext)
 
-    const [dados, setDados] = useState([]);
+export default function TabelaPendenciasSomaEtapasAdminComponent() {
+    const { idLoja } = useContext(UsuarioContext);
+    const [dados, setDados] = useState<PropsSomaPendencias[]>([]);
     const [loading, setLoading] = useState(false);
     const [totalg, setTotalG] = useState(0);
     const [totalgFat, setTotalgFat] = useState(0);
 
-    useEffect(() => {
-        listarAdminSomaEtapasPorLoja()
-    }, [])
-
-    async function listarAdminSomaEtapasPorLoja() {
+    const listarAdminSomaEtapasPorLoja = useCallback(async () => {
         setLoading(true);
         try {
             let rs = await service.listaAdminSomaEtapasPorLoja(idLoja);
-            setDados(rs.data.somaEtapasPorLoja)
-            setTotalG(rs.data.somaEtapasPorLoja[0].total_reais_pendencias)
-            setTotalgFat(rs.data.somaEtapasPorLoja[0].total_reais_faturadas)
+            const data = rs.data.somaEtapasPorLoja;
+            setDados(data);
+            if (data && data.length > 0) {
+                setTotalG(data[0].total_reais_pendencias);
+                setTotalgFat(data[0].total_reais_faturadas);
+            }
         } catch (error) {
             console.error('Erro ao buscar somas das etapas:', error);
         } finally {
             setLoading(false);
         }
-    }
+    }, [idLoja]);
+
+    useEffect(() => {
+        listarAdminSomaEtapasPorLoja();
+    }, [listarAdminSomaEtapasPorLoja]);
 
     const tamFonte = '0.9rem';
-    const corDestaque = '#000'
-    const corFundoColuna = '#F5F5F5'
-    const corFat = 'blue'
-    const getColumnBackgroundColor = (index: number): string => {
-        const colors = ['#f0f8ff', '#faebd7'];
-        return colors[index % 2];
-    };
+    const corDestaque = '#000';
+    const corFat = 'blue';
 
-    const filtrarDadosEtapa = (title: string) => {
-        console.log(`Botão clicado na coluna: ${title}`);
-        // Adicione aqui a lógica que você deseja executar quando o botão for clicado
-    };
+    const coresEtapas = [
+        { solida: "#1f77b4", fundo: "#e6f4ff" }, // 1 - Azul
+        { solida: "#ff7f0e", fundo: "#fff7e6" }, // 2 - Laranja
+        { solida: "#2ca02c", fundo: "#f6ffed" }, // 3 - Verde
+        { solida: "#d62728", fundo: "#fff1f0" }, // 4 - Vermelho
+        { solida: "#9467bd", fundo: "#f9f0ff" }, // 5 - Roxo
+        { solida: "#8c564b", fundo: "#fdf5f2" }, // 6 - Marrom
+        { solida: "#e377c2", fundo: "#fff0f6" }, // 7 - Rosa
+        { solida: "#7f7f7f", fundo: "#f5f5f5" }, // 8 - Cinza
+        { solida: "#bcbd22", fundo: "#fcffe6" }, // 9 - Oliva
+        { solida: "#17becf", fundo: "#e6fffb" }, // 10 - Ciano
+    ];
 
     const renderCell = (etapa: number, etapaFat: number, countEtapa: any, countEtapaFat: any, totalg: number, totalgFat: number, corDestaque: string, tamFonte: string, colorPend: string) => {
         return (
             <div style={{ display: 'flex', flexDirection: 'row', padding: '0px' }}>
-                <div style={{ width: '50%', height: '100px', textAlign: 'center', backgroundColor: '#F0F8FF', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', boxSizing: 'border-box', padding: '5px' }}>
+                <div style={{ width: '50%', height: '100px', textAlign: 'center', backgroundColor: '#FFFAFA', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', boxSizing: 'border-box', padding: '5px' }}>
                     <span style={{ fontSize: tamFonte, color: etapa > 1000 ? corDestaque : '#000' }}>
                         {etapa !== null ? formatarMoeda(+etapa) : formatarMoeda('0.00')}
                         <div>({etapa > 0 ? ((etapa / totalg) * 100).toFixed(2) : '0'}%)</div>
                         <div style={{ color: 'red' }}>Pend: {countEtapa}</div>
                     </span>
                 </div>
-                <div style={{ width: '50%', height: '100px', textAlign: 'center', backgroundColor: '#FFFAF0', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', boxSizing: 'border-box', padding: '5px' }}>
+                <div style={{ width: '50%', height: '100px', textAlign: 'center', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', boxSizing: 'border-box', padding: '5px' }}>
                     <span style={{ fontSize: tamFonte, color: etapaFat > 1000 ? corDestaque : '#000' }}>
                         {etapaFat !== null ? formatarMoeda(+etapaFat) : formatarMoeda('0.00')}
                         <div>({etapaFat > 0 ? ((etapaFat / totalgFat) * 100).toFixed(2) : '0'}%)</div>
@@ -115,152 +85,141 @@ export default function TabelaPendenciasSomaEtapasAdminComponent() {
             </div>
         );
     };
-
     const columns1: TableColumnsType<PropsSomaPendencias> = [
         {
-            title: <span style={{ fontSize: '14px' }}>BÁSICOS</span>,
+            title: <span style={{ fontSize: '14px' }}>BASICOS(1)</span>,
             dataIndex: 'etapa1',
             key: 'etapa1',
             align: 'center',
             width: '20%',
             render: (etapa1, record) => renderCell(etapa1, record.etapafat1, record.count_etapa1, record.count_etapafinal1, totalg, totalgFat, corDestaque, tamFonte, corFat),
-            onCell: () => ({ style: { backgroundColor: corFundoColuna } }),
-            onHeaderCell: () => ({ style: { backgroundColor: corFundoColuna } }),
+            onCell: () => ({ style: { backgroundColor: coresEtapas[0].fundo } }),
+            onHeaderCell: () => ({ style: { backgroundColor: coresEtapas[0].fundo } }),
         },
         {
-            title: <span style={{ fontSize: '14px' }}>EPI/IMP/FERRAM</span>,
+            title: <span style={{ fontSize: '14px' }}>EPI/IMP/FERRAM(2)</span>,
             dataIndex: 'etapa2',
             key: 'etapa2',
             align: 'center',
             width: '20%',
             render: (etapa2, record) => renderCell(etapa2, record.etapafat2, record.count_etapa2, record.count_etapafinal2, totalg, totalgFat, corDestaque, tamFonte, corFat),
+            onCell: () => ({ style: { backgroundColor: coresEtapas[1].fundo } }),
+            onHeaderCell: () => ({ style: { backgroundColor: coresEtapas[1].fundo } }),
         },
         {
-            title: <span style={{ fontSize: '14px' }}>HIDRAULICOS</span>,
+            title: <span style={{ fontSize: '14px' }}>HIDRAULICOS(3)</span>,
             dataIndex: 'etapa3',
             key: 'etapa3',
             align: 'center',
             width: '20%',
             render: (etapa3, record) => renderCell(etapa3, record.etapafat3, record.count_etapa3, record.count_etapafinal3, totalg, totalgFat, corDestaque, tamFonte, corFat),
-            onCell: () => ({ style: { backgroundColor: corFundoColuna } }),
-            onHeaderCell: () => ({ style: { backgroundColor: corFundoColuna } }),
+            onCell: () => ({ style: { backgroundColor: coresEtapas[2].fundo } }),
+            onHeaderCell: () => ({ style: { backgroundColor: coresEtapas[2].fundo } }),
         },
         {
-            title: <span style={{ fontSize: '14px' }}>CABOS</span>,
+            title: <span style={{ fontSize: '14px' }}>CABOS(4)</span>,
             dataIndex: 'etapa4',
             key: 'etapa4',
             align: 'center',
             width: '20%',
             render: (etapa4, record) => renderCell(etapa4, record.etapafat4, record.count_etapa4, record.count_etapafinal4, totalg, totalgFat, corDestaque, tamFonte, corFat),
+            onCell: () => ({ style: { backgroundColor: coresEtapas[3].fundo } }),
+            onHeaderCell: () => ({ style: { backgroundColor: coresEtapas[3].fundo } }),
         },
         {
-            title: <span style={{ fontSize: '14px' }}>TOM/AC</span>,
+            title: <span style={{ fontSize: '14px' }}>TOM/AC(5)</span>,
             dataIndex: 'etapa5',
             key: 'etapa5',
             align: 'center',
             width: '20%',
             render: (etapa5, record) => renderCell(etapa5, record.etapafat5, record.count_etapa5, record.count_etapafinal5, totalg, totalgFat, corDestaque, tamFonte, corFat),
-            onCell: () => ({ style: { backgroundColor: corFundoColuna } }),
-            onHeaderCell: () => ({ style: { backgroundColor: corFundoColuna } }),
+            onCell: () => ({ style: { backgroundColor: coresEtapas[4].fundo } }),
+            onHeaderCell: () => ({ style: { backgroundColor: coresEtapas[4].fundo } }),
         },
-
-        // Adicione outras colunas aqui seguindo o mesmo padrão
     ];
+
     const columns2: TableColumnsType<PropsSomaPendencias> = [
         {
-            title: <span style={{ fontSize: '14px' }}>PISOS/REV/ACES/ARG/REJ</span>,
+            title: <span style={{ fontSize: '14px' }}>PISOS/REV/ACES/ARG/REJ(6)</span>,
             dataIndex: 'etapa6',
             key: 'etapa6',
             align: 'center',
             width: '20%',
             render: (etapa6, record) => renderCell(etapa6, record.etapafat6, record.count_etapa6, record.count_etapafinal6, totalg, totalgFat, corDestaque, tamFonte, corFat),
+            onCell: () => ({ style: { backgroundColor: coresEtapas[5].fundo } }),
+            onHeaderCell: () => ({ style: { backgroundColor: coresEtapas[5].fundo } }),
         },
         {
-            title: <span style={{ fontSize: '14px' }}>LOUC/MET/PIAS/CB/GB/BAN</span>,
+            title: <span style={{ fontSize: '14px' }}>LOUC/MET/PIAS/CB/GB/BAN(7)</span>,
             dataIndex: 'etapa7',
             key: 'etapa7',
             align: 'center',
             width: '20%',
             render: (etapa7, record) => renderCell(etapa7, record.etapafat7, record.count_etapa7, record.count_etapafinal7, totalg, totalgFat, corDestaque, tamFonte, corFat),
-            onCell: () => ({ style: { backgroundColor: corFundoColuna } }),
-            onHeaderCell: () => ({ style: { backgroundColor: corFundoColuna } }),
+            onCell: () => ({ style: { backgroundColor: coresEtapas[6].fundo } }),
+            onHeaderCell: () => ({ style: { backgroundColor: coresEtapas[6].fundo } }),
         },
         {
-            title: <span style={{ fontSize: '14px' }}>PORTAS/FERRAG/FECH</span>,
+            title: <span style={{ fontSize: '14px' }}>PORTAS/FERRAG/FECH(8)</span>,
             dataIndex: 'etapa8',
             key: 'etapa8',
             align: 'center',
             width: '20%',
             render: (etapa8, record) => renderCell(etapa8, record.etapafat8, record.count_etapa8, record.count_etapafinal8, totalg, totalgFat, corDestaque, tamFonte, corFat),
+            onCell: () => ({ style: { backgroundColor: coresEtapas[7].fundo } }),
+            onHeaderCell: () => ({ style: { backgroundColor: coresEtapas[7].fundo } }),
         },
         {
-            title: <span style={{ fontSize: '14px' }}>PINTURAS</span>,
+            title: <span style={{ fontSize: '14px' }}>PINTURAS(9)</span>,
             dataIndex: 'etapa9',
             key: 'etapa9',
             align: 'center',
             width: '20%',
             render: (etapa9, record) => renderCell(etapa9, record.etapafat9, record.count_etapa9, record.count_etapafinal9, totalg, totalgFat, corDestaque, tamFonte, corFat),
-            onCell: () => ({ style: { backgroundColor: corFundoColuna } }),
-            onHeaderCell: () => ({ style: { backgroundColor: corFundoColuna } }),
+            onCell: () => ({ style: { backgroundColor: coresEtapas[8].fundo } }),
+            onHeaderCell: () => ({ style: { backgroundColor: coresEtapas[8].fundo } }),
         },
         {
-            title: <span style={{ fontSize: '14px' }}>ILUMINAÇÃO</span>,
+            title: <span style={{ fontSize: '14px' }}>ILUMINAÇÃO(10)</span>,
             dataIndex: 'etapa10',
             key: 'etapa10',
             align: 'center',
             width: '20%',
             render: (etapa10, record) => renderCell(etapa10, record.etapafat10, record.count_etapa10, record.count_etapafinal10, totalg, totalgFat, corDestaque, tamFonte, corFat),
+            onCell: () => ({ style: { backgroundColor: coresEtapas[9].fundo } }),
+            onHeaderCell: () => ({ style: { backgroundColor: coresEtapas[9].fundo } }),
         },
-
     ];
-
-
     return (
-        <>
-            <div>
-                <Spin spinning={loading} tip="Carregando..." style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
-                    <div style={{ backgroundColor: '#fff' }}>
-                        <Row style={{ display: 'flex', flexDirection: 'column' }}>
-                            <Col>
-                                <Typography style={{ fontSize: '24px', margin: '10px' }}>
-                                    Total Pend.: R$ {formatarMoedaComSimbolo(+totalg)} - <span style={{color: corFat}}> Fat.: {formatarMoedaComSimbolo(+totalgFat)}</span>
-                                </Typography>
-                            </Col>
-                        </Row>
-                    </div>
-                    <div style={{ padding: '0px', position: 'relative' }}>
-                        <Row gutter={16}>
-                            <Col span={24}>
-                                <Table
-                                    columns={columns1}
-                                    dataSource={dados}
-                                    size="small"
-                                    rowKey={(record) => record.seq}
-                                    pagination={false}
-                                    bordered
-                                    style={{ height: '100%' }} // Adicionado para garantir que a tabela preencha o espaço disponível
-                                />
-                            </Col>
-                        </Row>
-                    </div>
-                    <div style={{ padding: '0px', position: 'relative' }}>
-                        <Row gutter={16}>
-                            <Col span={24}>
-                                <Table
-                                    columns={columns2}
-                                    dataSource={dados}
-                                    size="small"
-                                    rowKey={(record) => record.seq}
-                                    pagination={false}
-                                    bordered
-                                    style={{ height: '100%' }} // Adicionado para garantir que a tabela preencha o espaço disponível
-                                />
-                            </Col>
-                        </Row>
-                    </div>
+        <div style={{ backgroundColor: '#fff', padding: '10px' }}>
+            <Spin spinning={loading} tip="Carregando...">
+                <Row style={{ marginBottom: '10px' }}>
+                    <Col>
+                        <Typography style={{ fontSize: '24px', margin: '10px' }}>
+                            Total Pend.: R$ {formatarMoedaComSimbolo(+totalg)} - <span style={{ color: corFat }}>Fat.: {formatarMoedaComSimbolo(+totalgFat)}</span>
+                        </Typography>
+                    </Col>
+                </Row>
 
-                </Spin>
-            </div>
-        </>
-    )
+                <Table
+                    columns={columns1}
+                    dataSource={dados}
+                    size="small"
+                    rowKey="seq"
+                    pagination={false}
+                    bordered
+                    style={{ marginBottom: '15px' }}
+                />
+
+                <Table
+                    columns={columns2}
+                    dataSource={dados}
+                    size="small"
+                    rowKey="seq"
+                    pagination={false}
+                    bordered
+                />
+            </Spin>
+        </div>
+    );
 }
